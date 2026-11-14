@@ -1,0 +1,366 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><script>
+      (() => {
+        // 与 src/scripts/sidebar-theme.ts 保持同一主题偏好契约，避免首屏与运行时状态漂移。
+        const themeKey = 'theme';
+        const modeKey = 'theme-mode';
+        let storedMode = null;
+        let legacyTheme = null;
+        try {
+          storedMode = localStorage.getItem(modeKey);
+          legacyTheme = localStorage.getItem(themeKey);
+        } catch (_) {}
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const mode = storedMode === 'system' || storedMode === 'dark' || storedMode === 'light'
+          ? storedMode
+          : (legacyTheme === 'dark' || legacyTheme === 'light' ? legacyTheme : 'system');
+        const theme = mode === 'system' ? (prefersDark ? 'dark' : 'light') : mode;
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.dataset.themeMode = mode;
+      })();
+    </script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><title>hydrology | Mint Blog</title><meta name="description" content="水文学习"><link rel="canonical" href="https://blog.20220509.xyz/archive/hydrology/"><meta property="og:site_name" content="Mint Blog"><meta property="og:title" content="hydrology | Mint Blog"><meta property="og:description" content="水文学习"><meta property="og:url" content="https://blog.20220509.xyz/archive/hydrology/"><meta property="og:type" content="article"><meta property="og:image" content="https://blog.20220509.xyz/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="hydrology | Mint Blog"><meta name="twitter:description" content="水文学习"><meta name="twitter:image" content="https://blog.20220509.xyz/og.png"><link rel="stylesheet" href="/_astro/global.Bhbh443I.css"> <meta property="article:published_time" content="2026-10-21T00:00:00.000Z"> <link id="astro-whono-katex-stylesheet" rel="stylesheet" href="/_astro/katex.min.C_xXdfqd.css" data-astro-whono-katex="true"><link rel="stylesheet" href="/_astro/article.CfotRyYM.css"></head> <body class="article-page immersive-page"> <a class="skip-link" href="#content">跳到内容</a> <div class="shell" data-sidebar-divider="default"> <aside id="site-sidebar" class="sidebar"> <a class="sidebar__title sidebar__title--site" href="/" aria-label="MintHana 首页"> <span class="sidebar__title-text">MintHana</span> </a>  <div class="sidebar__quote">  永遠に不滅なものはない<br>  Personal study notes. Please forgive any inappropriate content<br>  </div> <div class="sidebar__social" aria-label="社交链接"> <a class="sidebar__social-link" href="https://github.com/MintHana" aria-label="GitHub" title="GitHub"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/> </svg> </a><a class="sidebar__social-link" href="https://www.zhihu.com/people/70-28-52-15" aria-label="知乎" title="知乎"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M5.721 0C2.251 0 0 2.25 0 5.719V18.28C0 21.751 2.252 24 5.721 24h12.56C21.751 24 24 21.75 24 18.281V5.72C24 2.249 21.75 0 18.281 0zm1.964 4.078q-.408 1.096-.68 2.11h4.587c.545-.006.445 1.168.445 1.171H9.384a58 58 0 0 1-.112 3.797h2.712c.388.023.393 1.251.393 1.266H9.183a9.2 9.2 0 0 1-.408 2.102l.757-.604c.452.456 1.512 1.712 1.906 2.177c.473.681.063 2.081.063 2.081l-2.794-3.382c-.653 2.518-1.845 3.607-1.845 3.607c-.523.468-1.58.82-2.64.516c2.218-1.73 3.44-3.917 3.667-6.497H4.491c0-.015.197-1.243.806-1.266h2.71c.024-.32.086-3.254.086-3.797H6.598c-.136.406-.158.447-.268.753c-.594 1.095-1.603 1.122-1.907 1.155c.906-1.821 1.416-3.6 1.591-4.064c.425-1.124 1.671-1.125 1.671-1.125M13.078 6h6.377v11.33h-2.573l-2.184 1.373l-.401-1.373h-1.219zm1.313 1.219v8.86h.623l.263.937l1.455-.938h1.456v-8.86z"/> </svg> </a> </div> <ul class="nav sidebar-public-nav"> <li> <a href="/"> <span>HOME</span> <span class="dot" aria-hidden="true"></span> </a> </li><li> <a href="/archive/" aria-current="page"> <span>ARCHIVE</span> <span class="dot" aria-hidden="true"></span> </a> </li><li> <a href="/about/"> <span>ABOUT</span> <span class="dot" aria-hidden="true"></span> </a> </li> </ul>  <div class="sidebar-actions">   <button id="reader-toggle" class="icon-button reader-toggle sidebar-action--rail-hidden" type="button" aria-label="阅读模式" aria-pressed="false" data-tooltip="阅读模式"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-book-open icon icon-book-open"> <path d="M12 5v16"></path><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-book icon icon-book-closed"> <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"></path>  </svg> </button> <a class="icon-button rss-link sidebar-action--rail-hidden" href="/archive/rss.xml" aria-label="RSS 订阅" data-tooltip="RSS 订阅"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-rss icon"> <path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle>  </svg> </a> <button id="theme-toggle" class="icon-button theme-toggle" type="button" aria-label="夜间模式" aria-pressed="false" data-tooltip="夜间模式"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-sun-moon icon icon-system"> <path d="M12 2v2"></path><path d="M14.837 16.385a6 6 0 1 1-7.223-7.222c.624-.147.97.66.715 1.248a4 4 0 0 0 5.26 5.259c.589-.255 1.396.09 1.248.715"></path><path d="M16 12a4 4 0 0 0-4-4"></path><path d="m19 5-1.256 1.256"></path><path d="M20 12h2"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-moon icon icon-moon"> <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-sun icon icon-sun"> <circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path>  </svg> </button>   </div> </aside> <nav id="mobile-bar" class="mobile-bar" aria-label="快捷导航"> <a class="mobile-bar__title" href="/">MintHana</a> <ul class="mobile-bar__nav"> <li> <a href="/">HOME</a> </li><li> <a href="/archive/" aria-current="page">ARCHIVE</a> </li><li> <a href="/about/">ABOUT</a> </li> </ul> </nav> <div class="divider" aria-hidden="true"></div> <main id="content" class="content" tabindex="-1"> <div class="content__inner">   <div class="article-body article-body--toc"> <div class="article-header reader-exit-anchor"> <h1 class="page-title">hydrology</h1> <button id="reader-exit" class="icon-button reader-exit" type="button" aria-label="退出阅读" title="退出阅读" aria-hidden="true" tabindex="-1"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-square-arrow-right-exit icon"> <path d="M10 12h11"></path><path d="m17 16 4-4-4-4"></path><path d="M21 6.344V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-1.344"></path>  </svg> </button> <div class="meta-line meta-line--items"> <span class="meta-line__item"> <time datetime="2026-10-21T00:00:00.000Z">发布于：2026-10-21</time> </span>  <span class="meta-line__item meta-line__item--desktop-meta">
+共 6,808 字
+</span> <span class="meta-line__item meta-line__item--desktop-meta">
+约 22 分钟
+</span> </div> </div> <nav class="article-toc" aria-label="文章目录"> <p class="article-toc__title"> <span class="article-toc__label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-text-align-start article-toc__icon"> <path d="M21 5H3"></path><path d="M15 12H3"></path><path d="M17 19H3"></path>  </svg>On this page</span> </p> <ul class="article-toc__list"> <li> <a class="article-toc__link" href="#part-1-如何利用流量数据进行分析" data-depth="1" data-level="1" title="part 1 如何利用流量数据进行分析">  <span class="article-toc__text">part 1 如何利用流量数据进行分析</span> </a> </li><li> <a class="article-toc__link" href="#1-创建水文图-水流大小和随着时间的推移的变异性" data-depth="2" data-level="2" title="1. 创建水文图-水流大小和随着时间的推移的变异性">  <span class="article-toc__text">1. 创建水文图-水流大小和随着时间的推移的变异性</span> </a> </li><li> <a class="article-toc__link" href="#2-创建单位水文图-按流域面积划分溪流" data-depth="2" data-level="2" title="2. 创建单位水文图-按流域面积划分溪流">  <span class="article-toc__text">2. 创建单位水文图-按流域面积划分溪流</span> </a> </li><li> <a class="article-toc__link" href="#3-创建-hyeto-水文图-将降雨与排放进行比较以查看降雨-径流反应" data-depth="2" data-level="2" title="3. 创建 hyeto-水文图-将降雨与排放进行比较，以查看降雨-径流反应">  <span class="article-toc__text">3. 创建 hyeto-水文图-将降雨与排放进行比较，以查看降雨-径流反应</span> </a> </li><li> <a class="article-toc__link" href="#4-创建流量持续时间曲线-显示超过给定流量的概率" data-depth="2" data-level="2" title="4. 创建流量持续时间曲线-显示超过给定流量的概率">  <span class="article-toc__text">4. 创建流量持续时间曲线-显示超过给定流量的概率</span> </a> </li><li> <a class="article-toc__link" href="#5-如何创建流量持续时间曲线" data-depth="2" data-level="2" title="5. 如何创建流量持续时间曲线">  <span class="article-toc__text">5. 如何创建流量持续时间曲线</span> </a> </li><li> <a class="article-toc__link" href="#5a-在年度或季节性时间尺度上计算水文响应" data-depth="2" data-level="2" title="5a. 在年度或季节性时间尺度上计算水文响应">  <span class="article-toc__text">5a. 在年度或季节性时间尺度上计算水文响应</span> </a> </li><li> <a class="article-toc__link" href="#part-2" data-depth="1" data-level="1" title="part 2">  <span class="article-toc__text">part 2</span> </a> </li><li> <a class="article-toc__link" href="#5b-在事件时间尺度上计算水文响应" data-depth="2" data-level="2" title="5b. 在事件时间尺度上计算水文响应">  <span class="article-toc__text">5b. 在事件时间尺度上计算水文响应</span> </a> </li><li> <a class="article-toc__link" href="#6-直线分割水文过程线分割" data-depth="2" data-level="2" title="6. 直线分割——水文过程线分割">  <span class="article-toc__text">6. 直线分割——水文过程线分割</span> </a> </li><li> <a class="article-toc__link" href="#上图理论概念" data-depth="3" data-level="3" title="上图：理论概念">  <span class="article-toc__text">上图：理论概念</span> </a> </li><li> <a class="article-toc__link" href="#下图工程实操" data-depth="3" data-level="3" title="下图：工程实操">  <span class="article-toc__text">下图：工程实操</span> </a> </li><li> <a class="article-toc__link" href="#核心目的" data-depth="3" data-level="3" title="核心目的">  <span class="article-toc__text">核心目的</span> </a> </li><li> <a class="article-toc__link" href="#优点pros" data-depth="3" data-level="3" title="优点（Pros）">  <span class="article-toc__text">优点（Pros）</span> </a> </li><li> <a class="article-toc__link" href="#缺点cons" data-depth="3" data-level="3" title="缺点（Cons）">  <span class="article-toc__text">缺点（Cons）</span> </a> </li><li> <a class="article-toc__link" href="#7-示踪剂分割水文过程线分割" data-depth="2" data-level="2" title="7. 示踪剂分割——水文过程线分割">  <span class="article-toc__text">7. 示踪剂分割——水文过程线分割</span> </a> </li><li> <a class="article-toc__link" href="#8-进行退水分析" data-depth="2" data-level="2" title="8. 进行退水分析">  <span class="article-toc__text">8. 进行退水分析</span> </a> </li><li> <a class="article-toc__link" href="#9-10流量数据的进阶应用水质与污染负荷" data-depth="2" data-level="2" title="9-10.流量数据的进阶应用：水质与污染负荷">  <span class="article-toc__text">9-10.流量数据的进阶应用：水质与污染负荷</span> </a> </li><li> <a class="article-toc__link" href="#9解释水质模式" data-depth="3" data-level="3" title="9.解释水质模式">  <span class="article-toc__text">9.解释水质模式</span> </a> </li><li> <a class="article-toc__link" href="#10计算物质负荷" data-depth="3" data-level="3" title="10.计算物质负荷">  <span class="article-toc__text">10.计算物质负荷</span> </a> </li><li> <a class="article-toc__link" href="#11-使用水文模型测试情景" data-depth="2" data-level="2" title="11. 使用水文模型测试情景">  <span class="article-toc__text">11. 使用水文模型测试情景</span> </a> </li><li> <a class="article-toc__link" href="#part-3-什么是洪水" data-depth="1" data-level="1" title="part 3 什么是洪水">  <span class="article-toc__text">part 3 什么是洪水</span> </a> </li><li> <a class="article-toc__link" href="#定义" data-depth="2" data-level="2" title="定义">  <span class="article-toc__text">定义</span> </a> </li><li> <a class="article-toc__link" href="#重现期" data-depth="2" data-level="2" title="重现期">  <span class="article-toc__text">重现期</span> </a> </li><li> <a class="article-toc__link" href="#记录长度与极端事件重估" data-depth="2" data-level="2" title="记录长度与极端事件重估">  <span class="article-toc__text">记录长度与极端事件重估</span> </a> </li><li> <a class="article-toc__link" href="#非平稳性问题-non-stationarity" data-depth="2" data-level="2" title="非平稳性问题 (Non-Stationarity)">  <span class="article-toc__text">非平稳性问题 (Non-Stationarity)</span> </a> </li><li> <a class="article-toc__link" href="#洪水演进与流域动态" data-depth="2" data-level="2" title="洪水演进与流域动态">  <span class="article-toc__text">洪水演进与流域动态</span> </a> </li><li> <a class="article-toc__link" href="#无水文站数据不足时的替代方法" data-depth="2" data-level="2" title="无水文站/数据不足时的替代方法">  <span class="article-toc__text">无水文站/数据不足时的替代方法</span> </a> </li> </ul> </nav> <div class="prose">  <h1 id="part-1-如何利用流量数据进行分析">part 1 如何利用流量数据进行分析</h1>
+<h2 id="1-创建水文图-水流大小和随着时间的推移的变异性">1. 创建水文图-水流大小和随着时间的推移的变异性</h2>
+<blockquote>
+<p>（Create hydrographs - streamflow magnitude and variability over time.）</p>
+</blockquote>
+<ul>
+<li>水文过程线：用于描述流量或流量随时间变化的图表</li>
+<li>流量单位 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>m</mi><mn>3</mn></msup><mi mathvariant="normal">/</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">m^3/s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mord">/</span><span class="mord mathnormal">s</span></span></span></span></li>
+<li>采用对数 y 坐标轴 (log y-axis)，高、低流量变化便于展示观察，低流量不会被压缩。</li>
+</ul>
+<p><img alt="水文图" loading="lazy" decoding="async" width="590" height="429" src="/_astro/1.CqzSH45S_Z1ePflR.webp"></p>
+<h2 id="2-创建单位水文图-按流域面积划分溪流">2. 创建单位水文图-按流域面积划分溪流</h2>
+<blockquote>
+<p>（Create unit hydrographs - divide streamflow by watershed area）</p>
+</blockquote>
+<ul>
+<li>流量/面积。 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><msup><mi>m</mi><mn>3</mn></msup><mi mathvariant="normal">/</mi><mi>s</mi><mo stretchy="false">)</mo><mi mathvariant="normal">/</mi><mi>k</mi><msup><mi>m</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">(m^3/s) / km^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mord">/</span><span class="mord mathnormal">s</span><span class="mclose">)</span><span class="mord">/</span><span class="mord mathnormal" style="margin-right:0.0315em;">k</span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>，让你能直观看到单位面积产生的流量。</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>m</mi><mi mathvariant="normal">/</mi><mi>h</mi><mi>r</mi></mrow><annotation encoding="application/x-tex">mm/hr</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">mm</span><span class="mord">/</span><span class="mord mathnormal">h</span><span class="mord mathnormal" style="margin-right:0.0278em;">r</span></span></span></span>。简化为与降雨量相当的速率（rate），便于与降雨量进行比较。</li>
+</ul>
+<blockquote>
+<p>绿色屋顶 (Green Roof, 绿线)；铺装生物滞留带（紫线）；砾石生物滞留带（灰线）</p>
+</blockquote>
+<p><img alt="单位面积水文过程线 (Unit hydrograph)" loading="lazy" decoding="async" width="938" height="707" src="/_astro/2.MkyeEriF_Z1gTWKb.webp"></p>
+<p>单位面积水文过程线：</p>
+<ul>
+<li>Y轴单位：Discharge per area (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>m</mi><mi mathvariant="normal">/</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">mm/s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">mm</span><span class="mord">/</span><span class="mord mathnormal">s</span></span></span></span>) —— 单位面积的排水率。</li>
+<li>绿色屋顶的峰值极高，并且响应时间极快（紧跟降雨峰值）。</li>
+<li>铺装生物滞留带（紫线）和砾石生物滞留带（灰线）的峰值非常平缓且延迟。</li>
+</ul>
+<blockquote>
+<p>结论：从单位面积来看，绿色屋顶滞留雨水的效果最差。它几乎无法削减降雨峰值，雨水落在上面后会迅速汇流排出。</p>
+</blockquote>
+<p><img alt="水文过程线 (Hydrograph)" loading="lazy" decoding="async" width="960" height="720" src="/_astro/3.BQjR3HF2_1GDSwu.webp"></p>
+<p>水文过程线：</p>
+<ul>
+<li>Y轴单位：Discharge (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>m</mi><mn>3</mn></msup><mi mathvariant="normal">/</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">m^3/s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mord">/</span><span class="mord mathnormal">s</span></span></span></span>) —— 总排水量（绝对体积）。</li>
+<li>铺装生物滞留带出现了巨大的流量峰值（接近 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.0100</mn><mtext> </mtext><msup><mi>m</mi><mn>3</mn></msup><mi mathvariant="normal">/</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">0.0100\ m^3/s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord">0.0100</span><span class="mspace"> </span><span class="mord"><span class="mord mathnormal">m</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mord">/</span><span class="mord mathnormal">s</span></span></span></span>），并且在19:30还有第二次高峰。</li>
+<li>绿色屋顶的总出流量极低，几乎是一条贴近底部的平线。</li>
+<li>砾石生物滞留带（灰线）居中。</li>
+</ul>
+<blockquote>
+<p>结论：从总流量来看，铺装生物滞留带的总出流量最高。</p>
+</blockquote>
+<h2 id="3-创建-hyeto-水文图-将降雨与排放进行比较以查看降雨-径流反应">3. 创建 hyeto-水文图-将降雨与排放进行比较，以查看降雨-径流反应</h2>
+<blockquote>
+<p>（Create hyeto-hydrographs - compare rainfall to discharge to look at rainfall-runoff response.）</p>
+</blockquote>
+<p><img alt="降雨-径流" loading="lazy" decoding="async" width="639" height="427" src="/_astro/4.BLkQSneR_gdDji.webp"></p>
+<p>既然我们画出了这个图，我们就可以从中提取数据来评估这片区域的水文状况：</p>
+<ul>
+<li>总降雨量（所有蓝色柱子加起来）</li>
+<li>洪峰流量（红线最高点，也就是最危险的水位）</li>
+<li>峰现时间/滞后时间（降雨最高峰到流量最高峰，延迟了多久）</li>
+<li>径流总量（红线以下包围的面积，代表这次总共排走了多少水）</li>
+</ul>
+<h2 id="4-创建流量持续时间曲线-显示超过给定流量的概率">4. 创建流量持续时间曲线-显示超过给定流量的概率</h2>
+<blockquote>
+<p>（Create flow duration curves - show probability that a given flow will be exceeded）</p>
+</blockquote>
+<p>展示不同流量级别的超越概率，反映河流长期的水文统计规律。</p>
+<p><img alt="" loading="lazy" decoding="async" width="715" height="463" src="/_astro/5.CAFuwMNH_ZkQ8Ti.webp">
+<img alt="" loading="lazy" decoding="async" width="948" height="720" src="/_astro/6.5vVsjlzg_1wdwKs.webp"></p>
+<p>展示了不同地质/水文特征的流域，其流量变化规律的巨大差异：</p>
+<ul>
+<li><strong>横轴</strong>：超越概率。越往右概率越大，流量越小（代表干旱少雨时期）。</li>
+<li><strong>纵轴</strong>：单位面积流量。</li>
+<li><strong>Q90</strong>：代表 90% 的时间流量都大于此值，通常代表剩下 10% 极其干旱的枯水期（低流量）。</li>
+</ul>
+<ol>
+<li><strong>绿线：Smith River (SSF dominated)</strong></li>
+</ol>
+<ul>
+<li>SSF（Subsurface Stormflow/壤中流）主导：代表雨水主要在地表浅层或土壤中快速汇流。</li>
+<li>形态特征：曲线极度陡峭。左侧起点极高，右侧尾部迅速跌至谷底。</li>
+<li>暴雨时产流极快（洪峰高），但毫无蓄水能力，一到旱季立刻干涸。</li>
+</ul>
+<ol start="2">
+<li><strong>蓝线：Clear Lake (groundwater-dominated)</strong></li>
+</ol>
+<ul>
+<li>地下水主导：代表流域有巨大的地下水库（如含水层）作为缓冲。</li>
+<li>形态特征：曲线极其平缓。</li>
+<li>下暴雨时，大量雨水渗入地下（削峰），旱季时，地下水慢慢渗出补给河流。</li>
+</ul>
+<h2 id="5-如何创建流量持续时间曲线">5. 如何创建流量持续时间曲线</h2>
+<ul>
+<li>
+<p>在分析期间，从最大到最小对数据进行排序。对排序的数据进行排名（最大流量 = 1）。</p>
+</li>
+<li>
+<p>应用公式</p>
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>P</mtext><mo>=</mo><mfrac><mtext>m</mtext><mtext>(n + 1) </mtext></mfrac></mrow><annotation encoding="application/x-tex"> \text{P} = \frac{\text{m}}{\text{(n + 1) }}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">P</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.0436em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.1076em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">(n + 1) </span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">m</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span>
+<p>其中排名为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mtext>（</mtext><mi>r</mi><mi>a</mi><mi>n</mi><mi>k</mi><mtext>）</mtext></mrow><annotation encoding="application/x-tex">m（rank）</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord mathnormal">m</span><span class="mord cjk_fallback">（</span><span class="mord mathnormal" style="margin-right:0.0278em;">r</span><span class="mord mathnormal" style="margin-right:0.0315em;">ank</span><span class="mord cjk_fallback">）</span></span></span></span>，分析中的点数为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>。</p>
+</li>
+<li>
+<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>=</mo><mtext>"超越概率"</mtext></mrow><annotation encoding="application/x-tex">P = \text{"超越概率"}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord text"><span class="mord">"</span><span class="mord cjk_fallback">超越概率</span><span class="mord">"</span></span></span></span></span>（即流量大于给定排放量的可能性有多大）。</p>
+</li>
+<li>
+<p>用对数 Y 轴和线性 X 轴制作图形。</p>
+</li>
+</ul>
+<h2 id="5a-在年度或季节性时间尺度上计算水文响应">5a. 在年度或季节性时间尺度上计算水文响应</h2>
+<blockquote>
+<p>Calculate hydrologic response on annual or seasonal time scales</p>
+</blockquote>
+<ol>
+<li><strong>径流系数</strong> = 年径流量（或季节尺度） / 年降水量。</li>
+</ol>
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>Runoff ratio</mtext><mo>=</mo><mfrac><mtext>Annual Streamflow</mtext><mtext>Annual Precipitation</mtext></mfrac></mrow><annotation encoding="application/x-tex">\text{Runoff ratio} = \frac{\text{Annual Streamflow}}{\text{Annual Precipitation}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord text"><span class="mord">Runoff ratio</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.2519em;vertical-align:-0.8804em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Annual Precipitation</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Annual Streamflow</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span>
+<ul>
+<li>数值在 0 到 1 之间：</li>
+<li>数值越大：说明降水大部分变成了河流径流（容易发洪水）。</li>
+<li>数值越小：说明降水大部分被蒸发、下渗或植物吸收了（河流容易缺水）。</li>
+</ul>
+<ol start="2">
+<li>在很大程度上取决于气候、植被和土地利用率</li>
+</ol>
+<blockquote>
+<p>Largely depends on climate and vegetation</p>
+</blockquote>
+<ol start="3">
+<li>径流比同时也反映了蒸散发：</li>
+</ol>
+<ul>
+<li><strong>夏季</strong>：植物生长活跃，蒸散发作用强烈，消耗了大量的径流水分。</li>
+<li><strong>冬季</strong>：植物处于休眠状态，蒸散发率较低，因此更多的水分转化为河流径流。</li>
+</ul>
+<p><img alt="" loading="lazy" decoding="async" width="952" height="409" src="/_astro/7.CyQ6S9jS_ZjvYRv.webp"></p>
+<h1 id="part-2">part 2</h1>
+<h2 id="5b-在事件时间尺度上计算水文响应">5b. 在事件时间尺度上计算水文响应</h2>
+<blockquote>
+<p>Calculate hydrologic response on event timescales</p>
+</blockquote>
+<p><strong>1. 核心公式：水文响应函数</strong></p>
+<ul>
+<li>公式：</li>
+</ul>
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>Hydrologic response function</mtext><mo>=</mo><mfrac><mtext>Stormflow (mm)</mtext><mtext>Precipitation (mm)</mtext></mfrac></mrow><annotation encoding="application/x-tex">\text{Hydrologic response function} = \frac{\text{Stormflow (mm)}}{\text{Precipitation (mm)}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">Hydrologic response function</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Precipitation (mm)</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Stormflow (mm)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span>
+<ul>
+<li>含义：它本质上是<strong>单场暴雨的径流系数</strong>。表示在一场具体的暴雨中，有多少比例的降水直接变成了河流里的洪水。</li>
+</ul>
+<p><strong>2. 影响因素的变异性</strong></p>
+<ul>
+<li><strong>前期水分条件 (Antecedent moisture conditions)</strong>：单场暴雨产生的径流量，很大程度上取决于<strong>暴雨发生前的土壤湿度</strong>。</li>
+<li><strong>干湿对比</strong>：
+<ul>
+<li>如果前期干旱（土壤像干海绵），吸收能力强，洪水（Stormflow）就少。</li>
+<li>如果前期刚下过雨（土壤已经吸饱水），雨水只能变成地表径流，极易引发洪灾。</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-直线分割水文过程线分割">6. 直线分割——水文过程线分割</h2>
+<blockquote>
+<p>Conduct a Graphical Hydrograph Separation</p>
+</blockquote>
+<p>为了计算单场暴雨产生的水量，必须将河流的总流量拆分为<strong>基流</strong>和<strong>快速响应径流</strong>。
+<img alt="" loading="lazy" decoding="async" width="1016" height="1275" src="/_astro/8.ANaME8Lq_ZojaM7.webp"></p>
+<h3 id="上图理论概念">上图：理论概念</h3>
+<p>展示了自然界的真实叠加情况：</p>
+<ul>
+<li><strong>绿色区域 (Baseflow)</strong>：降雨前原有的基流（地下水补给）。暴雨期间，它会因为下渗而缓慢、自然地向上凸起（呈曲线）。</li>
+<li><strong>紫色区域 (Quick-response runoff)</strong>：暴雨直接转化为地表径流的部分，导致流量飙升。</li>
+</ul>
+<h3 id="下图工程实操">下图：工程实操</h3>
+<p>为了消除人为画曲线的误差，水文工程上采用简化的<strong>直线分割法</strong>（Hewlett and Hibbert, 1967）：</p>
+<ul>
+<li><strong>操作</strong>：从径流起涨点出发，画一条固定斜率的<strong>直线</strong>作为“基流分割线”（Baseflow separation line）。</li>
+<li><strong>固定斜率</strong>：0.05 ft³/sec/mi²/hour。（每平方英里每小时增加 0.05 立方英尺/秒）</li>
+<li><strong>结果</strong>：直线下方的绿色区域即为简化的基流；直线上方的蓝色区域（Quick-response runoff）即为本次暴雨产生的直接径流。</li>
+</ul>
+<h3 id="核心目的">核心目的</h3>
+<p>计算蓝色区域的<strong>面积</strong>。因为 面积 = 流量 × 时间，算出的面积即为本次暴雨产生的直接径流<strong>总体积</strong>。</p>
+<p><img alt="" loading="lazy" decoding="async" width="2364" height="1504" src="/_astro/9.BAtNOwvR_WC5Px.webp"></p>
+<blockquote>
+<p>从径流起涨点出发，按固定斜率（例如该案例中每小时上升 0.045）向右画一条直线，直到与退水曲线相交。</p>
+</blockquote>
+<h3 id="优点pros">优点（Pros）</h3>
+<ul>
+<li><strong>简单方便</strong>：操作极其简单，不需要复杂的参数或模型。</li>
+<li><strong>提供对比基准</strong>：只要所有人使用同一套标准（如固定斜率），就能作为统一基准，用来比较不同暴雨事件、或不同流域之间的产流大小。</li>
+</ul>
+<h3 id="缺点cons">缺点（Cons）</h3>
+<ul>
+<li><strong>纯属“虚构”</strong>：被学者（如 Freeze, 1972）批评为“方便的虚构”。画直线违背了自然界水分混合的真实物理规律。</li>
+<li><strong>无法揭示物理过程</strong>：它只是单纯的数学面积划分，无法反映流域真实的降雨-径流产生机制（如地下水与地表水到底是如何互动的）。</li>
+</ul>
+<h2 id="7-示踪剂分割水文过程线分割">7. 示踪剂分割——水文过程线分割</h2>
+<blockquote>
+<p>Add tracers to conduct a better hydrograph separation</p>
+<p>使用<strong>同位素和其他化学示踪剂（Tracers）</strong>，通过化学指纹来真实区分洪水中的“新水”和“老水”</p>
+</blockquote>
+<ul>
+<li><strong>新水 (New Water)</strong>：当前这场暴雨（即我们正在测量的这场降雨事件）直接带来的水。</li>
+<li><strong>老水 (Old Water)</strong>：在当前暴雨发生之前，就已经储存在流域（土壤、地下水层）中的水。</li>
+</ul>
+<p><strong>新水与老水的化学区分，并不能直接揭示径流产生的物理机制，它只是提供了一个让我们能够“推断（infer）”机制的依据。</strong></p>
+<ul>
+<li><strong>蓝线 (Event Flow)</strong>：实测的总流量（包含了所有水）。</li>
+<li><strong>绿线 (New Water)</strong>：本次暴雨直接产生的“新水”（直接径流）。</li>
+<li><strong>红线 (Old Water)</strong>：降雨前就已存在地下/土壤中的“老水”（地下水基流）。</li>
+</ul>
+<p><strong>结果：</strong>
+在洪水暴涨的峰值阶段，<strong>大部分流量是由“老水”（红线）贡献的</strong>，而本次降雨带来的“新水”（绿线）只占极小部分。</p>
+<p><img alt="" loading="lazy" decoding="async" width="1470" height="1014" src="/_astro/10.DlVPS2s-_Z1fgaKL.webp"></p>
+<p><strong>背后的物理机制：</strong></p>
+<ol>
+<li>暴雨降落在地表，并不是直接变成地表径流流走。雨水下渗产生的巨大水压，像活塞一样将原本储存在地下的“老水”强行挤压到了河道中（这叫地下水出流效应）。所以，我们看到的洪峰，有很大一部分其实是地下的老水被“挤”出来了。</li>
+<li>引发洪峰的“主力军”通常是下雨前就储存在地下的“老水”，而非刚下的“新水”。 在自然湿地或森林中，降雨下渗产生的“活塞效应”会把大量原有地下水挤压入河道（老水占洪峰50%以上）；但在城市或农业区，由于地表硬化或板结，雨水无法下渗只能在地表快速汇流，这才导致洪峰反被“新水”主导。</li>
+</ol>
+<p><strong>老水是如何快速进入河流的？</strong></p>
+<ol>
+<li><strong>回归流 (Return flow)</strong>：暴雨导致地下水位暴涨，直接溢出地表，原本的“老水”变成了地表径流汇入河道。</li>
+<li><strong>大孔隙流 (Macropore flow)</strong>：雨水顺着土壤中的植物根系、虫子洞或干裂缝等“地下管道”快速下渗和横向流动，绕过了致密土壤的阻碍。</li>
+<li><strong>透水率反馈 (Transmissivity feedback)</strong>：因为土壤通常上松下紧，下渗的雨水在上层憋出“上层滞水”，形成极大的横向水压，快速流向河道。</li>
+<li><strong>毛细水带/地下水脊 (Capillary fringe)</strong>：靠近河流的土壤因为毛细作用迅速吸水饱和，地下水位快速抬升，将原有的地下水（老水）直接推挤入河。</li>
+</ol>
+<h2 id="8-进行退水分析">8. 进行退水分析</h2>
+<blockquote>
+<p>Conduct Recession Analysis</p>
+</blockquote>
+<p>退水分析研究的是“降雨停止后，河流流量如何随时间逐渐衰减”。这段缓慢下降的曲线，记录了流域内部土壤和地下水的秘密。</p>
+<p><strong>核心公式：指数衰减</strong></p>
+<p>退水阶段的流量通常遵循经典的指数衰减规律：</p>
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>Q</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo>=</mo><mi>Q</mi><mo stretchy="false">(</mo><msub><mi>t</mi><mn>0</mn></msub><mo stretchy="false">)</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>k</mi><mo stretchy="false">(</mo><mi>t</mi><mo>−</mo><msub><mi>t</mi><mn>0</mn></msub><mo stretchy="false">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">Q(t) = Q(t_0) e^{-k(t - t_0)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">Q</span><span class="mopen">(</span><span class="mord mathnormal">t</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1.188em;vertical-align:-0.25em;"></span><span class="mord mathnormal">Q</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.938em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathnormal mtight" style="margin-right:0.0315em;">k</span><span class="mopen mtight">(</span><span class="mord mathnormal mtight">t</span><span class="mbin mtight">−</span><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3173em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="katex-sizing reset-size3 size1 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mclose mtight">)</span></span></span></span></span></span></span></span></span></span></span></span></span>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">Q(t)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">Q</span><span class="mopen">(</span><span class="mord mathnormal">t</span><span class="mclose">)</span></span></span></span>：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6151em;"></span><span class="mord mathnormal">t</span></span></span></span> 时刻的流量</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><mo stretchy="false">(</mo><msub><mi>t</mi><mn>0</mn></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">Q(t_0)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">Q</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>：退水开始时的初始流量（即 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">t_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.7651em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 时刻的流量）</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.0315em;">k</span></span></span></span>：退水常数（反映水流走的速度，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.0315em;">k</span></span></span></span> 值越大，水排干得越快）</li>
+</ul>
+<p><strong>图形讲解</strong></p>
+<ul>
+<li>
+<p><strong>概念模型</strong>：退水曲线包含三个层次的排水过程：</p>
+<ol>
+<li><strong>Quick flow（快速流）</strong>：最陡峭的峰值部分。（地表径流）</li>
+<li><strong>Interflow（壤中流）</strong>：中间平缓的部分。</li>
+<li><strong>Base Flow（基流）</strong>：最底部极缓慢的退水。</li>
+</ol>
+<ul>
+<li><em>关键点</em>：退水曲线上的 <strong>拐点（Inflection Point）</strong> 标志着快速流结束，河流开始依赖土壤和地下水的缓慢补给。
+<img alt="" loading="lazy" decoding="async" width="830" height="554" src="/_astro/11.CH8sPtz3_pwdth.webp"></li>
+</ul>
+</li>
+<li>
+<p><strong>半对数图</strong>：纵轴取对数后，曲线变成了由几段不同斜率的直线组成（Segment 1, 2, 3）。不同的斜率代表流域内不同大小的孔隙/含水层正在被排空。</p>
+</li>
+</ul>
+<p><img alt="" loading="lazy" decoding="async" width="1135" height="579" src="/_astro/12.svUNo_5k_ZwlFGM.webp"></p>
+<blockquote>
+<p>通过分析退水特征，可以评估流域内 <strong>水的储存耗竭</strong> 速度，甚至在特定假设下 <strong>计算含水层参数</strong> ，从而利用河流流量数据深入了解流域内的地下水补给与排泄过程</p>
+</blockquote>
+<h2 id="9-10流量数据的进阶应用水质与污染负荷">9-10.流量数据的进阶应用：水质与污染负荷</h2>
+<p>除了分析水量大小，流量数据还能与水质监测结合，揭示污染规律并计算总污染量。</p>
+<h3 id="9解释水质模式">9.解释水质模式</h3>
+<blockquote>
+<p>Explain water quality patterns</p>
+</blockquote>
+<ul>
+<li><strong>读图</strong>：黑色实线代表流量 (Discharge)，黄色散点代表浊度 (Turbidity，即水的浑浊程度，常用来指示悬浮泥沙和污染物)。</li>
+<li><strong>规律</strong>：每当暴雨来临（流量黑线飙升），浊度（黄点）就会随之爆发式增长。这反映了典型的 <strong>“初期冲刷效应”</strong> ——雨水将地表累积的污染物、泥沙迅速冲刷进河道。</li>
+</ul>
+<p><img alt="" loading="lazy" decoding="async" width="2436" height="762" src="/_astro/13.CiIuF5uR_Z1jedQw.webp"></p>
+<h3 id="10计算物质负荷">10.计算物质负荷</h3>
+<blockquote>
+<p>Calculate loads</p>
+</blockquote>
+<p>仅仅知道水质浓度是不够的，我们更需要知道到底有多少污染物排走了。</p>
+<p><strong>核心公式：</strong></p>
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>Load</mtext><mo>=</mo><mtext>Concentration</mtext><mo>×</mo><mtext>Discharge</mtext></mrow><annotation encoding="application/x-tex">\text{Load} = \text{Concentration} \times \text{Discharge}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord text"><span class="mord">Load</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord text"><span class="mord">Concentration</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord text"><span class="mord">Discharge</span></span></span></span></span></span>
+<p><em>(负荷 = 浓度 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>×</mo></mrow><annotation encoding="application/x-tex">\times</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord">×</span></span></span></span> 流量)</em></p>
+<ul>
+<li><strong>浓度 (Concentration)</strong>：反映水“有多脏”（如 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">L</mi></mrow><annotation encoding="application/x-tex">\mathrm{mg/L}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathrm">mg/L</span></span></span></span></span>）。</li>
+<li><strong>流量 (Discharge)</strong>：反映“有多少水”（如 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="normal">m</mi><mn>3</mn></msup><mi mathvariant="normal">/</mi><mi mathvariant="normal">s</mi></mrow><annotation encoding="application/x-tex">\mathrm{m^3/s}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord"><span class="mord mathrm">m</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mathrm mtight">3</span></span></span></span></span></span></span></span><span class="mord mathrm">/s</span></span></span></span></span>）。</li>
+<li><strong>负荷 (Load)</strong>：两者的乘积，代表单位时间内流过的污染物或泥沙的<strong>总质量</strong>（如 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">k</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">s</mi></mrow><annotation encoding="application/x-tex">\mathrm{kg/s}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathrm">kg/s</span></span></span></span></span>）。</li>
+<li><strong>应用</strong>：通过流量和浓度的连续监测数据，可以对时间进行积分，算出一年或一场暴雨中，到底有多少吨泥沙或化学物质流入了下游水体。</li>
+</ul>
+<h2 id="11-使用水文模型测试情景">11. 使用水文模型测试情景</h2>
+<blockquote>
+<p>Use a hydrological model to test scenarios</p>
+</blockquote>
+<p>水文模型利用 GIS 数据将流域划分为多个“水文响应单元”进行数值模拟，以测试如“全面安装雨水花园”等假设情景（What-if）对溪流的影响。为保证真实性，模型必须用实测流量数据进行<strong>校准（Calibration）</strong>，直到模拟出的水文曲线与真实观测完美吻合。</p>
+<p><img alt="真实世界的 GIS 数据 ｜ 计算机模型的计算单元 " loading="lazy" decoding="async" width="949" height="1093" src="/_astro/14.51sehqut_ZLqSKt.webp"></p>
+<h1 id="part-3-什么是洪水">part 3 什么是洪水</h1>
+<h2 id="定义">定义</h2>
+<p><strong>基础定义：</strong> 洪水是指河流超过其河岸，水流漫溢至洪泛区（floodplain）的现象。 （by 水文学家和地貌学家）</p>
+<p><strong>基于财产损害和对人类的危险程度进行划分定义：</strong></p>
+<ul>
+<li>中度洪水 (Moderate Flood)：部分建筑物和道路被淹没，可能需要疏散人员。</li>
+<li>大洪水 (Major Flood)：广泛的建筑物和道路淹没，人员需大规模疏散，财产损毁严重。</li>
+<li>记录洪水 (Record Flood)：指特定区域历史观测记录中水位最高的一次洪水事件。</li>
+</ul>
+<p><img alt=" Willamette River at moderate flood stage" loading="lazy" decoding="async" width="966" height="739" src="/_astro/15.DirFTSmB_Z15eRtI.webp"></p>
+<blockquote>
+<p>数据监测：水文学家通常使用流量（discharge）（立方英尺/秒）来量化洪水，而公众更关心水位（stage），因为水位直接影响具体的房屋和道路是否会被淹没。</p>
+</blockquote>
+<h2 id="重现期">重现期</h2>
+<p>重现期 (Recurrence Interval): 定义为概率的倒数（1/p）</p>
+<ul>
+<li>重现期不等于“周期性”：强调它只是统计学上的“平均预期间隔”，并不代表洪水会按照固定的时间规律发生</li>
+<li>事件的独立性：说明洪水事件在统计学上是相互独立的。即使今年发生了“百年一遇”的大洪水，明年发生同样规模洪水的概率依然保持不变，两者互不影响。</li>
+</ul>
+<h2 id="记录长度与极端事件重估">记录长度与极端事件重估</h2>
+<ul>
+<li><strong>样本依赖性</strong>：极端洪水发生前，现有统计模型往往会低估大洪水的真实发生概率。</li>
+<li><strong>动态修正</strong>：新增历史新高数据或延长观测序列后，必须重新计算重现期（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><mn>1</mn><mi mathvariant="normal">/</mi><mi>P</mi></mrow><annotation encoding="application/x-tex">R = 1/P</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.0077em;">R</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1/</span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span></span></span></span>）。
+<ul>
+<li><em>Winona 案例</em>：1965 年大洪水最初被视为 500 年一遇，随后续多次出现大洪水，该流量不再显得极端。</li>
+<li><em>Fargo 案例</em>：1997 年大洪水后引入近百年序列，将原本评估极罕见的洪峰修正为约百年一遇。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="非平稳性问题-non-stationarity">非平稳性问题 (Non-Stationarity)</h2>
+<p>传统分析假设气候与流域条件不变，但现实中多种因素会破坏平稳性：</p>
+<ul>
+<li><strong>气候变化</strong>：融雪模式改变或强暴雨增加，使历史数据低估未来极端洪峰。</li>
+<li><strong>水利工程</strong>：如建坝后洪峰被人为削减，进行当前分析时需截断历史序列（仅用建坝后数据）。</li>
+<li><strong>城市化影响</strong>：
+<ul>
+<li>不透水面积增加导致洪峰整体上升。</li>
+<li><strong>影响差异</strong>：对<strong>中小洪水</strong>影响极其显著；对<strong>特大洪水</strong>影响相对较小（自然土壤在极强降雨下也会饱和产流）。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="洪水演进与流域动态">洪水演进与流域动态</h2>
+<ul>
+<li><strong>衰减与平缓化</strong>：洪水漫溢至洪泛区（Floodplain）会被滞留，导致下游洪峰削减、持续时间拉长。</li>
+<li><strong>汇流错峰</strong>：各支流洪峰到达时间错开，会进一步平抑主干流峰值。</li>
+<li><strong>大河 vs 源头溪流</strong>：大河的<strong>单位面积峰值流量</strong>较低，但洪水延迟更明显、持续时间更长（如密西西比河洪水可从早春持续至夏季）。</li>
+</ul>
+<hr>
+<h2 id="无水文站数据不足时的替代方法">无水文站/数据不足时的替代方法</h2>
+<ol>
+<li><strong>区域化 (Regionalization)</strong>：利用邻近相似流域的数据，按面积等参数按比例缩放移用。</li>
+<li><strong>水文水力学模型 (Modeling)</strong>：利用 HEC-RAS 等模型模拟极端情景或绘制洪泛区图。</li>
+<li><strong>间接测量 (Indirect Methods)</strong>：根据洪水痕迹（泥痕、挂物）测定最高水位，利用<strong>曼宁公式 (Manning’s Equation)</strong> 反算洪峰流量。</li>
+</ol>  </div> </div> <div class="article-footer">  <div class="article-footer__share" role="group" aria-label="分享文章"> <a class="icon-button" href="https://x.com/intent/tweet?text=hydrology&amp;url=https%3A%2F%2Fblog.20220509.xyz%2Farchive%2Fhydrology%2F" aria-label="分享到 X" title="分享到 X" target="_blank" rel="noopener noreferrer"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M14.234 10.162L22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299l-.929-1.329L3.076 1.56h3.182l5.965 8.532l.929 1.329l7.754 11.09h-3.182z"/> </svg> </a><a class="icon-button" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fblog.20220509.xyz%2Farchive%2Fhydrology%2F" aria-label="分享到 Facebook" title="分享到 Facebook" target="_blank" rel="noopener noreferrer"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978c.401 0 .955.042 1.468.103a9 9 0 0 1 1.141.195v3.325a9 9 0 0 0-.653-.036a27 27 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.7 1.7 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.29h3.919l-.386 2.103l-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647"/> </svg> </a><a class="icon-button" href="mailto:?subject=hydrology&amp;body=https%3A%2F%2Fblog.20220509.xyz%2Farchive%2Fhydrology%2F" aria-label="通过邮件分享" title="通过邮件分享"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-mail icon"> <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path><rect x="2" y="4" width="20" height="16" rx="2"></rect>  </svg> </a> <button class="icon-button" type="button" aria-label="生成分享卡片" aria-haspopup="dialog" title="分享卡片" data-article-poster-open disabled> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-share-2 icon"> <circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line>  </svg> </button> <button class="icon-button article-footer__copy" type="button" aria-label="复制文章链接" title="复制文章链接" data-article-link-copy disabled> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-link icon article-footer__link-icon"> <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-check icon article-footer__check-icon"> <path d="M20 6 9 17l-5-5"></path>  </svg> </button> </div> </div><nav class="prev-next" aria-label="上一篇/下一篇"> <div class="prev-next__item"> <span class="prev-next__placeholder" aria-hidden="true"></span> </div> <div class="prev-next__item"> <a class="prev-next__link prev-next__link--next" href="/archive/hbv/" rel="next"> <span class="prev-next__label">
+下一篇
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-arrow-right prev-next__icon"> <path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path>  </svg> </span> <span class="prev-next__title">HBV Model</span> </a> </div> </nav><section class="article-comments" data-article-comments aria-labelledby="article-comments-title"> <h2 id="article-comments-title" class="article-comments__title">评论</h2> <div class="article-comments__mount" data-giscus-mount data-repo="MintHana/fuwari-comments" data-repo-id="R_kgDOQX3_pg" data-category="Announcements" data-category-id="DIC_kwDOQX3_ps4Cx6xk" data-mapping="pathname" data-input-position="bottom" data-lang="zh-CN" data-reactions-enabled="1"> <p class="article-comments__hint" data-giscus-hint>滚动到此处时加载评论…</p> </div> <noscript> <p class="article-comments__hint">评论由 giscus 提供，需要启用 JavaScript 才能查看。</p> </noscript> </section><script type="module">var e=()=>document.documentElement.dataset.theme===`dark`?`dark`:`light`;document.querySelectorAll(`[data-giscus-mount]`).forEach(t=>{let n=t.dataset,r=n.repo??``,i=n.repoId??``,a=n.categoryId??``;if(!r||!i||!a){t.querySelector(`[data-giscus-hint]`)?.remove();return}let o=null,s=!1,c=()=>{o&&o.setAttribute(`theme`,e())},l=()=>{let s=document.createElement(`giscus-widget`);s.setAttribute(`id`,`giscus-comments`),s.setAttribute(`repo`,r),s.setAttribute(`repoId`,i),s.setAttribute(`category`,n.category??``),s.setAttribute(`categoryId`,a),s.setAttribute(`mapping`,n.mapping??`pathname`),s.setAttribute(`strict`,`0`),s.setAttribute(`reactionsEnabled`,n.reactionsEnabled??`1`),s.setAttribute(`emitMetadata`,`0`),s.setAttribute(`inputPosition`,n.inputPosition??`bottom`),s.setAttribute(`theme`,e()),s.setAttribute(`lang`,n.lang??`zh-CN`),s.setAttribute(`loading`,`lazy`),t.querySelector(`[data-giscus-hint]`)?.remove(),t.append(s),o=s,new MutationObserver(c).observe(document.documentElement,{attributes:!0,attributeFilter:[`data-theme`]})},u=()=>{if(s)return;s=!0;let e=document.querySelector(`script[data-giscus-loader]`);if(e){e.dataset.giscusLoaded===`true`?l():e.addEventListener(`load`,l,{once:!0});return}let n=document.createElement(`script`);n.type=`module`,n.src=`https://esm.sh/giscus`,n.dataset.giscusLoader=`true`,n.addEventListener(`load`,()=>{n.dataset.giscusLoaded=`true`,l()},{once:!0}),n.addEventListener(`error`,()=>{t.querySelector(`[data-giscus-hint]`)?.replaceChildren(`评论加载失败，请稍后重试。`)}),document.head.append(n)};if(typeof IntersectionObserver>`u`){u();return}let d=new IntersectionObserver(e=>{e.some(e=>e.isIntersecting)&&(d.disconnect(),u())},{rootMargin:`600px 0px`});d.observe(t)});</script><button class="toc-fab" type="button" aria-label="打开文章目录" aria-haspopup="dialog" aria-expanded="false" title="文章目录" data-toc-fab> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-text-align-start icon"> <path d="M21 5H3"></path><path d="M15 12H3"></path><path d="M17 19H3"></path>  </svg> </button><dialog class="toc-drawer" aria-label="文章目录" data-toc-drawer> <div class="toc-drawer__head"> <p class="toc-drawer__title"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-text-align-start toc-drawer__icon"> <path d="M21 5H3"></path><path d="M15 12H3"></path><path d="M17 19H3"></path>  </svg>
+On this page
+</p> <button class="icon-button toc-drawer__close" type="button" aria-label="关闭目录" title="关闭" data-toc-drawer-close> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-x"> <path d="M18 6 6 18"></path><path d="m6 6 12 12"></path>  </svg> </button> </div> <ul class="article-toc__list"> <li> <a class="article-toc__link" href="#part-1-如何利用流量数据进行分析" data-depth="1" data-level="1" title="part 1 如何利用流量数据进行分析">  <span class="article-toc__text">part 1 如何利用流量数据进行分析</span> </a> </li><li> <a class="article-toc__link" href="#1-创建水文图-水流大小和随着时间的推移的变异性" data-depth="2" data-level="2" title="1. 创建水文图-水流大小和随着时间的推移的变异性">  <span class="article-toc__text">1. 创建水文图-水流大小和随着时间的推移的变异性</span> </a> </li><li> <a class="article-toc__link" href="#2-创建单位水文图-按流域面积划分溪流" data-depth="2" data-level="2" title="2. 创建单位水文图-按流域面积划分溪流">  <span class="article-toc__text">2. 创建单位水文图-按流域面积划分溪流</span> </a> </li><li> <a class="article-toc__link" href="#3-创建-hyeto-水文图-将降雨与排放进行比较以查看降雨-径流反应" data-depth="2" data-level="2" title="3. 创建 hyeto-水文图-将降雨与排放进行比较，以查看降雨-径流反应">  <span class="article-toc__text">3. 创建 hyeto-水文图-将降雨与排放进行比较，以查看降雨-径流反应</span> </a> </li><li> <a class="article-toc__link" href="#4-创建流量持续时间曲线-显示超过给定流量的概率" data-depth="2" data-level="2" title="4. 创建流量持续时间曲线-显示超过给定流量的概率">  <span class="article-toc__text">4. 创建流量持续时间曲线-显示超过给定流量的概率</span> </a> </li><li> <a class="article-toc__link" href="#5-如何创建流量持续时间曲线" data-depth="2" data-level="2" title="5. 如何创建流量持续时间曲线">  <span class="article-toc__text">5. 如何创建流量持续时间曲线</span> </a> </li><li> <a class="article-toc__link" href="#5a-在年度或季节性时间尺度上计算水文响应" data-depth="2" data-level="2" title="5a. 在年度或季节性时间尺度上计算水文响应">  <span class="article-toc__text">5a. 在年度或季节性时间尺度上计算水文响应</span> </a> </li><li> <a class="article-toc__link" href="#part-2" data-depth="1" data-level="1" title="part 2">  <span class="article-toc__text">part 2</span> </a> </li><li> <a class="article-toc__link" href="#5b-在事件时间尺度上计算水文响应" data-depth="2" data-level="2" title="5b. 在事件时间尺度上计算水文响应">  <span class="article-toc__text">5b. 在事件时间尺度上计算水文响应</span> </a> </li><li> <a class="article-toc__link" href="#6-直线分割水文过程线分割" data-depth="2" data-level="2" title="6. 直线分割——水文过程线分割">  <span class="article-toc__text">6. 直线分割——水文过程线分割</span> </a> </li><li> <a class="article-toc__link" href="#上图理论概念" data-depth="3" data-level="3" title="上图：理论概念">  <span class="article-toc__text">上图：理论概念</span> </a> </li><li> <a class="article-toc__link" href="#下图工程实操" data-depth="3" data-level="3" title="下图：工程实操">  <span class="article-toc__text">下图：工程实操</span> </a> </li><li> <a class="article-toc__link" href="#核心目的" data-depth="3" data-level="3" title="核心目的">  <span class="article-toc__text">核心目的</span> </a> </li><li> <a class="article-toc__link" href="#优点pros" data-depth="3" data-level="3" title="优点（Pros）">  <span class="article-toc__text">优点（Pros）</span> </a> </li><li> <a class="article-toc__link" href="#缺点cons" data-depth="3" data-level="3" title="缺点（Cons）">  <span class="article-toc__text">缺点（Cons）</span> </a> </li><li> <a class="article-toc__link" href="#7-示踪剂分割水文过程线分割" data-depth="2" data-level="2" title="7. 示踪剂分割——水文过程线分割">  <span class="article-toc__text">7. 示踪剂分割——水文过程线分割</span> </a> </li><li> <a class="article-toc__link" href="#8-进行退水分析" data-depth="2" data-level="2" title="8. 进行退水分析">  <span class="article-toc__text">8. 进行退水分析</span> </a> </li><li> <a class="article-toc__link" href="#9-10流量数据的进阶应用水质与污染负荷" data-depth="2" data-level="2" title="9-10.流量数据的进阶应用：水质与污染负荷">  <span class="article-toc__text">9-10.流量数据的进阶应用：水质与污染负荷</span> </a> </li><li> <a class="article-toc__link" href="#9解释水质模式" data-depth="3" data-level="3" title="9.解释水质模式">  <span class="article-toc__text">9.解释水质模式</span> </a> </li><li> <a class="article-toc__link" href="#10计算物质负荷" data-depth="3" data-level="3" title="10.计算物质负荷">  <span class="article-toc__text">10.计算物质负荷</span> </a> </li><li> <a class="article-toc__link" href="#11-使用水文模型测试情景" data-depth="2" data-level="2" title="11. 使用水文模型测试情景">  <span class="article-toc__text">11. 使用水文模型测试情景</span> </a> </li><li> <a class="article-toc__link" href="#part-3-什么是洪水" data-depth="1" data-level="1" title="part 3 什么是洪水">  <span class="article-toc__text">part 3 什么是洪水</span> </a> </li><li> <a class="article-toc__link" href="#定义" data-depth="2" data-level="2" title="定义">  <span class="article-toc__text">定义</span> </a> </li><li> <a class="article-toc__link" href="#重现期" data-depth="2" data-level="2" title="重现期">  <span class="article-toc__text">重现期</span> </a> </li><li> <a class="article-toc__link" href="#记录长度与极端事件重估" data-depth="2" data-level="2" title="记录长度与极端事件重估">  <span class="article-toc__text">记录长度与极端事件重估</span> </a> </li><li> <a class="article-toc__link" href="#非平稳性问题-non-stationarity" data-depth="2" data-level="2" title="非平稳性问题 (Non-Stationarity)">  <span class="article-toc__text">非平稳性问题 (Non-Stationarity)</span> </a> </li><li> <a class="article-toc__link" href="#洪水演进与流域动态" data-depth="2" data-level="2" title="洪水演进与流域动态">  <span class="article-toc__text">洪水演进与流域动态</span> </a> </li><li> <a class="article-toc__link" href="#无水文站数据不足时的替代方法" data-depth="2" data-level="2" title="无水文站/数据不足时的替代方法">  <span class="article-toc__text">无水文站/数据不足时的替代方法</span> </a> </li> </ul> </dialog><dialog class="lightbox" id="lightbox" aria-label="图片预览" aria-hidden="true" data-lightbox data-enable-zoom="false" data-enable-pan="false" data-enable-swipe-down="false" data-mobile-nav="bottom" data-mobile-count="visible" tabindex="-1" hidden> <button class="lightbox-close" type="button" data-lightbox-close aria-label="关闭">×</button> <div class="lightbox-navs"> <button class="lightbox-nav lightbox-prev" type="button" data-lightbox-prev aria-label="上一张">‹</button> <button class="lightbox-nav lightbox-next" type="button" data-lightbox-next aria-label="下一张">›</button> </div> <figure class="lightbox-figure"> <img data-lightbox-image alt=""> <figcaption class="lightbox-meta"> <span class="lightbox-caption" data-lightbox-caption hidden></span> <span class="lightbox-meta-row"> <span class="lightbox-count" data-lightbox-count aria-live="polite"></span> <span class="lightbox-dots" data-lightbox-dots aria-hidden="true"></span> </span> </figcaption> </figure> </dialog> <dialog class="article-poster" aria-label="分享卡片" data-article-poster data-site-name="MintHana" data-title="hydrology" data-date="2026-10-21" data-summary="水文学习" data-author-name="MintHana" data-author-avatar="/about/avatar.jpg" data-url="https://blog.20220509.xyz/archive/hydrology/"> <div class="article-poster__panel" tabindex="-1" autofocus> <p class="article-poster__status" role="status" data-article-poster-status></p> <img class="article-poster__image" alt="hydrology 的分享卡片" data-article-poster-image hidden> <a class="article-poster__save" download="hydrology.png" data-article-poster-save hidden>保存图片</a> <p class="article-poster__hint">也可以长按图片保存。</p>  <button class="sr-only" type="button" tabindex="-1" data-article-poster-close>关闭</button> </div> </dialog><script type="module" src="/_astro/ArticleLayout.astro_astro_type_script_index_0_lang.DR-GBEKG.js"></script>  <footer class="site-footer"> <span>© 2024-2026 Mint by Astro&amp;Whono</span> <span class="site-footer__uptime" data-uptime-start="2024-01-05T00:00:00+08:00" hidden>
+本站已运行 <span class="site-footer__uptime-value">--</span> </span> </footer> </div> </main> </div> <template id="scroll-top-template"> <button type="button" class="icon-button float-action scroll-top" aria-label="回到顶部" title="回到顶部" aria-hidden="true" tabindex="-1"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-chevron-up icon"> <path d="m18 15-6-6-6 6"></path>  </svg> </button> </template> <script type="module" src="/_astro/BaseLayout.astro_astro_type_script_index_0_lang.CJRVNfu6.js"></script>   </body> </html>

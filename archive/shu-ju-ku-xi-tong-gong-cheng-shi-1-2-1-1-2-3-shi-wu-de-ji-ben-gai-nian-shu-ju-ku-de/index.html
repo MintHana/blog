@@ -1,0 +1,320 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><script>
+      (() => {
+        // 与 src/scripts/sidebar-theme.ts 保持同一主题偏好契约，避免首屏与运行时状态漂移。
+        const themeKey = 'theme';
+        const modeKey = 'theme-mode';
+        let storedMode = null;
+        let legacyTheme = null;
+        try {
+          storedMode = localStorage.getItem(modeKey);
+          legacyTheme = localStorage.getItem(themeKey);
+        } catch (_) {}
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const mode = storedMode === 'system' || storedMode === 'dark' || storedMode === 'light'
+          ? storedMode
+          : (legacyTheme === 'dark' || legacyTheme === 'light' ? legacyTheme : 'system');
+        const theme = mode === 'system' ? (prefersDark ? 'dark' : 'light') : mode;
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.dataset.themeMode = mode;
+      })();
+    </script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><title>数据库系统工程师—12.1~12.3事务的基本概念、数据库的并发控制、数据库的备份与恢复 | Mint Blog</title><meta name="description" content="事务的基本概念 事务 事务：是**一系列的数据库操作**，是数据库应用程序的**逻辑单位**，即应用程序对数据库的操作都应该以事务的方式进行 事务是一个操作序列，这些操作**要么都…"><link rel="canonical" href="https://blog.20220509.xyz/archive/shu-ju-ku-xi-tong-gong-cheng-shi-1-2-1-1-2-3-shi-wu-de-ji-ben-gai-nian-shu-ju-ku-de/"><meta property="og:site_name" content="Mint Blog"><meta property="og:title" content="数据库系统工程师—12.1~12.3事务的基本概念、数据库的并发控制、数据库的备份与恢复 | Mint Blog"><meta property="og:description" content="事务的基本概念 事务 事务：是**一系列的数据库操作**，是数据库应用程序的**逻辑单位**，即应用程序对数据库的操作都应该以事务的方式进行 事务是一个操作序列，这些操作**要么都…"><meta property="og:url" content="https://blog.20220509.xyz/archive/shu-ju-ku-xi-tong-gong-cheng-shi-1-2-1-1-2-3-shi-wu-de-ji-ben-gai-nian-shu-ju-ku-de/"><meta property="og:type" content="article"><meta property="og:image" content="https://blog.20220509.xyz/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="数据库系统工程师—12.1~12.3事务的基本概念、数据库的并发控制、数据库的备份与恢复 | Mint Blog"><meta name="twitter:description" content="事务的基本概念 事务 事务：是**一系列的数据库操作**，是数据库应用程序的**逻辑单位**，即应用程序对数据库的操作都应该以事务的方式进行 事务是一个操作序列，这些操作**要么都…"><meta name="twitter:image" content="https://blog.20220509.xyz/og.png"><link rel="stylesheet" href="/_astro/global.Bhbh443I.css"> <meta property="article:published_time" content="2025-04-28T00:00:00.000Z"> <meta property="article:tag" content="软考"><link rel="stylesheet" href="/_astro/article.CfotRyYM.css"></head> <body class="article-page immersive-page"> <a class="skip-link" href="#content">跳到内容</a> <div class="shell" data-sidebar-divider="default"> <aside id="site-sidebar" class="sidebar"> <a class="sidebar__title sidebar__title--site" href="/" aria-label="MintHana 首页"> <span class="sidebar__title-text">MintHana</span> </a>  <div class="sidebar__quote">  永遠に不滅なものはない<br>  Personal study notes. Please forgive any inappropriate content<br>  </div> <div class="sidebar__social" aria-label="社交链接"> <a class="sidebar__social-link" href="https://github.com/MintHana" aria-label="GitHub" title="GitHub"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/> </svg> </a><a class="sidebar__social-link" href="https://www.zhihu.com/people/70-28-52-15" aria-label="知乎" title="知乎"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M5.721 0C2.251 0 0 2.25 0 5.719V18.28C0 21.751 2.252 24 5.721 24h12.56C21.751 24 24 21.75 24 18.281V5.72C24 2.249 21.75 0 18.281 0zm1.964 4.078q-.408 1.096-.68 2.11h4.587c.545-.006.445 1.168.445 1.171H9.384a58 58 0 0 1-.112 3.797h2.712c.388.023.393 1.251.393 1.266H9.183a9.2 9.2 0 0 1-.408 2.102l.757-.604c.452.456 1.512 1.712 1.906 2.177c.473.681.063 2.081.063 2.081l-2.794-3.382c-.653 2.518-1.845 3.607-1.845 3.607c-.523.468-1.58.82-2.64.516c2.218-1.73 3.44-3.917 3.667-6.497H4.491c0-.015.197-1.243.806-1.266h2.71c.024-.32.086-3.254.086-3.797H6.598c-.136.406-.158.447-.268.753c-.594 1.095-1.603 1.122-1.907 1.155c.906-1.821 1.416-3.6 1.591-4.064c.425-1.124 1.671-1.125 1.671-1.125M13.078 6h6.377v11.33h-2.573l-2.184 1.373l-.401-1.373h-1.219zm1.313 1.219v8.86h.623l.263.937l1.455-.938h1.456v-8.86z"/> </svg> </a> </div> <ul class="nav sidebar-public-nav"> <li> <a href="/"> <span>HOME</span> <span class="dot" aria-hidden="true"></span> </a> </li><li> <a href="/archive/" aria-current="page"> <span>ARCHIVE</span> <span class="dot" aria-hidden="true"></span> </a> </li><li> <a href="/about/"> <span>ABOUT</span> <span class="dot" aria-hidden="true"></span> </a> </li> </ul>  <div class="sidebar-actions">   <button id="reader-toggle" class="icon-button reader-toggle sidebar-action--rail-hidden" type="button" aria-label="阅读模式" aria-pressed="false" data-tooltip="阅读模式"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-book-open icon icon-book-open"> <path d="M12 5v16"></path><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-book icon icon-book-closed"> <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"></path>  </svg> </button> <a class="icon-button rss-link sidebar-action--rail-hidden" href="/archive/rss.xml" aria-label="RSS 订阅" data-tooltip="RSS 订阅"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-rss icon"> <path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle>  </svg> </a> <button id="theme-toggle" class="icon-button theme-toggle" type="button" aria-label="夜间模式" aria-pressed="false" data-tooltip="夜间模式"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-sun-moon icon icon-system"> <path d="M12 2v2"></path><path d="M14.837 16.385a6 6 0 1 1-7.223-7.222c.624-.147.97.66.715 1.248a4 4 0 0 0 5.26 5.259c.589-.255 1.396.09 1.248.715"></path><path d="M16 12a4 4 0 0 0-4-4"></path><path d="m19 5-1.256 1.256"></path><path d="M20 12h2"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-moon icon icon-moon"> <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-sun icon icon-sun"> <circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path>  </svg> </button>   </div> </aside> <nav id="mobile-bar" class="mobile-bar" aria-label="快捷导航"> <a class="mobile-bar__title" href="/">MintHana</a> <ul class="mobile-bar__nav"> <li> <a href="/">HOME</a> </li><li> <a href="/archive/" aria-current="page">ARCHIVE</a> </li><li> <a href="/about/">ABOUT</a> </li> </ul> </nav> <div class="divider" aria-hidden="true"></div> <main id="content" class="content" tabindex="-1"> <div class="content__inner">   <div class="article-body article-body--toc"> <div class="article-header reader-exit-anchor"> <h1 class="page-title">数据库系统工程师—12.1~12.3事务的基本概念、数据库的并发控制、数据库的备份与恢复</h1> <button id="reader-exit" class="icon-button reader-exit" type="button" aria-label="退出阅读" title="退出阅读" aria-hidden="true" tabindex="-1"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-square-arrow-right-exit icon"> <path d="M10 12h11"></path><path d="m17 16 4-4-4-4"></path><path d="M21 6.344V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-1.344"></path>  </svg> </button> <div class="meta-line meta-line--items"> <span class="meta-line__item"> <time datetime="2025-04-28T00:00:00.000Z">发布于：2025-04-28</time> </span> <span class="meta-line__item meta-line__item--tags"> <a class="tag tag--link" href="/archive/tag/软考/">#软考</a> </span> <span class="meta-line__item meta-line__item--desktop-meta">
+共 4,018 字
+</span> <span class="meta-line__item meta-line__item--desktop-meta">
+约 13 分钟
+</span> </div> </div> <nav class="article-toc" aria-label="文章目录"> <p class="article-toc__title"> <span class="article-toc__label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-text-align-start article-toc__icon"> <path d="M21 5H3"></path><path d="M15 12H3"></path><path d="M17 19H3"></path>  </svg>On this page</span> </p> <ul class="article-toc__list"> <li> <a class="article-toc__link" href="#事务的基本概念" data-depth="1" data-level="1" title="事务的基本概念"> <span class="article-toc__num" aria-hidden="true">1.</span> <span class="article-toc__text">事务的基本概念</span> </a> </li><li> <a class="article-toc__link" href="#事务" data-depth="2" data-level="2" title="事务"> <span class="article-toc__num" aria-hidden="true">1.1</span> <span class="article-toc__text">事务</span> </a> </li><li> <a class="article-toc__link" href="#sql中事务的开始与结束" data-depth="2" data-level="2" title="SQL中事务的开始与结束"> <span class="article-toc__num" aria-hidden="true">1.2</span> <span class="article-toc__text">SQL中事务的开始与结束</span> </a> </li><li> <a class="article-toc__link" href="#事务的特性" data-depth="2" data-level="2" title="事务的特性"> <span class="article-toc__num" aria-hidden="true">1.3</span> <span class="article-toc__text">事务的特性</span> </a> </li><li> <a class="article-toc__link" href="#事务的状态" data-depth="2" data-level="2" title="事务的状态"> <span class="article-toc__num" aria-hidden="true">1.4</span> <span class="article-toc__text">事务的状态</span> </a> </li><li> <a class="article-toc__link" href="#数据库的并发控制" data-depth="1" data-level="1" title="数据库的并发控制"> <span class="article-toc__num" aria-hidden="true">2.</span> <span class="article-toc__text">数据库的并发控制</span> </a> </li><li> <a class="article-toc__link" href="#事务调度" data-depth="2" data-level="2" title="事务调度"> <span class="article-toc__num" aria-hidden="true">2.1</span> <span class="article-toc__text">事务调度</span> </a> </li><li> <a class="article-toc__link" href="#串行调度" data-depth="3" data-level="3" title="串行调度"> <span class="article-toc__num" aria-hidden="true">2.1.1</span> <span class="article-toc__text">串行调度</span> </a> </li><li> <a class="article-toc__link" href="#并发调度" data-depth="3" data-level="3" title="并发调度"> <span class="article-toc__num" aria-hidden="true">2.1.2</span> <span class="article-toc__text">并发调度</span> </a> </li><li> <a class="article-toc__link" href="#可恢复调度" data-depth="3" data-level="3" title="可恢复调度"> <span class="article-toc__num" aria-hidden="true">2.1.3</span> <span class="article-toc__text">可恢复调度</span> </a> </li><li> <a class="article-toc__link" href="#并发操作带来的问题" data-depth="2" data-level="2" title="并发操作带来的问题"> <span class="article-toc__num" aria-hidden="true">2.2</span> <span class="article-toc__text">并发操作带来的问题</span> </a> </li><li> <a class="article-toc__link" href="#丢失修改" data-depth="3" data-level="3" title="丢失修改"> <span class="article-toc__num" aria-hidden="true">2.2.1</span> <span class="article-toc__text">丢失修改</span> </a> </li><li> <a class="article-toc__link" href="#读脏数据" data-depth="3" data-level="3" title="读脏数据"> <span class="article-toc__num" aria-hidden="true">2.2.2</span> <span class="article-toc__text">读脏数据</span> </a> </li><li> <a class="article-toc__link" href="#不可重复读" data-depth="3" data-level="3" title="不可重复读"> <span class="article-toc__num" aria-hidden="true">2.2.3</span> <span class="article-toc__text">不可重复读</span> </a> </li><li> <a class="article-toc__link" href="#并发调度的可串行性" data-depth="2" data-level="2" title="并发调度的可串行性"> <span class="article-toc__num" aria-hidden="true">2.3</span> <span class="article-toc__text">并发调度的可串行性</span> </a> </li><li> <a class="article-toc__link" href="#并发控制技术" data-depth="2" data-level="2" title="并发控制技术"> <span class="article-toc__num" aria-hidden="true">2.4</span> <span class="article-toc__text">并发控制技术</span> </a> </li><li> <a class="article-toc__link" href="#封锁协议" data-depth="2" data-level="2" title="封锁协议"> <span class="article-toc__num" aria-hidden="true">2.5</span> <span class="article-toc__text">封锁协议</span> </a> </li><li> <a class="article-toc__link" href="#两段锁协议" data-depth="2" data-level="2" title="两段锁协议"> <span class="article-toc__num" aria-hidden="true">2.6</span> <span class="article-toc__text">两段锁协议</span> </a> </li><li> <a class="article-toc__link" href="#事务的隔离级别" data-depth="2" data-level="2" title="事务的隔离级别"> <span class="article-toc__num" aria-hidden="true">2.7</span> <span class="article-toc__text">事务的隔离级别</span> </a> </li><li> <a class="article-toc__link" href="#数据库的备份与恢复" data-depth="1" data-level="1" title="数据库的备份与恢复"> <span class="article-toc__num" aria-hidden="true">3.</span> <span class="article-toc__text">数据库的备份与恢复</span> </a> </li><li> <a class="article-toc__link" href="#数据库系统故障的种类" data-depth="2" data-level="2" title="数据库系统故障的种类"> <span class="article-toc__num" aria-hidden="true">3.1</span> <span class="article-toc__text">数据库系统故障的种类</span> </a> </li><li> <a class="article-toc__link" href="#数据库备份" data-depth="2" data-level="2" title="数据库备份"> <span class="article-toc__num" aria-hidden="true">3.2</span> <span class="article-toc__text">数据库备份</span> </a> </li><li> <a class="article-toc__link" href="#数据恢复" data-depth="2" data-level="2" title="数据恢复"> <span class="article-toc__num" aria-hidden="true">3.3</span> <span class="article-toc__text">数据恢复</span> </a> </li><li> <a class="article-toc__link" href="#故障恢复的两个操作" data-depth="3" data-level="3" title="故障恢复的两个操作"> <span class="article-toc__num" aria-hidden="true">3.3.1</span> <span class="article-toc__text">故障恢复的两个操作</span> </a> </li><li> <a class="article-toc__link" href="#故障恢复策略" data-depth="3" data-level="3" title="故障恢复策略"> <span class="article-toc__num" aria-hidden="true">3.3.2</span> <span class="article-toc__text">故障恢复策略</span> </a> </li><li> <a class="article-toc__link" href="#具有检查点的恢复技术" data-depth="2" data-level="2" title="具有检查点的恢复技术"> <span class="article-toc__num" aria-hidden="true">3.4</span> <span class="article-toc__text">具有检查点的恢复技术</span> </a> </li> </ul> </nav> <div class="prose">  <h1 id="事务的基本概念">事务的基本概念</h1>
+<h2 id="事务">事务</h2>
+<p>事务：是<strong>一系列的数据库操作</strong>，是数据库应用程序的<strong>逻辑单位</strong>，即应用程序对数据库的操作都应该以事务的方式进行</p>
+<p>事务是一个操作序列，这些操作<strong>要么都做，要么都不做</strong></p>
+<ul>
+<li>BEGIN TRANSACTION：事务开始 begin transaction</li>
+<li>END TRANSACTION：事务结束 end transaction</li>
+<li>COMMIT：事务提交</li>
+<li>ROLLBACK：事务回滚</li>
+</ul>
+<h2 id="sql中事务的开始与结束">SQL中事务的开始与结束</h2>
+<p>SQL标准规定当一条SQL语句被执行，就隐式地开始了一个事务，SQL中的Commitwork和Rollback work语句之一会结束一个事务</p>
+<ul>
+<li>Commit work：提交当前事务。这意味着该事务所做的更新在数据库中永久保存。一但事务被提交后，一个新的事务自动开始。</li>
+<li>Rollback work：回滚当前事务。这意味着将撤销该事务对数据库的更新。</li>
+</ul>
+<p>注意：如果事务已经执行了Commit work，就不能再用Rollback来撤销</p>
+<h2 id="事务的特性">事务的特性</h2>
+<ol>
+<li>原子性：事务的所有操作在数据库中要么都做要么都不做。</li>
+<li>一致性：一个事务独立执行的结果，将保持数据的一致性，即数据不会因为事务的执行而遭受破坏。</li>
+<li>隔离性：一个事务的执行不能被其他事务干扰。并发事务在执行过程中可能会对同一数据进行操作，这些事务的操作应该不会相互干扰，是相互隔离的。</li>
+<li>持久性：一个事务一旦提交，它对数据库的改变必须是永久的，即使系统出现故障也是如此。</li>
+</ol>
+<h2 id="事务的状态">事务的状态</h2>
+<ul>
+<li>活动状态
+<ul>
+<li>事务的初始状态，事务执行时处于这个状态。</li>
+</ul>
+</li>
+<li>部分提交状态
+<ul>
+<li>当操作序列的最后一条语句执行后，事务就处于部分提交状态。这时，事务虽然已经完全执行，但由于实际输出可能还临时驻留在内存中，在事务成功完成前还有可能出现硬件故障，因此，部分提交状态并不等于事务成功执行。</li>
+</ul>
+</li>
+<li>失败状态
+<ul>
+<li>由于硬件或逻辑错误，使得事务不能继续正常执行，事务就进入了失败状态，处于失败状态的事务必须回滚。这样，事务就进入了中止状态。</li>
+</ul>
+</li>
+<li>中止状态
+<ul>
+<li>事务回滚并且数据库恢复到事务开始执行前的状态。</li>
+</ul>
+</li>
+<li>提交状态
+<ul>
+<li>当事务成功完成后，称事务处于提交状态。只有事务处于提交状态后，才能说事务已经提交</li>
+</ul>
+</li>
+</ul>
+<p><img alt="" loading="lazy" decoding="async" width="1024" height="329" src="/_astro/image-10-1024x329.D1GXfEkj_1UEhbl.webp"></p>
+<ul>
+<li>BEGIN TRANSACTION：开始运行事务，使事务进入活动状态</li>
+<li>END TRANSACTION：说明事物中的所有读写操作都已完成，使事务进入部分提交状态，把事务的所有操作对数据库的影响存入数据库。</li>
+<li>COMMIT：标志事务已经成功地完成，事务中的所有操作对数据库的影响已经安全地存入数据库，事务进入提交状态，结束事务的运行。</li>
+<li>ABORT：标志事务进入失败状态，系统撤销事务中所有操作对数据库和其他事务的影响，结束事务的运行</li>
+</ul>
+<h1 id="数据库的并发控制">数据库的并发控制</h1>
+<h2 id="事务调度">事务调度</h2>
+<h3 id="串行调度">串行调度</h3>
+<p>是指多个事务依次串行执行，且只有当一个事务的所有操作都执行完成才执行另一个事务的所有操作</p>
+<p><img alt="" loading="lazy" decoding="async" width="1024" height="720" src="/_astro/image-11-1024x720.BR4Dk-AT_Z1TPI9T.webp"></p>
+<h3 id="并发调度">并发调度</h3>
+<p>利用<strong>分时的方法</strong>同时处理多个事务</p>
+<p>并发调度执行的结果与<strong>某一次串行调度执行的结果相同</strong>，则称这个并发调度是<strong>正确的</strong></p>
+<p><img alt="" loading="lazy" decoding="async" width="836" height="687" src="/_astro/image-12.CixTaizu_1GrrWK.webp"></p>
+<h3 id="可恢复调度">可恢复调度</h3>
+<p>指满足这样的条件的调度：当事务Tj要读事务Ti写的数据时，Ti事务必须要先于事务Tj提交。</p>
+<p><img alt="" loading="lazy" decoding="async" width="680" height="408" src="/_astro/image-13.DYlcVF2O_9FDSf.webp"></p>
+<h2 id="并发操作带来的问题">并发操作带来的问题</h2>
+<p>并发操作带来的数据不一致性有三类</p>
+<ul>
+<li>丢失修改</li>
+<li>读脏数据</li>
+<li>不可重复读</li>
+<li>幻读也称幻影现象。事务T1读取数据后，事务T2执行插入或删除操作，使T1无法再现前一次读取结果</li>
+</ul>
+<p>主要原因是事务的并发操作<strong>破坏了事务的隔离性</strong></p>
+<h3 id="丢失修改">丢失修改</h3>
+<p>两个事务对同一个数据进行修改，导致事务A对数据库的修改被事务B的修改所覆盖</p>
+<p><img alt="" loading="lazy" decoding="async" width="637" height="368" src="/_astro/image-14.BR4Edfjl_1nNu2w.webp"></p>
+<h3 id="读脏数据">读脏数据</h3>
+<p>某事务读取的数据是其它事务修改后的值，但该修改后来又被撤销了</p>
+<p><img alt="" loading="lazy" decoding="async" width="776" height="413" src="/_astro/image-16.C88faMY3_Z1xC0H.webp"></p>
+<h3 id="不可重复读">不可重复读</h3>
+<p>事务对同一数据进行两次读取的结果不同。原因是两次读取的间隙数据被另一事务修改了</p>
+<p><img alt="" loading="lazy" decoding="async" width="636" height="551" src="/_astro/image-15.DWh8Xv_H_Ok0ru.webp"></p>
+<h2 id="并发调度的可串行性">并发调度的可串行性</h2>
+<ol>
+<li>多个事务的<strong>并发执行</strong>是正确的，当且仅当其结果<strong>与某一次序串行</strong>地执行它们的<strong>结果相同</strong>，称这种调度策略是可串行化的调度。</li>
+<li>可串行性是并发事务正确性的准则。即：一个给定的并发调度，当且仅当它是可串行化的才认为是正确调度。</li>
+</ol>
+<h2 id="并发控制技术">并发控制技术</h2>
+<p>并发事务如果对数据读写时不加以控制，会破坏事务的<strong>隔离性和一致性</strong>。为了保持事务的隔离性，系统必须对事务之间的相互作用加以控制，最典型的方式就是加锁</p>
+<ul>
+<li>排它锁：简称X锁，也称为写锁，用于对数据进行写操作时进行锁定
+<ul>
+<li>如果事务T对数据A加上X锁后，就只允许事务T对数据A进行读取和修改</li>
+<li>其他事务对数据A不能再加任何锁，从而也不能读取和修改数据A，直到事务T释放A上的锁</li>
+</ul>
+</li>
+<li>共享锁：简称S锁，也称为读锁，用于对数据进行读操作时进行锁定
+<ul>
+<li>如果事务T对数据A加上了S锁后，事务T就只能读数据A但不可以修改</li>
+<li>其他事务可以再对数据A加S锁来读取</li>
+<li>只要数据A上有了S锁，任何事务都只能再对其加S锁读取而不能加X锁修改</li>
+</ul>
+</li>
+</ul>
+<h2 id="封锁协议">封锁协议</h2>
+<ul>
+<li>一级封锁协议
+<ul>
+<li>事务T在修改数据A之前必须先对其<strong>加X锁</strong>，直到<strong>事务结束才释放X</strong>锁</li>
+<li>解决了<strong>丢失修改</strong>的问题</li>
+</ul>
+</li>
+<li>二级封锁协议
+<ul>
+<li>一级封锁协议加上事务T在读取数据A之前必须对其加<strong>上S锁</strong>，<strong>读完后即可释放S锁</strong></li>
+<li>解决了<strong>读脏数据</strong>的问题</li>
+</ul>
+</li>
+<li>三级封锁协议
+<ul>
+<li>是一级封锁协议加上事务T在读取数据A之前必须对其加<strong>上S锁</strong>，直到<strong>事务结束才释放S锁</strong></li>
+<li>解决了<strong>不可重复读</strong>的问题</li>
+</ul>
+</li>
+</ul>
+<p><img alt="" loading="lazy" decoding="async" width="1024" height="255" src="/_astro/image-17-1024x255.BrKQOlqo_ZNpqzX.webp"></p>
+<h2 id="两段锁协议">两段锁协议</h2>
+<p>两段锁协议（2PL）:是指同一事务对任何数据进行读写之前必须对该数据加锁；在<strong>释放一个封锁之后</strong>，该<strong>事务不再申请和获得任何其他封锁</strong></p>
+<ul>
+<li>所谓“两段”的含义是：事务分为两个阶段。</li>
+<li>第一阶段是获得封锁，也称为扩展阶段。</li>
+<li>第二阶段是释放封锁，也称为收缩阶段</li>
+</ul>
+<p>eg.T1：Slock A…Slock B…Xlock C…Unlock B…Unlock A…Unlock C</p>
+<ul>
+<li>遵循两段锁协议，一定是可串行化的；不遵循两段锁协议，可能是可串行化的，也可能不是</li>
+<li>采用两段锁协议也有可能产生死锁</li>
+</ul>
+<h2 id="事务的隔离级别">事务的隔离级别</h2>
+<ul>
+<li>事务的隔离级别并不是越高越好</li>
+<li>隔离级别越高，数据一致性越强，系统代价增高</li>
+</ul>
+<p>在SQL标准中给出了事务的4类隔离级别，由低到高依次如下：</p>
+<ul>
+<li>READ UNCOMMITTED（读未提交）：允许一个事务可以读取另一个未提交事务正在修改的数据</li>
+<li>READ COMMITTED（读已提交）：只允许一个事务读其他事务已提交的数据</li>
+<li>REPEATABLE READ（可重复读）：一个事务开始读取数据后，其他事务就不能再对该数据执行更新（UPDATE）操作了</li>
+<li>SERIALIZABLE（可串行化）：最高级别，在该级别下，事务的执行顺序是可串行化的</li>
+</ul>
+<p><img alt="" loading="lazy" decoding="async" width="1024" height="313" src="/_astro/image-18-1024x313.DWlL_JLc_1Isejk.webp"></p>
+<h1 id="数据库的备份与恢复">数据库的备份与恢复</h1>
+<h2 id="数据库系统故障的种类">数据库系统故障的种类</h2>
+<ul>
+<li>事务故障
+<ul>
+<li>是由于程序执行错误而引起事务非预期的、异常终止的故障。通常有如下两类错误引起事务执行失败
+<ul>
+<li>逻辑错误：如非法输入、找不到数据、溢出、超出资源限制等原因引起的事务执行失败</li>
+<li>系统错误：系统进入一种不良状态（如死锁），导致事务无法继续执行</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>系统故障
+<ul>
+<li>是指硬件故障、软件（如DBMS、OS或应用程序）漏洞的影响，导致丢失了内存中的信息，影响正在执行的事务，但未破坏存储在外存上的信息</li>
+</ul>
+</li>
+<li>介质故障
+<ul>
+<li>是指数据库的存储介质发生故障，如磁盘损坏、瞬间强磁场干扰等。这种故障直接破坏了数据库，会影响到所有正在读取这部分数据的事务</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据库备份">数据库备份</h2>
+<p>数据转储是将数据库自制到另一个磁盘或磁带上保存起来的过程，又称为数据备份</p>
+<ul>
+<li>静态转储和动态转储
+<ul>
+<li>静态转储是指在转储期间<strong>不允许对数据库进行任何存取、修改操作</strong></li>
+<li>动态转储是在转储期间<strong>允许对数据库进行存取、修改操作</strong>，因此，转储和用户事务可并发执行</li>
+</ul>
+</li>
+<li>海量转储和增量转储
+<ul>
+<li>海量转储是指每次转储全部数据</li>
+<li>增量转储是指每次只转储上次转储后更新过的数据</li>
+</ul>
+</li>
+<li>日志文件
+<ul>
+<li>在事务处理的过程中，DBMS把事务开始、事务结束以及对数据库的插入、删除和修改的每一次操作写入日志文件</li>
+</ul>
+</li>
+<li>数据库镜像
+<ul>
+<li>为了避免磁盘介质出现故障影响数据库的可用性，许多DBMS提供数据库镜像功能用于数据库恢复</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据恢复">数据恢复</h2>
+<p>要使数据库在发生故障后能够恢复，<strong>必须建立冗余数据</strong>，在故障发生后利用这些冗余数据实施数据库恢复，常用的是数<strong>据转储和日志文件</strong></p>
+<h3 id="故障恢复的两个操作">故障恢复的两个操作</h3>
+<ul>
+<li>UNDO：撤销事务。将<strong>未完成</strong>的事务撤销，使数据库恢复到事务执行前的正确状态
+<ul>
+<li>反向扫描日志文件（由后向前扫描），查找事务的更新操作</li>
+<li>对该事务的更新操作<strong>执行逆操作</strong>，用日志文件记录中
+<ul>
+<li>更新前的值写入数据库</li>
+<li>插入的记录从数据库中删除</li>
+<li>删除的记录重新插入数据库中</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>REDO：重做事务。将已提交的事务重新执行
+<ul>
+<li>从事务的开始标志起，正向扫描日志文件
+<ul>
+<li>重新执行日志文件登记的该事务对数据库的所有操作</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="故障恢复策略">故障恢复策略</h3>
+<ul>
+<li>事务故障的恢复
+<ul>
+<li>事务故障是事务在运行至正常终止点（COMMIT或ROLLBACK）前终止</li>
+<li>日志文件只有该事务的开始标识而没有结束标识</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>对这类故障的恢复通常是通过撤销（<strong>UNDO</strong>）产生故障的事务，使数据库恢复到该事务执行前的正确状态来完成的</li>
+</ol>
+<ul>
+<li>系统故障的恢复
+<ul>
+<li>系统故障会使数据库的数据不一致</li>
+<li>一是未完成的事务对数据库的更新可能<strong>已经写入</strong>数据库</li>
+<li>二是已提交的事务对数据库的更新可能<strong>还在缓冲区</strong>没来得及写入数据库</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>撤销故障发生时未完成的事务（UNDO）</li>
+<li>重做已经提交的事务（REDO）</li>
+</ol>
+<ul>
+<li>介质故障
+<ul>
+<li>介质故障时数据库遭到破坏，需要重装数据库，一般需要DBA的参与</li>
+<li>装载故障前最近一次的备份和故障前的日志文件副本，再按照系统故障的恢复过程执行撤销（UNDO）和重做（REDO）来恢复</li>
+</ul>
+</li>
+</ul>
+<h2 id="具有检查点的恢复技术">具有检查点的恢复技术</h2>
+<p>检查点（CHECKPOINT)出现的原因：</p>
+<ul>
+<li>搜索整个日志将耗费大量的时间</li>
+<li>很多需要重做处理的事务实际上已经将其更新操作结果写到了数据库中，而恢复子系统又重新执行了这些操作，浪费了大量时间</li>
+</ul>
+<p>检查点记录的内容：</p>
+<ul>
+<li>建立检查点时刻所有正在执行的事务清单</li>
+<li>这些事务最近一个日志记录的地址</li>
+</ul>
+<p>系统使用检查点方法进行恢复的步骤是：</p>
+<ul>
+<li>故障发生（故障点），找到最近的一个检查点</li>
+<li>寻找故障发生前所有的活动事务
+<ul>
+<li>将<strong>检查点前结束</strong>的事务不做任何处理</li>
+<li>将<strong>故障点前完成</strong>的事务做REDO处理</li>
+<li>将<strong>故障点前未完成</strong>的事务做UNDO处理</li>
+</ul>
+</li>
+</ul>
+<p><img alt="" loading="lazy" decoding="async" width="1024" height="364" src="/_astro/image-19-1024x364.DXNdoZG8_IOs6.webp"></p>  </div> </div> <div class="article-footer"> <div class="article-footer__tags"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-bookmark article-footer__tags-icon"> <path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"></path>  </svg> <div class="article-footer__tag-list"> <a class="article-footer__tag" href="/archive/tag/软考/">#软考</a> </div> </div> <div class="article-footer__share" role="group" aria-label="分享文章"> <a class="icon-button" href="https://x.com/intent/tweet?text=%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B%E5%B8%88%E2%80%9412.1~12.3%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E3%80%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6%E3%80%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D&amp;url=https%3A%2F%2Fblog.20220509.xyz%2Farchive%2Fshu-ju-ku-xi-tong-gong-cheng-shi-1-2-1-1-2-3-shi-wu-de-ji-ben-gai-nian-shu-ju-ku-de%2F" aria-label="分享到 X" title="分享到 X" target="_blank" rel="noopener noreferrer"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M14.234 10.162L22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299l-.929-1.329L3.076 1.56h3.182l5.965 8.532l.929 1.329l7.754 11.09h-3.182z"/> </svg> </a><a class="icon-button" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fblog.20220509.xyz%2Farchive%2Fshu-ju-ku-xi-tong-gong-cheng-shi-1-2-1-1-2-3-shi-wu-de-ji-ben-gai-nian-shu-ju-ku-de%2F" aria-label="分享到 Facebook" title="分享到 Facebook" target="_blank" rel="noopener noreferrer"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978c.401 0 .955.042 1.468.103a9 9 0 0 1 1.141.195v3.325a9 9 0 0 0-.653-.036a27 27 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.7 1.7 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.29h3.919l-.386 2.103l-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647"/> </svg> </a><a class="icon-button" href="mailto:?subject=%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B%E5%B8%88%E2%80%9412.1~12.3%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E3%80%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6%E3%80%81%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D&amp;body=https%3A%2F%2Fblog.20220509.xyz%2Farchive%2Fshu-ju-ku-xi-tong-gong-cheng-shi-1-2-1-1-2-3-shi-wu-de-ji-ben-gai-nian-shu-ju-ku-de%2F" aria-label="通过邮件分享" title="通过邮件分享"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-mail icon"> <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path><rect x="2" y="4" width="20" height="16" rx="2"></rect>  </svg> </a> <button class="icon-button" type="button" aria-label="生成分享卡片" aria-haspopup="dialog" title="分享卡片" data-article-poster-open disabled> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-share-2 icon"> <circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line>  </svg> </button> <button class="icon-button article-footer__copy" type="button" aria-label="复制文章链接" title="复制文章链接" data-article-link-copy disabled> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-link icon article-footer__link-icon"> <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-check icon article-footer__check-icon"> <path d="M20 6 9 17l-5-5"></path>  </svg> </button> </div> </div><nav class="prev-next" aria-label="上一篇/下一篇"> <div class="prev-next__item"> <a class="prev-next__link prev-next__link--prev" href="/archive/shu-ju-ku-xi-tong-gong-cheng-shi-1-3-yun-ji-suan-yu-da-shu-ju-chu-li/" rel="prev"> <span class="prev-next__label"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-arrow-left prev-next__icon"> <path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path>  </svg>
+上一篇
+</span> <span class="prev-next__title">数据库系统工程师—13.云计算与大数据处理</span> </a> </div> <div class="prev-next__item"> <a class="prev-next__link prev-next__link--next" href="/archive/shu-ju-ku-xi-tong-gong-cheng-shi-1-1-shu-ju-ku-she-ji/" rel="next"> <span class="prev-next__label">
+下一篇
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-arrow-right prev-next__icon"> <path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path>  </svg> </span> <span class="prev-next__title">数据库系统工程师—11.数据库设计</span> </a> </div> </nav><section class="article-comments" data-article-comments aria-labelledby="article-comments-title"> <h2 id="article-comments-title" class="article-comments__title">评论</h2> <div class="article-comments__mount" data-giscus-mount data-repo="MintHana/fuwari-comments" data-repo-id="R_kgDOQX3_pg" data-category="Announcements" data-category-id="DIC_kwDOQX3_ps4Cx6xk" data-mapping="pathname" data-input-position="bottom" data-lang="zh-CN" data-reactions-enabled="1"> <p class="article-comments__hint" data-giscus-hint>滚动到此处时加载评论…</p> </div> <noscript> <p class="article-comments__hint">评论由 giscus 提供，需要启用 JavaScript 才能查看。</p> </noscript> </section><script type="module">var e=()=>document.documentElement.dataset.theme===`dark`?`dark`:`light`;document.querySelectorAll(`[data-giscus-mount]`).forEach(t=>{let n=t.dataset,r=n.repo??``,i=n.repoId??``,a=n.categoryId??``;if(!r||!i||!a){t.querySelector(`[data-giscus-hint]`)?.remove();return}let o=null,s=!1,c=()=>{o&&o.setAttribute(`theme`,e())},l=()=>{let s=document.createElement(`giscus-widget`);s.setAttribute(`id`,`giscus-comments`),s.setAttribute(`repo`,r),s.setAttribute(`repoId`,i),s.setAttribute(`category`,n.category??``),s.setAttribute(`categoryId`,a),s.setAttribute(`mapping`,n.mapping??`pathname`),s.setAttribute(`strict`,`0`),s.setAttribute(`reactionsEnabled`,n.reactionsEnabled??`1`),s.setAttribute(`emitMetadata`,`0`),s.setAttribute(`inputPosition`,n.inputPosition??`bottom`),s.setAttribute(`theme`,e()),s.setAttribute(`lang`,n.lang??`zh-CN`),s.setAttribute(`loading`,`lazy`),t.querySelector(`[data-giscus-hint]`)?.remove(),t.append(s),o=s,new MutationObserver(c).observe(document.documentElement,{attributes:!0,attributeFilter:[`data-theme`]})},u=()=>{if(s)return;s=!0;let e=document.querySelector(`script[data-giscus-loader]`);if(e){e.dataset.giscusLoaded===`true`?l():e.addEventListener(`load`,l,{once:!0});return}let n=document.createElement(`script`);n.type=`module`,n.src=`https://esm.sh/giscus`,n.dataset.giscusLoader=`true`,n.addEventListener(`load`,()=>{n.dataset.giscusLoaded=`true`,l()},{once:!0}),n.addEventListener(`error`,()=>{t.querySelector(`[data-giscus-hint]`)?.replaceChildren(`评论加载失败，请稍后重试。`)}),document.head.append(n)};if(typeof IntersectionObserver>`u`){u();return}let d=new IntersectionObserver(e=>{e.some(e=>e.isIntersecting)&&(d.disconnect(),u())},{rootMargin:`600px 0px`});d.observe(t)});</script><button class="toc-fab" type="button" aria-label="打开文章目录" aria-haspopup="dialog" aria-expanded="false" title="文章目录" data-toc-fab> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-text-align-start icon"> <path d="M21 5H3"></path><path d="M15 12H3"></path><path d="M17 19H3"></path>  </svg> </button><dialog class="toc-drawer" aria-label="文章目录" data-toc-drawer> <div class="toc-drawer__head"> <p class="toc-drawer__title"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-text-align-start toc-drawer__icon"> <path d="M21 5H3"></path><path d="M15 12H3"></path><path d="M17 19H3"></path>  </svg>
+On this page
+</p> <button class="icon-button toc-drawer__close" type="button" aria-label="关闭目录" title="关闭" data-toc-drawer-close> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-x"> <path d="M18 6 6 18"></path><path d="m6 6 12 12"></path>  </svg> </button> </div> <ul class="article-toc__list"> <li> <a class="article-toc__link" href="#事务的基本概念" data-depth="1" data-level="1" title="事务的基本概念"> <span class="article-toc__num" aria-hidden="true">1.</span> <span class="article-toc__text">事务的基本概念</span> </a> </li><li> <a class="article-toc__link" href="#事务" data-depth="2" data-level="2" title="事务"> <span class="article-toc__num" aria-hidden="true">1.1</span> <span class="article-toc__text">事务</span> </a> </li><li> <a class="article-toc__link" href="#sql中事务的开始与结束" data-depth="2" data-level="2" title="SQL中事务的开始与结束"> <span class="article-toc__num" aria-hidden="true">1.2</span> <span class="article-toc__text">SQL中事务的开始与结束</span> </a> </li><li> <a class="article-toc__link" href="#事务的特性" data-depth="2" data-level="2" title="事务的特性"> <span class="article-toc__num" aria-hidden="true">1.3</span> <span class="article-toc__text">事务的特性</span> </a> </li><li> <a class="article-toc__link" href="#事务的状态" data-depth="2" data-level="2" title="事务的状态"> <span class="article-toc__num" aria-hidden="true">1.4</span> <span class="article-toc__text">事务的状态</span> </a> </li><li> <a class="article-toc__link" href="#数据库的并发控制" data-depth="1" data-level="1" title="数据库的并发控制"> <span class="article-toc__num" aria-hidden="true">2.</span> <span class="article-toc__text">数据库的并发控制</span> </a> </li><li> <a class="article-toc__link" href="#事务调度" data-depth="2" data-level="2" title="事务调度"> <span class="article-toc__num" aria-hidden="true">2.1</span> <span class="article-toc__text">事务调度</span> </a> </li><li> <a class="article-toc__link" href="#串行调度" data-depth="3" data-level="3" title="串行调度"> <span class="article-toc__num" aria-hidden="true">2.1.1</span> <span class="article-toc__text">串行调度</span> </a> </li><li> <a class="article-toc__link" href="#并发调度" data-depth="3" data-level="3" title="并发调度"> <span class="article-toc__num" aria-hidden="true">2.1.2</span> <span class="article-toc__text">并发调度</span> </a> </li><li> <a class="article-toc__link" href="#可恢复调度" data-depth="3" data-level="3" title="可恢复调度"> <span class="article-toc__num" aria-hidden="true">2.1.3</span> <span class="article-toc__text">可恢复调度</span> </a> </li><li> <a class="article-toc__link" href="#并发操作带来的问题" data-depth="2" data-level="2" title="并发操作带来的问题"> <span class="article-toc__num" aria-hidden="true">2.2</span> <span class="article-toc__text">并发操作带来的问题</span> </a> </li><li> <a class="article-toc__link" href="#丢失修改" data-depth="3" data-level="3" title="丢失修改"> <span class="article-toc__num" aria-hidden="true">2.2.1</span> <span class="article-toc__text">丢失修改</span> </a> </li><li> <a class="article-toc__link" href="#读脏数据" data-depth="3" data-level="3" title="读脏数据"> <span class="article-toc__num" aria-hidden="true">2.2.2</span> <span class="article-toc__text">读脏数据</span> </a> </li><li> <a class="article-toc__link" href="#不可重复读" data-depth="3" data-level="3" title="不可重复读"> <span class="article-toc__num" aria-hidden="true">2.2.3</span> <span class="article-toc__text">不可重复读</span> </a> </li><li> <a class="article-toc__link" href="#并发调度的可串行性" data-depth="2" data-level="2" title="并发调度的可串行性"> <span class="article-toc__num" aria-hidden="true">2.3</span> <span class="article-toc__text">并发调度的可串行性</span> </a> </li><li> <a class="article-toc__link" href="#并发控制技术" data-depth="2" data-level="2" title="并发控制技术"> <span class="article-toc__num" aria-hidden="true">2.4</span> <span class="article-toc__text">并发控制技术</span> </a> </li><li> <a class="article-toc__link" href="#封锁协议" data-depth="2" data-level="2" title="封锁协议"> <span class="article-toc__num" aria-hidden="true">2.5</span> <span class="article-toc__text">封锁协议</span> </a> </li><li> <a class="article-toc__link" href="#两段锁协议" data-depth="2" data-level="2" title="两段锁协议"> <span class="article-toc__num" aria-hidden="true">2.6</span> <span class="article-toc__text">两段锁协议</span> </a> </li><li> <a class="article-toc__link" href="#事务的隔离级别" data-depth="2" data-level="2" title="事务的隔离级别"> <span class="article-toc__num" aria-hidden="true">2.7</span> <span class="article-toc__text">事务的隔离级别</span> </a> </li><li> <a class="article-toc__link" href="#数据库的备份与恢复" data-depth="1" data-level="1" title="数据库的备份与恢复"> <span class="article-toc__num" aria-hidden="true">3.</span> <span class="article-toc__text">数据库的备份与恢复</span> </a> </li><li> <a class="article-toc__link" href="#数据库系统故障的种类" data-depth="2" data-level="2" title="数据库系统故障的种类"> <span class="article-toc__num" aria-hidden="true">3.1</span> <span class="article-toc__text">数据库系统故障的种类</span> </a> </li><li> <a class="article-toc__link" href="#数据库备份" data-depth="2" data-level="2" title="数据库备份"> <span class="article-toc__num" aria-hidden="true">3.2</span> <span class="article-toc__text">数据库备份</span> </a> </li><li> <a class="article-toc__link" href="#数据恢复" data-depth="2" data-level="2" title="数据恢复"> <span class="article-toc__num" aria-hidden="true">3.3</span> <span class="article-toc__text">数据恢复</span> </a> </li><li> <a class="article-toc__link" href="#故障恢复的两个操作" data-depth="3" data-level="3" title="故障恢复的两个操作"> <span class="article-toc__num" aria-hidden="true">3.3.1</span> <span class="article-toc__text">故障恢复的两个操作</span> </a> </li><li> <a class="article-toc__link" href="#故障恢复策略" data-depth="3" data-level="3" title="故障恢复策略"> <span class="article-toc__num" aria-hidden="true">3.3.2</span> <span class="article-toc__text">故障恢复策略</span> </a> </li><li> <a class="article-toc__link" href="#具有检查点的恢复技术" data-depth="2" data-level="2" title="具有检查点的恢复技术"> <span class="article-toc__num" aria-hidden="true">3.4</span> <span class="article-toc__text">具有检查点的恢复技术</span> </a> </li> </ul> </dialog><dialog class="lightbox" id="lightbox" aria-label="图片预览" aria-hidden="true" data-lightbox data-enable-zoom="false" data-enable-pan="false" data-enable-swipe-down="false" data-mobile-nav="bottom" data-mobile-count="visible" tabindex="-1" hidden> <button class="lightbox-close" type="button" data-lightbox-close aria-label="关闭">×</button> <div class="lightbox-navs"> <button class="lightbox-nav lightbox-prev" type="button" data-lightbox-prev aria-label="上一张">‹</button> <button class="lightbox-nav lightbox-next" type="button" data-lightbox-next aria-label="下一张">›</button> </div> <figure class="lightbox-figure"> <img data-lightbox-image alt=""> <figcaption class="lightbox-meta"> <span class="lightbox-caption" data-lightbox-caption hidden></span> <span class="lightbox-meta-row"> <span class="lightbox-count" data-lightbox-count aria-live="polite"></span> <span class="lightbox-dots" data-lightbox-dots aria-hidden="true"></span> </span> </figcaption> </figure> </dialog> <dialog class="article-poster" aria-label="分享卡片" data-article-poster data-site-name="MintHana" data-title="数据库系统工程师—12.1~12.3事务的基本概念、数据库的并发控制、数据库的备份与恢复" data-date="2025-04-28" data-summary="事务的基本概念 事务 事务：是**一系列的数据库操作**，是数据库应用程序的**逻辑单位**，即应用程序对数据库的操作都应该以事务的方式进行 事务是一个操作序列，这些操作**要么都…" data-author-name="MintHana" data-author-avatar="/about/avatar.jpg" data-url="https://blog.20220509.xyz/archive/shu-ju-ku-xi-tong-gong-cheng-shi-1-2-1-1-2-3-shi-wu-de-ji-ben-gai-nian-shu-ju-ku-de/"> <div class="article-poster__panel" tabindex="-1" autofocus> <p class="article-poster__status" role="status" data-article-poster-status></p> <img class="article-poster__image" alt="数据库系统工程师—12.1~12.3事务的基本概念、数据库的并发控制、数据库的备份与恢复 的分享卡片" data-article-poster-image hidden> <a class="article-poster__save" download="shu-ju-ku-xi-tong-gong-cheng-shi-1-2-1-1-2-3-shi-wu-de-ji-ben-gai-nian-shu-ju-ku-de.png" data-article-poster-save hidden>保存图片</a> <p class="article-poster__hint">也可以长按图片保存。</p>  <button class="sr-only" type="button" tabindex="-1" data-article-poster-close>关闭</button> </div> </dialog><script type="module" src="/_astro/ArticleLayout.astro_astro_type_script_index_0_lang.DR-GBEKG.js"></script>  <footer class="site-footer"> <span>© 2024-2026 Mint by Astro&amp;Whono</span> <span class="site-footer__uptime" data-uptime-start="2024-01-05T00:00:00+08:00" hidden>
+本站已运行 <span class="site-footer__uptime-value">--</span> </span> </footer> </div> </main> </div> <template id="scroll-top-template"> <button type="button" class="icon-button float-action scroll-top" aria-label="回到顶部" title="回到顶部" aria-hidden="true" tabindex="-1"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-chevron-up icon"> <path d="m18 15-6-6-6 6"></path>  </svg> </button> </template> <script type="module" src="/_astro/BaseLayout.astro_astro_type_script_index_0_lang.CJRVNfu6.js"></script>   </body> </html>

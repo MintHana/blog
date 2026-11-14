@@ -1,0 +1,1235 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><script>
+      (() => {
+        // 与 src/scripts/sidebar-theme.ts 保持同一主题偏好契约，避免首屏与运行时状态漂移。
+        const themeKey = 'theme';
+        const modeKey = 'theme-mode';
+        let storedMode = null;
+        let legacyTheme = null;
+        try {
+          storedMode = localStorage.getItem(modeKey);
+          legacyTheme = localStorage.getItem(themeKey);
+        } catch (_) {}
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const mode = storedMode === 'system' || storedMode === 'dark' || storedMode === 'light'
+          ? storedMode
+          : (legacyTheme === 'dark' || legacyTheme === 'light' ? legacyTheme : 'system');
+        const theme = mode === 'system' ? (prefersDark ? 'dark' : 'light') : mode;
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.dataset.themeMode = mode;
+      })();
+    </script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><title>R语言数据分析与可视化 | Mint Blog</title><meta name="description" content="R语言概述 R是属于GNU系统的一个自由、免费、源代码开放的软件，它是用于数据分析和可视化的软件功能的集成套件，是一个用于统计计算和统计制图的优秀工具。它可以在各种UNIX平台、W…"><link rel="canonical" href="https://blog.20220509.xyz/archive/r-yu-yan-shu-ju-fen-xi-yu-ke-shi-hua/"><meta property="og:site_name" content="Mint Blog"><meta property="og:title" content="R语言数据分析与可视化 | Mint Blog"><meta property="og:description" content="R语言概述 R是属于GNU系统的一个自由、免费、源代码开放的软件，它是用于数据分析和可视化的软件功能的集成套件，是一个用于统计计算和统计制图的优秀工具。它可以在各种UNIX平台、W…"><meta property="og:url" content="https://blog.20220509.xyz/archive/r-yu-yan-shu-ju-fen-xi-yu-ke-shi-hua/"><meta property="og:type" content="article"><meta property="og:image" content="https://blog.20220509.xyz/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="R语言数据分析与可视化 | Mint Blog"><meta name="twitter:description" content="R语言概述 R是属于GNU系统的一个自由、免费、源代码开放的软件，它是用于数据分析和可视化的软件功能的集成套件，是一个用于统计计算和统计制图的优秀工具。它可以在各种UNIX平台、W…"><meta name="twitter:image" content="https://blog.20220509.xyz/og.png"><link rel="stylesheet" href="/_astro/global.Bhbh443I.css"> <meta property="article:published_time" content="2024-08-10T00:00:00.000Z"> <meta property="article:tag" content="r语言"><meta property="article:tag" content="笔记"><link rel="stylesheet" href="/_astro/article.CfotRyYM.css"></head> <body class="article-page immersive-page"> <a class="skip-link" href="#content">跳到内容</a> <div class="shell" data-sidebar-divider="default"> <aside id="site-sidebar" class="sidebar"> <a class="sidebar__title sidebar__title--site" href="/" aria-label="MintHana 首页"> <span class="sidebar__title-text">MintHana</span> </a>  <div class="sidebar__quote">  永遠に不滅なものはない<br>  Personal study notes. Please forgive any inappropriate content<br>  </div> <div class="sidebar__social" aria-label="社交链接"> <a class="sidebar__social-link" href="https://github.com/MintHana" aria-label="GitHub" title="GitHub"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/> </svg> </a><a class="sidebar__social-link" href="https://www.zhihu.com/people/70-28-52-15" aria-label="知乎" title="知乎"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M5.721 0C2.251 0 0 2.25 0 5.719V18.28C0 21.751 2.252 24 5.721 24h12.56C21.751 24 24 21.75 24 18.281V5.72C24 2.249 21.75 0 18.281 0zm1.964 4.078q-.408 1.096-.68 2.11h4.587c.545-.006.445 1.168.445 1.171H9.384a58 58 0 0 1-.112 3.797h2.712c.388.023.393 1.251.393 1.266H9.183a9.2 9.2 0 0 1-.408 2.102l.757-.604c.452.456 1.512 1.712 1.906 2.177c.473.681.063 2.081.063 2.081l-2.794-3.382c-.653 2.518-1.845 3.607-1.845 3.607c-.523.468-1.58.82-2.64.516c2.218-1.73 3.44-3.917 3.667-6.497H4.491c0-.015.197-1.243.806-1.266h2.71c.024-.32.086-3.254.086-3.797H6.598c-.136.406-.158.447-.268.753c-.594 1.095-1.603 1.122-1.907 1.155c.906-1.821 1.416-3.6 1.591-4.064c.425-1.124 1.671-1.125 1.671-1.125M13.078 6h6.377v11.33h-2.573l-2.184 1.373l-.401-1.373h-1.219zm1.313 1.219v8.86h.623l.263.937l1.455-.938h1.456v-8.86z"/> </svg> </a> </div> <ul class="nav sidebar-public-nav"> <li> <a href="/"> <span>HOME</span> <span class="dot" aria-hidden="true"></span> </a> </li><li> <a href="/archive/" aria-current="page"> <span>ARCHIVE</span> <span class="dot" aria-hidden="true"></span> </a> </li><li> <a href="/about/"> <span>ABOUT</span> <span class="dot" aria-hidden="true"></span> </a> </li> </ul>  <div class="sidebar-actions">   <button id="reader-toggle" class="icon-button reader-toggle sidebar-action--rail-hidden" type="button" aria-label="阅读模式" aria-pressed="false" data-tooltip="阅读模式"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-book-open icon icon-book-open"> <path d="M12 5v16"></path><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-book icon icon-book-closed"> <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"></path>  </svg> </button> <a class="icon-button rss-link sidebar-action--rail-hidden" href="/archive/rss.xml" aria-label="RSS 订阅" data-tooltip="RSS 订阅"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-rss icon"> <path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle>  </svg> </a> <button id="theme-toggle" class="icon-button theme-toggle" type="button" aria-label="夜间模式" aria-pressed="false" data-tooltip="夜间模式"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-sun-moon icon icon-system"> <path d="M12 2v2"></path><path d="M14.837 16.385a6 6 0 1 1-7.223-7.222c.624-.147.97.66.715 1.248a4 4 0 0 0 5.26 5.259c.589-.255 1.396.09 1.248.715"></path><path d="M16 12a4 4 0 0 0-4-4"></path><path d="m19 5-1.256 1.256"></path><path d="M20 12h2"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-moon icon icon-moon"> <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-sun icon icon-sun"> <circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path>  </svg> </button>   </div> </aside> <nav id="mobile-bar" class="mobile-bar" aria-label="快捷导航"> <a class="mobile-bar__title" href="/">MintHana</a> <ul class="mobile-bar__nav"> <li> <a href="/">HOME</a> </li><li> <a href="/archive/" aria-current="page">ARCHIVE</a> </li><li> <a href="/about/">ABOUT</a> </li> </ul> </nav> <div class="divider" aria-hidden="true"></div> <main id="content" class="content" tabindex="-1"> <div class="content__inner">   <div class="article-body article-body--toc"> <div class="article-header reader-exit-anchor"> <h1 class="page-title">R语言数据分析与可视化</h1> <button id="reader-exit" class="icon-button reader-exit" type="button" aria-label="退出阅读" title="退出阅读" aria-hidden="true" tabindex="-1"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-square-arrow-right-exit icon"> <path d="M10 12h11"></path><path d="m17 16 4-4-4-4"></path><path d="M21 6.344V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-1.344"></path>  </svg> </button> <div class="meta-line meta-line--items"> <span class="meta-line__item"> <time datetime="2024-08-10T00:00:00.000Z">发布于：2024-08-10</time> </span> <span class="meta-line__item meta-line__item--tags"> <a class="tag tag--link" href="/archive/tag/r语言/">#r语言</a><a class="tag tag--link" href="/archive/tag/笔记/">#笔记</a> </span> <span class="meta-line__item meta-line__item--desktop-meta">
+共 8,238 字
+</span> <span class="meta-line__item meta-line__item--desktop-meta">
+约 26 分钟
+</span> </div> </div> <nav class="article-toc" aria-label="文章目录"> <p class="article-toc__title"> <span class="article-toc__label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-text-align-start article-toc__icon"> <path d="M21 5H3"></path><path d="M15 12H3"></path><path d="M17 19H3"></path>  </svg>On this page</span> </p> <ul class="article-toc__list"> <li> <a class="article-toc__link" href="#r语言概述" data-depth="1" data-level="1" title="R语言概述"> <span class="article-toc__num" aria-hidden="true">1.</span> <span class="article-toc__text">R语言概述</span> </a> </li><li> <a class="article-toc__link" href="#r的基本使用" data-depth="1" data-level="1" title="R的基本使用"> <span class="article-toc__num" aria-hidden="true">2.</span> <span class="article-toc__text">R的基本使用</span> </a> </li><li> <a class="article-toc__link" href="#赋值操作" data-depth="2" data-level="2" title="赋值操作"> <span class="article-toc__num" aria-hidden="true">2.1</span> <span class="article-toc__text">赋值操作</span> </a> </li><li> <a class="article-toc__link" href="#区分大小写" data-depth="3" data-level="3" title="区分大小写"> <span class="article-toc__num" aria-hidden="true">2.1.1</span> <span class="article-toc__text">区分大小写</span> </a> </li><li> <a class="article-toc__link" href="#提示符" data-depth="2" data-level="2" title="‘+’提示符"> <span class="article-toc__num" aria-hidden="true">2.2</span> <span class="article-toc__text">‘+’提示符</span> </a> </li><li> <a class="article-toc__link" href="#示例" data-depth="2" data-level="2" title="示例"> <span class="article-toc__num" aria-hidden="true">2.3</span> <span class="article-toc__text">示例</span> </a> </li><li> <a class="article-toc__link" href="#输入与输出" data-depth="2" data-level="2" title="输入与输出"> <span class="article-toc__num" aria-hidden="true">2.4</span> <span class="article-toc__text">输入与输出</span> </a> </li><li> <a class="article-toc__link" href="#分支语句" data-depth="1" data-level="1" title="分支语句"> <span class="article-toc__num" aria-hidden="true">3.</span> <span class="article-toc__text">分支语句</span> </a> </li><li> <a class="article-toc__link" href="#if语句" data-depth="2" data-level="2" title="if语句"> <span class="article-toc__num" aria-hidden="true">3.1</span> <span class="article-toc__text">if语句</span> </a> </li><li> <a class="article-toc__link" href="#switch语句" data-depth="2" data-level="2" title="switch语句"> <span class="article-toc__num" aria-hidden="true">3.2</span> <span class="article-toc__text">switch语句</span> </a> </li><li> <a class="article-toc__link" href="#循环语句" data-depth="2" data-level="2" title="循环语句"> <span class="article-toc__num" aria-hidden="true">3.3</span> <span class="article-toc__text">循环语句</span> </a> </li><li> <a class="article-toc__link" href="#while语句" data-depth="2" data-level="2" title="While语句"> <span class="article-toc__num" aria-hidden="true">3.4</span> <span class="article-toc__text">While语句</span> </a> </li><li> <a class="article-toc__link" href="#for循环" data-depth="2" data-level="2" title="for循环"> <span class="article-toc__num" aria-hidden="true">3.5</span> <span class="article-toc__text">for循环</span> </a> </li><li> <a class="article-toc__link" href="#自定义函数" data-depth="1" data-level="1" title="自定义函数"> <span class="article-toc__num" aria-hidden="true">4.</span> <span class="article-toc__text">自定义函数</span> </a> </li><li> <a class="article-toc__link" href="#数据集" data-depth="1" data-level="1" title="数据集"> <span class="article-toc__num" aria-hidden="true">5.</span> <span class="article-toc__text">数据集</span> </a> </li><li> <a class="article-toc__link" href="#数据类型" data-depth="2" data-level="2" title="数据类型"> <span class="article-toc__num" aria-hidden="true">5.1</span> <span class="article-toc__text">数据类型</span> </a> </li><li> <a class="article-toc__link" href="#数据结构" data-depth="2" data-level="2" title="数据结构"> <span class="article-toc__num" aria-hidden="true">5.2</span> <span class="article-toc__text">数据结构</span> </a> </li><li> <a class="article-toc__link" href="#向量" data-depth="3" data-level="3" title="向量"> <span class="article-toc__num" aria-hidden="true">5.2.1</span> <span class="article-toc__text">向量</span> </a> </li><li> <a class="article-toc__link" href="#矩阵" data-depth="3" data-level="3" title="矩阵"> <span class="article-toc__num" aria-hidden="true">5.2.2</span> <span class="article-toc__text">矩阵</span> </a> </li><li> <a class="article-toc__link" href="#数组" data-depth="3" data-level="3" title="数组"> <span class="article-toc__num" aria-hidden="true">5.2.3</span> <span class="article-toc__text">数组</span> </a> </li><li> <a class="article-toc__link" href="#数据框" data-depth="3" data-level="3" title="数据框"> <span class="article-toc__num" aria-hidden="true">5.2.4</span> <span class="article-toc__text">数据框</span> </a> </li><li> <a class="article-toc__link" href="#列表" data-depth="3" data-level="3" title="列表"> <span class="article-toc__num" aria-hidden="true">5.2.5</span> <span class="article-toc__text">列表</span> </a> </li><li> <a class="article-toc__link" href="#数据的输入" data-depth="2" data-level="2" title="数据的输入"> <span class="article-toc__num" aria-hidden="true">5.3</span> <span class="article-toc__text">数据的输入</span> </a> </li><li> <a class="article-toc__link" href="#键盘输入数据" data-depth="3" data-level="3" title="键盘输入数据"> <span class="article-toc__num" aria-hidden="true">5.3.1</span> <span class="article-toc__text">键盘输入数据</span> </a> </li><li> <a class="article-toc__link" href="#带分隔符的文本文件数据" data-depth="3" data-level="3" title="带分隔符的文本文件数据"> <span class="article-toc__num" aria-hidden="true">5.3.2</span> <span class="article-toc__text">带分隔符的文本文件数据</span> </a> </li><li> <a class="article-toc__link" href="#excel数据" data-depth="3" data-level="3" title="Excel数据"> <span class="article-toc__num" aria-hidden="true">5.3.3</span> <span class="article-toc__text">Excel数据</span> </a> </li><li> <a class="article-toc__link" href="#其他方法" data-depth="3" data-level="3" title="其他方法"> <span class="article-toc__num" aria-hidden="true">5.3.4</span> <span class="article-toc__text">其他方法</span> </a> </li><li> <a class="article-toc__link" href="#基本绘图" data-depth="1" data-level="1" title="基本绘图"> <span class="article-toc__num" aria-hidden="true">6.</span> <span class="article-toc__text">基本绘图</span> </a> </li><li> <a class="article-toc__link" href="#图形简介" data-depth="2" data-level="2" title="图形简介"> <span class="article-toc__num" aria-hidden="true">6.1</span> <span class="article-toc__text">图形简介</span> </a> </li><li> <a class="article-toc__link" href="#入门绘画" data-depth="3" data-level="3" title="入门绘画"> <span class="article-toc__num" aria-hidden="true">6.1.1</span> <span class="article-toc__text">入门绘画</span> </a> </li><li> <a class="article-toc__link" href="#打开或关闭多个图形窗口" data-depth="3" data-level="3" title="打开或关闭多个图形窗口"> <span class="article-toc__num" aria-hidden="true">6.1.2</span> <span class="article-toc__text">打开或关闭多个图形窗口</span> </a> </li><li> <a class="article-toc__link" href="#图形保存" data-depth="3" data-level="3" title="图形保存"> <span class="article-toc__num" aria-hidden="true">6.1.3</span> <span class="article-toc__text">图形保存</span> </a> </li><li> <a class="article-toc__link" href="#图形参数" data-depth="2" data-level="2" title="图形参数"> <span class="article-toc__num" aria-hidden="true">6.2</span> <span class="article-toc__text">图形参数</span> </a> </li><li> <a class="article-toc__link" href="#设置图形参数列表" data-depth="3" data-level="3" title="设置图形参数列表"> <span class="article-toc__num" aria-hidden="true">6.2.1</span> <span class="article-toc__text">设置图形参数列表</span> </a> </li><li> <a class="article-toc__link" href="#绘画函数内直接添加图形参数" data-depth="3" data-level="3" title="绘画函数内直接添加图形参数"> <span class="article-toc__num" aria-hidden="true">6.2.2</span> <span class="article-toc__text">绘画函数内直接添加图形参数</span> </a> </li><li> <a class="article-toc__link" href="#符号与线条" data-depth="2" data-level="2" title="符号与线条"> <span class="article-toc__num" aria-hidden="true">6.3</span> <span class="article-toc__text">符号与线条</span> </a> </li><li> <a class="article-toc__link" href="#颜色" data-depth="2" data-level="2" title="颜色"> <span class="article-toc__num" aria-hidden="true">6.4</span> <span class="article-toc__text">颜色</span> </a> </li><li> <a class="article-toc__link" href="#文本属性" data-depth="2" data-level="2" title="文本属性"> <span class="article-toc__num" aria-hidden="true">6.5</span> <span class="article-toc__text">文本属性</span> </a> </li><li> <a class="article-toc__link" href="#字体大小" data-depth="3" data-level="3" title="字体大小"> <span class="article-toc__num" aria-hidden="true">6.5.1</span> <span class="article-toc__text">字体大小</span> </a> </li><li> <a class="article-toc__link" href="#字体字样" data-depth="3" data-level="3" title="字体字样"> <span class="article-toc__num" aria-hidden="true">6.5.2</span> <span class="article-toc__text">字体字样</span> </a> </li><li> <a class="article-toc__link" href="#图形尺寸和边界尺寸" data-depth="2" data-level="2" title="图形尺寸和边界尺寸"> <span class="article-toc__num" aria-hidden="true">6.6</span> <span class="article-toc__text">图形尺寸和边界尺寸</span> </a> </li><li> <a class="article-toc__link" href="#添加文本自定义坐标轴和图例" data-depth="2" data-level="2" title="添加文本、自定义坐标轴和图例"> <span class="article-toc__num" aria-hidden="true">6.7</span> <span class="article-toc__text">添加文本、自定义坐标轴和图例</span> </a> </li><li> <a class="article-toc__link" href="#标题" data-depth="3" data-level="3" title="标题"> <span class="article-toc__num" aria-hidden="true">6.7.1</span> <span class="article-toc__text">标题</span> </a> </li><li> <a class="article-toc__link" href="#坐标轴" data-depth="3" data-level="3" title="坐标轴"> <span class="article-toc__num" aria-hidden="true">6.7.2</span> <span class="article-toc__text">坐标轴</span> </a> </li><li> <a class="article-toc__link" href="#参考线" data-depth="3" data-level="3" title="参考线"> <span class="article-toc__num" aria-hidden="true">6.7.3</span> <span class="article-toc__text">参考线</span> </a> </li><li> <a class="article-toc__link" href="#图例" data-depth="3" data-level="3" title="图例"> <span class="article-toc__num" aria-hidden="true">6.7.4</span> <span class="article-toc__text">图例</span> </a> </li><li> <a class="article-toc__link" href="#文本注释" data-depth="3" data-level="3" title="文本注释"> <span class="article-toc__num" aria-hidden="true">6.7.5</span> <span class="article-toc__text">文本注释</span> </a> </li><li> <a class="article-toc__link" href="#散点图" data-depth="2" data-level="2" title="散点图"> <span class="article-toc__num" aria-hidden="true">6.8</span> <span class="article-toc__text">散点图</span> </a> </li><li> <a class="article-toc__link" href="#基础函数plot" data-depth="3" data-level="3" title="基础函数plot()"> <span class="article-toc__num" aria-hidden="true">6.8.1</span> <span class="article-toc__text">基础函数plot()</span> </a> </li><li> <a class="article-toc__link" href="#散点图矩阵" data-depth="3" data-level="3" title="散点图矩阵"> <span class="article-toc__num" aria-hidden="true">6.8.2</span> <span class="article-toc__text">散点图矩阵</span> </a> </li><li> <a class="article-toc__link" href="#三维散点图" data-depth="3" data-level="3" title="三维散点图"> <span class="article-toc__num" aria-hidden="true">6.8.3</span> <span class="article-toc__text">三维散点图</span> </a> </li><li> <a class="article-toc__link" href="#旋转三维散点图" data-depth="3" data-level="3" title="旋转三维散点图"> <span class="article-toc__num" aria-hidden="true">6.8.4</span> <span class="article-toc__text">旋转三维散点图</span> </a> </li><li> <a class="article-toc__link" href="#气泡图" data-depth="3" data-level="3" title="气泡图"> <span class="article-toc__num" aria-hidden="true">6.8.5</span> <span class="article-toc__text">气泡图</span> </a> </li><li> <a class="article-toc__link" href="#折线图" data-depth="2" data-level="2" title="折线图"> <span class="article-toc__num" aria-hidden="true">6.9</span> <span class="article-toc__text">折线图</span> </a> </li><li> <a class="article-toc__link" href="#图形组合" data-depth="2" data-level="2" title="图形组合"> <span class="article-toc__num" aria-hidden="true">6.10</span> <span class="article-toc__text">图形组合</span> </a> </li><li> <a class="article-toc__link" href="#par" data-depth="3" data-level="3" title="par"> <span class="article-toc__num" aria-hidden="true">6.10.1</span> <span class="article-toc__text">par</span> </a> </li><li> <a class="article-toc__link" href="#layout" data-depth="3" data-level="3" title="layout"> <span class="article-toc__num" aria-hidden="true">6.10.2</span> <span class="article-toc__text">layout</span> </a> </li><li> <a class="article-toc__link" href="#curve" data-depth="3" data-level="3" title="curve"> <span class="article-toc__num" aria-hidden="true">6.10.3</span> <span class="article-toc__text">curve</span> </a> </li><li> <a class="article-toc__link" href="#rect" data-depth="3" data-level="3" title="rect"> <span class="article-toc__num" aria-hidden="true">6.10.4</span> <span class="article-toc__text">rect</span> </a> </li><li> <a class="article-toc__link" href="#polygon" data-depth="3" data-level="3" title="polygon"> <span class="article-toc__num" aria-hidden="true">6.10.5</span> <span class="article-toc__text">polygon</span> </a> </li> </ul> </nav> <div class="prose">  <h1 id="r语言概述">R语言概述</h1>
+<ol>
+<li>R是属于GNU系统的一个自由、免费、源代码开放的软件，它是用于数据分析和可视化的软件功能的集成套件，是一个用于统计计算和统计制图的优秀工具。它可以在各种UNIX平台、Windows和MacOS上编译并运行。 R是统计领域广泛使用的诞生于1980年左右的S语言的一个分支，R是一个类似于S语言的GNU项目，可以将R视为S的不同实现，该项目是由约翰·钱伯斯及其同事在AT＆T贝尔实验室开发的。R与S一样，都是围绕一种真正的计算机语言设计的，它允许用户通过定义新功能来添加其他功能。系统的大部分本身是用S的R语言编写的，这使用户可以轻松地遵循所选择的算法。对于计算量大的任务，可以在运行时链接和调用C，C ++和Fortran代码。高级用户可以编写C代码来直接操纵R对象。R和S存在一些区别，但是用S编写的许多代码在R的环境下都不会改变。S语言通常是统计方法论研究的首选工具，R语言提供了一种开放源代码的途径来参与该活动。</li>
+<li>R可以轻松制作出精心设计的具有出版质量的图表，其中包括需要的数学符号和公式。R提供了各种各样的统计信息（线性和非线性建模，经典统计检验，时间序列分析，分类，聚类等等）和图形技术，并且具有高度的可扩展性。许多用户将R视为统计软件，其实可以将R视为实现统计技术的环境。R可以通过包轻松扩展。R发行版提供了大约八种软件包，并且CRAN系列Internet网站还提供了更多软件包，涵盖了非常广泛的现代统计数据。R有自己的类似LaTeX的文档格式，可用于提供全面的文档，既可以在线使用多种格式，也可以使用硬拷贝。</li>
+<li>R是一个自由的、免费的、开源的软件。</li>
+<li>R可以轻松地从各种类型的数据源导入数据库，包括文本文件、数据库管理系统、统计软件，乃至专门的数据仓库。它同样可以将数据输出并写入这些系统中。</li>
+<li>R可以在Windows、UNIX、Mac OS X和Linux等多种平台上运行。</li>
+<li>R拥有强大的制图功能，提供了丰富的2D和3D图形库，能够生成从简单到复杂的各种图形。</li>
+<li>R更新迅速，囊括了许多先进的统计计算和前沿的统计方法。事实上，新方法的更新速度是以周来计算的，这是大多数统计软件达不到的。</li>
+<li>R可以连接到其他的高性能编程语言，如C++、Python、SAS和SPSS等。这样你可以在熟悉的语言编程环境中加入R的功能。</li>
+</ol>
+<h1 id="r的基本使用">R的基本使用</h1>
+<h2 id="赋值操作">赋值操作</h2>
+<p>在R语言中，标准赋值运算符是“&#x3C;-”，并非传统的“=”。R语言也允许使用“=”为对象赋值，不过并不建议使用它。</p>
+<div class="code-block" data-lang="plaintext" data-lines="3"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">3 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="3"><code><span class="line"><span>> x&#x3C;-0:10 #创建一个等差数列向量 </span></span>
+<span class="line"><span>> x </span></span>
+<span class="line"><span>[1] 0 1 2 3 4 5 6 7 8 9 10</span></span></code></pre></div>
+<h3 id="区分大小写">区分大小写</h3>
+<p>R语言对大小写很敏感，即X和x的含义是不同的，同一字母的大小写代表不同的变量对象。</p>
+<div class="code-block" data-lang="plaintext" data-lines="4"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">4 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="4"><code><span class="line"><span>> x&#x3C;-1:10 </span></span>
+<span class="line"><span>> X 错误: 找不到对象'X' </span></span>
+<span class="line"><span>> x </span></span>
+<span class="line"><span>[1] 1 2 3 4 5 6 7 8 9 10</span></span></code></pre></div>
+<h2 id="提示符">‘+’提示符</h2>
+<p>当输入命令没有完整前，R会以“+”作为提示符，提醒用户该命令还未结束。这时，将命令输入完整，则提示符会变成“>”。</p>
+<div class="code-block" data-lang="plaintext" data-lines="5"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">5 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="5"><code><span class="line"><span>> x&#x3C;-10- </span></span>
+<span class="line"><span>+ </span></span>
+<span class="line"><span>+ 2 </span></span>
+<span class="line"><span>> x </span></span>
+<span class="line"><span>[1] 8</span></span></code></pre></div>
+<h2 id="示例">示例</h2>
+<p><img alt="" loading="lazy" decoding="async" width="1869" height="889" src="/_astro/Capture_20240810_151849.SKKM_0r9_Z2ehlS2.webp"></p>
+<div class="code-block" data-lang="plaintext" data-lines="11"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">11 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="11"><code><span class="line"><span>>x&#x3C;-c(3.4,1.8,4.6,2.3,3.1,5.5,0.7,3.0,2.6,4.3,2.1,1.1,6.1,4.8,3.8)</span></span>
+<span class="line"><span>>y&#x3C;-c(26.2,17.8,31.3,23.1,27.5,36.0,14.1,22.3,</span></span>
+<span class="line"><span>+19.6,31.3,24.0,17.3, 43.2,36.4,26.1)</span></span>
+<span class="line"><span>>mean(y)  #mean()函数求取均值</span></span>
+<span class="line"><span>[1] 26.41333</span></span>
+<span class="line"><span>>sd(y)   #sd()函数求取方差</span></span>
+<span class="line"><span>[1]8.068976</span></span>
+<span class="line"><span>>cor(x, y)  #cor()函数计算相关系数</span></span>
+<span class="line"><span>[1] 0.9609777</span></span>
+<span class="line"><span>>plot (x,y)  #plot()绘制散点图</span></span>
+<span class="line"><span>>q()  #函数q()结束会话并允许退出R语言</span></span></code></pre></div>
+<p><img alt="" loading="lazy" decoding="async" width="966" height="902" src="/_astro/Capture_20240810_151905.Ztu5NcOw_29xWIK.webp"></p>
+<blockquote>
+<p>从代码中可以看到，火灾损失的平均费用为26.413元，标准差为8.069元，火灾发生地<br>
+离消防站距离与火灾损失之间存在较强的线性关系（相关度为0.96)。这种关系也可以通过散点图看出来，即火灾地离消防站越远，所造成的火灾损失费用就会越高</p>
+</blockquote>
+<h2 id="输入与输出">输入与输出</h2>
+<p>启动R软件后将默认开始一个交互式的会话，从键盘接受输入并从屏幕进行输出。也可以处理写在一个脚本文件（一个包含了R语句的文件）中的命令集并直接将结果输出到多类目标中。</p>
+<p>1.输入</p>
+<p>函数source(“filename”）可在当前会话中执行一个脚本。如果文件名中不包含路径，R 语言将假设此脚本在当前工作目录中。举例来说，source(“myscript.R”）将执行包含在文件myscript.R中的R语句集合</p>
+<p>2.文本输出</p>
+<p>函数sink(“filename”）将输出重定向到文件filename中。默认情况下，如果文件已经存在，则它的内容将被覆盖。使用参数append=TRUE 可以将文本追加到文件后，而不是覆盖它。参数split=TRUE 可将输出同时发送到屏幕和输出文件中。不加参数调用命令sink(）将仅向屏幕返回输出结果。</p>
+<p>3.图形输出</p>
+<p>虽然sink(）可以重定向文本输出，但它对图形输出没有影响。要重定向图形输出，使用表1-4中列出的函数即可，最后使用dev.off(）将输出返回到终端</p>
+<p><img alt="" loading="lazy" decoding="async" width="1563" height="620" src="/_astro/Capture_20240810_152610.B9DUDcVN_1cDU2c.webp"></p>
+<h1 id="分支语句">分支语句</h1>
+<h2 id="if语句">if语句</h2>
+<blockquote>
+<p>if、if…else…、else if</p>
+</blockquote>
+<div class="code-block" data-lang="plaintext" data-lines="25"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">25 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="25"><code><span class="line"><span>> #if语句</span></span>
+<span class="line"><span>> print("请输入您的心率值（单位：次/分）：")</span></span>
+<span class="line"><span>[1] "请输入您的心率值（单位：次/分）："</span></span>
+<span class="line"><span>> value&#x3C;-scan()</span></span>
+<span class="line"><span>1: 100</span></span>
+<span class="line"><span>2: </span></span>
+<span class="line"><span>Read 1 item</span></span>
+<span class="line"><span>> if(value>=60&#x26;value&#x3C;=100){print("正常值")}else{print("异常值，请监测心率")}</span></span>
+<span class="line"><span>[1] "正常值"</span></span>
+<span class="line"><span>> print("请输入您的血压测量值（单位：mmHg），收缩压（SBP）和舒张压（DBP）为：")</span></span>
+<span class="line"><span>[1] "请输入您的血压测量值（单位：mmHg），收缩压（SBP）和舒张压（DBP）为："</span></span>
+<span class="line"><span>> value&#x3C;-scan()</span></span>
+<span class="line"><span>1: 100 150</span></span>
+<span class="line"><span>3: </span></span>
+<span class="line"><span>Read 2 items</span></span>
+<span class="line"><span>> if(value[1]&#x3C;120&#x26;value[2]&#x3C;80){print("正常值")}else</span></span>
+<span class="line"><span>+ if(value[1]&#x3C;140&#x26;value[2]&#x3C;90){print("正常高值")}else</span></span>
+<span class="line"><span>+ {print("高血压")}</span></span>
+<span class="line"><span>[1] "高血压"</span></span>
+<span class="line"><span>> #向量化的逻辑表达式</span></span>
+<span class="line"><span>> y&#x3C;-c(3,8)</span></span>
+<span class="line"><span>> fruit&#x3C;-10*y</span></span>
+<span class="line"><span>> fruit&#x3C;-fruit*ifelse(y>5,0.9,1)</span></span>
+<span class="line"><span>> fruit</span></span>
+<span class="line"><span>[1] 30 72</span></span></code></pre></div>
+<h2 id="switch语句">switch语句</h2>
+<div class="code-block" data-lang="plaintext" data-lines="10"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">10 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="10"><code><span class="line"><span>> #switch语句</span></span>
+<span class="line"><span>> switch(2,mean(1:10),sum(1:10),max(1:10),min(1:10)) #执行数字对应表达式</span></span>
+<span class="line"><span>[1] 55</span></span>
+<span class="line"><span>> switch(2*2,mean(1:10),sum(1:10),max(1:10),min(1:10))</span></span>
+<span class="line"><span>[1] 1> pra&#x3C;-switch("gamma",alpha=1,beta=sqrt(4),gamma={a&#x3C;-sin(pi/2);4*a^2})</span></span>
+<span class="line"><span>> pra</span></span>
+<span class="line"><span>[1] 4> you.like&#x3C;-'eat'</span></span>
+<span class="line"><span>> out&#x3C;-switch(you.like,drink='water',meat='beef',fruit='apple',vegetable='cabbage')</span></span>
+<span class="line"><span>> out</span></span>
+<span class="line"><span>NULL</span></span></code></pre></div>
+<h2 id="循环语句">循环语句</h2>
+<div class="code-block" data-lang="plaintext" data-lines="33"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">33 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="33"><code><span class="line"><span>> #循环语句</span></span>
+<span class="line"><span>> repeat{</span></span>
+<span class="line"><span>+     message("请投骰子！")</span></span>
+<span class="line"><span>+     action&#x3C;-sample(1:6,1)</span></span>
+<span class="line"><span>+     message("action=",action)</span></span>
+<span class="line"><span>+     if(action=="6") break</span></span>
+<span class="line"><span>+ }</span></span>
+<span class="line"><span>请投骰子！</span></span>
+<span class="line"><span>action=4</span></span>
+<span class="line"><span>请投骰子！</span></span>
+<span class="line"><span>action=6</span></span>
+<span class="line"><span>> repeat{</span></span>
+<span class="line"><span>+     message("BMI index!")</span></span>
+<span class="line"><span>+     bmi&#x3C;-sample(c(18.5,24,28,32),1)</span></span>
+<span class="line"><span>+     if(bmi==18.5){</span></span>
+<span class="line"><span>+         message("Quietly skipping to the next iteration")</span></span>
+<span class="line"><span>+         next</span></span>
+<span class="line"><span>+     }</span></span>
+<span class="line"><span>+     message("BMI=",bmi)</span></span>
+<span class="line"><span>+     if(bmi==32) break</span></span>
+<span class="line"><span>+ }</span></span>
+<span class="line"><span>BMI index!</span></span>
+<span class="line"><span>BMI=32> i&#x3C;-1</span></span>
+<span class="line"><span>> sum&#x3C;-0</span></span>
+<span class="line"><span>> repeat{</span></span>
+<span class="line"><span>+     sum = sum+i</span></span>
+<span class="line"><span>+     i = i+1</span></span>
+<span class="line"><span>+     if(i>100){</span></span>
+<span class="line"><span>+         print(sum)</span></span>
+<span class="line"><span>+         break</span></span>
+<span class="line"><span>+     }</span></span>
+<span class="line"><span>+ }</span></span>
+<span class="line"><span>[1] 5050</span></span></code></pre></div>
+<h2 id="while语句">While语句</h2>
+<div class="code-block" data-lang="plaintext" data-lines="24"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">24 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="24"><code><span class="line"><span>> #while语句</span></span>
+<span class="line"><span>> action&#x3C;-sample(1:6,1)</span></span>
+<span class="line"><span>> message("action=",action)</span></span>
+<span class="line"><span>action=3</span></span>
+<span class="line"><span>> while(action!="6"){</span></span>
+<span class="line"><span>+ message("please continue...")</span></span>
+<span class="line"><span>+ action&#x3C;-sample(1:6,1)</span></span>
+<span class="line"><span>+ message("action=",action)</span></span>
+<span class="line"><span>+ }</span></span>
+<span class="line"><span>please continue...</span></span>
+<span class="line"><span>action=3</span></span>
+<span class="line"><span>please continue...</span></span>
+<span class="line"><span>action=5</span></span>
+<span class="line"><span>please continue...</span></span>
+<span class="line"><span>action=4</span></span>
+<span class="line"><span>please continue...</span></span>
+<span class="line"><span>action=6</span></span>
+<span class="line"><span>> message("Game over!")</span></span>
+<span class="line"><span>Game over!</span></span>
+<span class="line"><span>> i&#x3C;-1</span></span>
+<span class="line"><span>> sum&#x3C;-0</span></span>
+<span class="line"><span>> while(i&#x3C;=100){sum=sum+i;i=i+1}</span></span>
+<span class="line"><span>> print(sum)</span></span>
+<span class="line"><span>[1] 5050</span></span></code></pre></div>
+<h2 id="for循环">for循环</h2>
+<div class="code-block" data-lang="plaintext" data-lines="47"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">47 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="47"><code><span class="line"><span>> #for循环语句</span></span>
+<span class="line"><span>> n&#x3C;-c(2,5,10)</span></span>
+<span class="line"><span>> for(i in n){</span></span>
+<span class="line"><span>+ x&#x3C;-i^2</span></span>
+<span class="line"><span>+ cat('power(',i,'):',x,'\n')</span></span>
+<span class="line"><span>+ }</span></span>
+<span class="line"><span>power( 2 ): 4 </span></span>
+<span class="line"><span>power( 5 ): 25 </span></span>
+<span class="line"><span>power( 10 ): 100 </span></span>
+<span class="line"><span>> n&#x3C;-5</span></span>
+<span class="line"><span>> x&#x3C;-array(0,dim=c(n,n))</span></span>
+<span class="line"><span>> for(i in 1:n){</span></span>
+<span class="line"><span>+ for(j in 1:n){</span></span>
+<span class="line"><span>+ x[i,j]&#x3C;-1/(i+j-1)</span></span>
+<span class="line"><span>+ }</span></span>
+<span class="line"><span>+ }</span></span>
+<span class="line"><span>> </span></span>
+<span class="line"><span>> print(x)</span></span>
+<span class="line"><span>[,1] [,2] [,3] [,4] [,5]</span></span>
+<span class="line"><span>[1,] 1.0000000 0.5000000 0.3333333 0.2500000 0.2000000</span></span>
+<span class="line"><span>[2,] 0.5000000 0.3333333 0.2500000 0.2000000 0.1666667</span></span>
+<span class="line"><span>[3,] 0.3333333 0.2500000 0.2000000 0.1666667 0.1428571</span></span>
+<span class="line"><span>[4,] 0.2500000 0.2000000 0.1666667 0.1428571 0.1250000</span></span>
+<span class="line"><span>[5,] 0.2000000 0.1666667 0.1428571 0.1250000 0.1111111</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>#replication高级循环</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>> bmi_fun&#x3C;-function(){</span></span>
+<span class="line"><span>+     bmi&#x3C;-sample(</span></span>
+<span class="line"><span>+         c('fat','weight', 'normal','light'),</span></span>
+<span class="line"><span>+         size=1,</span></span>
+<span class="line"><span>+         prob=c(0.1,0.3,0.4,0.2)</span></span>
+<span class="line"><span>+     )</span></span>
+<span class="line"><span>+     </span></span>
+<span class="line"><span>+     time&#x3C;-switch (</span></span>
+<span class="line"><span>+         bmi,</span></span>
+<span class="line"><span>+         fat=rnorm(1,32,5),##rnorm正态分布（个数，均值，标准差)</span></span>
+<span class="line"><span>+         weight=rnorm(1,28,3),</span></span>
+<span class="line"><span>+         normal=rnorm(1,24,3),</span></span>
+<span class="line"><span>+         light=rnorm(1,18.5,2)</span></span>
+<span class="line"><span>+     )</span></span>
+<span class="line"><span>+     </span></span>
+<span class="line"><span>+     names(time)</span></span>
+<span class="line"><span>+     time</span></span>
+<span class="line"><span>+ }</span></span>
+<span class="line"><span>> replicate(3,bmi_fun())</span></span>
+<span class="line"><span>[1] 21.19540 24.39278 15.58931</span></span></code></pre></div>
+<h1 id="自定义函数">自定义函数</h1>
+<div class="code-block" data-lang="plaintext" data-lines="16"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">16 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="16"><code><span class="line"><span>> plot.f&#x3C;-function(f,a,b){val&#x3C;-seq(a,b,length=100);plot(val,f(val))}</span></span>
+<span class="line"><span>> plot.f(sin,0,2*pi)</span></span>
+<span class="line"><span>> plot.f(cos,0,2*pi)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>> vms&#x3C;-function(x){</span></span>
+<span class="line"><span>+ xx=rev(sort(x))</span></span>
+<span class="line"><span>+ xx=xx[1:5]</span></span>
+<span class="line"><span>+ mean(xx)</span></span>
+<span class="line"><span>+ return(list(xba=mean(xx),top5=xx))</span></span>
+<span class="line"><span>+ }</span></span>
+<span class="line"><span>> x&#x3C;-c(3,9,1,4,7,5,3)</span></span>
+<span class="line"><span>> vms(x)</span></span>
+<span class="line"><span>$xba</span></span>
+<span class="line"><span>[1] 5.6</span></span>
+<span class="line"><span>$top5</span></span>
+<span class="line"><span>[1] 9 7 5 4 3</span></span></code></pre></div>
+<h1 id="数据集">数据集</h1>
+<p>数据集通常是由数据构成的一个矩形数组，行表示观测，列表示变量。</p>
+<p><img alt="" loading="lazy" decoding="async" width="1719" height="536" src="/_astro/Capture_20240810_152811.C4ifULq0_DAJJn.webp"></p>
+<h2 id="数据类型">数据类型</h2>
+<p>R语言中，可以处理的数据类型有</p>
+<ul>
+<li>数值型 numeric</li>
+<li>字符型 character</li>
+<li>逻辑型 logical</li>
+<li>复数型 （虚数）</li>
+<li>原生型 （字节）</li>
+</ul>
+<p>如上图表2-1中，patientID、admDate和age为数值型变量，而diabetes和status则为字符型变量。如果再细分一下：patientID是实例标识符，admDate含有日期数据，diabetes和status分别是名义型和有序型变量。<strong>R语言将实例标识符称为rownames （行名），将类别型（包括名义型和有序型）变量称为因子（factors)。</strong></p>
+<h2 id="数据结构">数据结构</h2>
+<p>R语言中提供了多种存储数据的对象类型，包括<strong>标量</strong>（R语言中的标量是由向量的形式表达，即只含一个元素的向量，多用于存储常量，可以说R语言中没有标量）、<strong>向量、矩阵、数组、数据框、列表</strong></p>
+<h3 id="向量">向量</h3>
+<h4 id="声明">声明</h4>
+<p>定义：向量是用于存储数值型、字符型或逻辑型数据的<strong>一维数组</strong>。单个向量中的数据必须<strong>保持相同的类型或模式</strong>（数值型、字符型或逻辑型）</p>
+<p>创建方法：<strong>常见创建函数为c()</strong></p>
+<p>其他函数方法：查看数据类型用mode()、查看向量长度length()</p>
+<h4 id="创建向量">创建向量</h4>
+<div class="code-block" data-lang="plaintext" data-lines="19"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">19 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="19"><code><span class="line"><span>>a&#x3C;-c(1,3,5,6,2,4,9)</span></span>
+<span class="line"><span>>a</span></span>
+<span class="line"><span>[1]1 3 5 6 2 4 9</span></span>
+<span class="line"><span>>b&#x3C;-c("A","B", "C") #使用c函数创建向量</span></span>
+<span class="line"><span>>c&#x3C;-c(TRUE, TRUE, FALSE,TRUE)</span></span>
+<span class="line"><span>>mode(a)</span></span>
+<span class="line"><span>[1] "numeric"</span></span>
+<span class="line"><span>>mode(b)</span></span>
+<span class="line"><span>[1]"character"</span></span>
+<span class="line"><span>>mode(c)</span></span>
+<span class="line"><span>[1]"logical"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>>x&#x3C;-12:60  #使用冒号创建向量</span></span>
+<span class="line"><span>>x</span></span>
+<span class="line"><span>[1] 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35</span></span>
+<span class="line"><span>[25] 36 3738 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59</span></span>
+<span class="line"><span>[49] 60</span></span>
+<span class="line"><span>>length(x)</span></span>
+<span class="line"><span>[1] 49</span></span></code></pre></div>
+<h5 id="seq函数">seq()函数</h5>
+<p>可以生成等差序列、实数序列，并且可以指定步长</p>
+<div class="code-block" data-lang="plaintext" data-lines="6"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">6 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="6"><code><span class="line"><span>#格式一：seq(from=value1,to=value2,by=value3)</span></span>
+<span class="line"><span>> seq(1,5,0.5)</span></span>
+<span class="line"><span>[1] 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>#格式二：seq(length=value1,from=value2,by=value3)</span></span>
+<span class="line"><span>> seq(length=9,from=1,by=0.5) [1] 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0</span></span></code></pre></div>
+<h5 id="rep函数">rep()函数</h5>
+<p>创建重复元素的向量</p>
+<div class="code-block" data-lang="plaintext" data-lines="12"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">12 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="12"><code><span class="line"><span>> rep(1,10)</span></span>
+<span class="line"><span> [1] 1 1 1 1 1 1 1 1 1 1</span></span>
+<span class="line"><span>> rep(1:5,2)</span></span>
+<span class="line"><span> [1] 1 2 3 4 5 1 2 3 4 5</span></span>
+<span class="line"><span>> rep(c("male","female"),5)</span></span>
+<span class="line"><span> [1] "male"   "female" "male"   "female" "male"   "female" "male"  </span></span>
+<span class="line"><span> [8] "female" "male"   "female"</span></span>
+<span class="line"><span>> rep(c("male","female"),each=5)</span></span>
+<span class="line"><span> [1] "male"   "male"   "male"   "male"   "male"   "female"</span></span>
+<span class="line"><span> [7] "female" "female" "female" "female"</span></span>
+<span class="line"><span>> rep(c("S","M","L"),c(2,3,4))</span></span>
+<span class="line"><span>[1] "S" "S" "M" "M" "M" "L" "L" "L" "L"</span></span></code></pre></div>
+<h5 id="sequence函数">sequence()函数</h5>
+<p>创建一个连续的整数序列，每一个序列都以给定参数结尾</p>
+<div class="code-block" data-lang="plaintext" data-lines="14"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">14 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="14"><code><span class="line"><span>> sequence(4:5)</span></span>
+<span class="line"><span>[1] 1 2 3 4 1 2 3 4 5</span></span>
+<span class="line"><span>> sequence(c(10,5))</span></span>
+<span class="line"><span> [1]  1  2  3  4  5  6  7  8  9 10  1  2  3  4  5</span></span>
+<span class="line"><span>> sequence(c(1,10))</span></span>
+<span class="line"><span> [1]  1  1  2  3  4  5  6  7  8  9 10</span></span>
+<span class="line"><span>> sequence(4:5)</span></span>
+<span class="line"><span>[1] 1 2 3 4 1 2 3 4 5</span></span>
+<span class="line"><span>> sequence(c(10,5))</span></span>
+<span class="line"><span> [1]  1  2  3  4  5  6  7  8  9 10  1  2  3  4  5</span></span>
+<span class="line"><span>> sequence(c(1:10))</span></span>
+<span class="line"><span> [1]  1  1  2  1  2  3  1  2  3  4  1  2  3  4  5  1  2  3  4  5</span></span>
+<span class="line"><span>[21]  6  1  2  3  4  5  6  7  1  2  3  4  5  6  7  8  1  2  3  4</span></span>
+<span class="line"><span>[41]  5  6  7  8  9  1  2  3  4  5  6  7  8  9 10</span></span></code></pre></div>
+<h4 id="类型转换">类型转换</h4>
+<div class="code-block" data-lang="plaintext" data-lines="27"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">27 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="27"><code><span class="line"><span>> as.numeric(FALSE)</span></span>
+<span class="line"><span>[1] 0</span></span>
+<span class="line"><span>> as.numeric(TRUE)</span></span>
+<span class="line"><span>[1] 1</span></span>
+<span class="line"><span>> as.numeric("1")</span></span>
+<span class="line"><span>[1] 1</span></span>
+<span class="line"><span>> as.numeric("0")</span></span>
+<span class="line"><span>[1] 0</span></span>
+<span class="line"><span>> as.numeric("A")</span></span>
+<span class="line"><span>[1] NA> as.logical(0)</span></span>
+<span class="line"><span>[1] FALSE</span></span>
+<span class="line"><span>> as.logical(1)</span></span>
+<span class="line"><span>[1] TRUE</span></span>
+<span class="line"><span>> as.logical(2)</span></span>
+<span class="line"><span>[1] TRUE</span></span>
+<span class="line"><span>> as.logical("FALSE")</span></span>
+<span class="line"><span>[1] FALSE</span></span>
+<span class="line"><span>> as.logical("F")</span></span>
+<span class="line"><span>[1] FALSE</span></span>
+<span class="line"><span>> as.logical("T") </span></span>
+<span class="line"><span>[1] TRUE</span></span>
+<span class="line"><span>> as.character(1)</span></span>
+<span class="line"><span>[1] "1"</span></span>
+<span class="line"><span>> as.character(FALSE)</span></span>
+<span class="line"><span>[1] "FALSE"</span></span>
+<span class="line"><span>> as.character(TRUE)</span></span>
+<span class="line"><span>[1] "TRUE"</span></span></code></pre></div>
+<h4 id="向量元素选取">向量元素选取</h4>
+<div class="code-block" data-lang="plaintext" data-lines="3"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">3 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="3"><code><span class="line"><span>>x&#x3C;-1:10</span></span>
+<span class="line"><span>>x</span></span>
+<span class="line"><span>[1] 1 2 3 4 5 6 7 8 9 10</span></span></code></pre></div>
+<p>1.通过下标取对应值</p>
+<div class="code-block" data-lang="plaintext" data-lines="2"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">2 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="2"><code><span class="line"><span>>x[5]</span></span>
+<span class="line"><span>[1] 5</span></span></code></pre></div>
+<p>2.通过c()函数和下标取多值</p>
+<div class="code-block" data-lang="plaintext" data-lines="2"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">2 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="2"><code><span class="line"><span>>x[c(1,5,8,10)]</span></span>
+<span class="line"><span>[1] 1 5 8 10</span></span></code></pre></div>
+<p>3.通过切片获取或删除</p>
+<div class="code-block" data-lang="plaintext" data-lines="4"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">4 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="4"><code><span class="line"><span>>x[2:5]</span></span>
+<span class="line"><span>[1] 2 3 4 5</span></span>
+<span class="line"><span>>x[-2:-5]</span></span>
+<span class="line"><span>[1] 1 6 7 8 9 10</span></span></code></pre></div>
+<h3 id="矩阵">矩阵</h3>
+<h4 id="声明-1">声明</h4>
+<p>定义：<strong>矩阵是一个二维数组</strong>，与向量类似，矩阵中也<strong>仅能包含一种数据类型</strong>（数值型、字符型或逻辑型）。</p>
+<p>创建方法：使用函数matrix(）来创建矩阵，一般语法格式为</p>
+<p>matrix(data=NA, nrow=1, ncol=1, byrow=FALSE, dimnames=NULL)</p>
+<blockquote>
+<p>data包含了矩阵的元素，默认为NA;</p>
+<p>nrow和ncol分别为行数和列数，默认值均为1;</p>
+<p>byrow表示矩阵应当按行填充（byrow=TRUE）还是按列填充（byrow=FALSE)，默认情况下按列填充；</p>
+<p>dimnames为以字符型向量表示的行名和列名，默认为NULL</p>
+</blockquote>
+<h4 id="创建矩阵">创建矩阵</h4>
+<p>1.按列填充</p>
+<div class="code-block" data-lang="plaintext" data-lines="9"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">9 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="9"><code><span class="line"><span>>x&#x3C;-matrix(1:15,nrow=5,ncol=3)  # 5*3矩阵 按列填充</span></span>
+<span class="line"><span>>x</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>     [,1] [,2] [,3]</span></span>
+<span class="line"><span>[1,]  1     6   11</span></span>
+<span class="line"><span>[2,]  2     7   12</span></span>
+<span class="line"><span>[3,]  3     8   13</span></span>
+<span class="line"><span>[4,]  4     9   14</span></span>
+<span class="line"><span>[5,]  5     10  15</span></span></code></pre></div>
+<p>2.按行填充</p>
+<div class="code-block" data-lang="plaintext" data-lines="10"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">10 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="10"><code><span class="line"><span>>a&#x3C;-1:6</span></span>
+<span class="line"><span>>rnames&#x3C;-c("r1","r2")</span></span>
+<span class="line"><span>>cnames&#x3C;-c("c1","c2","c3")</span></span>
+<span class="line"><span>>x&#x3C;-matrix(a,nrow=2,ncol=3,byrow=TRUE,  # 2*3矩阵 按行填充</span></span>
+<span class="line"><span>           dimnames=list(rnames,cnames)) </span></span>
+<span class="line"><span>>x</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>     [c1] [c2] [c3]</span></span>
+<span class="line"><span>[r1]   1    2   3</span></span>
+<span class="line"><span>[r2]   4    5   6</span></span></code></pre></div>
+<h4 id="矩阵合并">矩阵合并</h4>
+<div class="code-block" data-lang="plaintext" data-lines="12"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">12 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="12"><code><span class="line"><span>> m1&#x3C;-matrix(1,nr=2,nc=2)</span></span>
+<span class="line"><span>> m2&#x3C;-matrix(2,nr=2,nc=2)</span></span>
+<span class="line"><span>> rbind(m1,m2) #按行合并</span></span>
+<span class="line"><span>[,1] [,2]</span></span>
+<span class="line"><span>[1,] 1 1</span></span>
+<span class="line"><span>[2,] 1 1</span></span>
+<span class="line"><span>[3,] 2 2</span></span>
+<span class="line"><span>[4,] 2 2</span></span>
+<span class="line"><span>> cbind(m1,m2) #按列合并</span></span>
+<span class="line"><span>[,1] [,2] [,3] [,4]</span></span>
+<span class="line"><span>[1,] 1 1 2 2</span></span>
+<span class="line"><span>[2,] 1 1 2 2</span></span></code></pre></div>
+<h4 id="矩阵下标使用">矩阵下标使用</h4>
+<p>通过使用下标和方括号，可以访问矩阵中的行、列或元素。</p>
+<p>X[i,］表示矩阵x中的第i 行，X[,j］表示矩阵X中的第j列，X[i,j］表示矩阵x中的第i行、第j列元素，选择多行或多列时，下标i和j可为数值型向量</p>
+<div class="code-block" data-lang="plaintext" data-lines="21"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">21 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="21"><code><span class="line"><span>>x&#x3C;-matrix(1:15,nrow=5,ncol=3) # 5*3矩阵 按列填充</span></span>
+<span class="line"><span>>x</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>     [,1] [,2] [,3]</span></span>
+<span class="line"><span>[1,]   1    6   11</span></span>
+<span class="line"><span>[2,]   2    7   12</span></span>
+<span class="line"><span>[3,]   3    8   13</span></span>
+<span class="line"><span>[4,]   4    9   14</span></span>
+<span class="line"><span>[5,]   5    10  15</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>>x[2,]</span></span>
+<span class="line"><span>[1] 2 7 12</span></span>
+<span class="line"><span>>x[,3]</span></span>
+<span class="line"><span>[1] 11 12 13 14 15</span></span>
+<span class="line"><span>>x[5,3]</span></span>
+<span class="line"><span>[1] 15</span></span>
+<span class="line"><span>>x[c(1,5),c(1,2,3)]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>     [,1] [,2] [,3]</span></span>
+<span class="line"><span>[1,]   1    6   11</span></span>
+<span class="line"><span>[5,]   5    10  15</span></span></code></pre></div>
+<h3 id="数组">数组</h3>
+<h4 id="声明-2">声明</h4>
+<p>定义：数组（array）与矩阵类似，但是<strong>维数可以大于2</strong>。像矩阵一样，数组中的数据也<strong>只能拥有一种模式</strong>。</p>
+<p>创建方法：使用array(）函数创建数组，语法格式如下：</p>
+<p>array(data=NA, dim=length(data), dimnames=NULL)</p>
+<blockquote>
+<p>data包含了数组的数据；</p>
+<p>dim是各维长度组成的数值型向量；</p>
+<p>dimnames是可选的、各维度名称标签的列表。</p>
+</blockquote>
+<h4 id="创建数组">创建数组</h4>
+<div class="code-block" data-lang="plaintext" data-lines="23"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">23 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="23"><code><span class="line"><span>>dim1&#x3C;-c("R1", "R2", "R3")</span></span>
+<span class="line"><span>>dim2&#x3C;-c("c1", "C2", "C3")</span></span>
+<span class="line"><span>>dim3&#x3C;-c("M1", "M2", "M3")</span></span>
+<span class="line"><span>>z&#x3C;-array(1:27, dim=c(3,3,3), dimnames=list(diml,dim2, dim3))</span></span>
+<span class="line"><span>>z</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>,, M1</span></span>
+<span class="line"><span>   C1 C2 C3</span></span>
+<span class="line"><span>R1 1  4  7</span></span>
+<span class="line"><span>R2 2  5  8</span></span>
+<span class="line"><span>R3 3  6  9</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>,, M2</span></span>
+<span class="line"><span>   C1 C2 C3</span></span>
+<span class="line"><span>R1 10 13 16</span></span>
+<span class="line"><span>R2 11 14 17</span></span>
+<span class="line"><span>R3 12 15 18</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>,, M3</span></span>
+<span class="line"><span>   C1 C2 C3</span></span>
+<span class="line"><span>R1 19 22 25</span></span>
+<span class="line"><span>R2 20 23 26</span></span>
+<span class="line"><span>R3 21 24 27</span></span></code></pre></div>
+<blockquote>
+<p>首先创建了3个向量，分别表示数组中各维度的名称标签。然后创建了一个数据为1~27的3x3x3的数组，数组中的元素按列填充。</p>
+</blockquote>
+<h4 id="选取数组元素">选取数组元素</h4>
+<p>1.获取目标单一值</p>
+<div class="code-block" data-lang="plaintext" data-lines="3"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">3 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="3"><code><span class="line"><span>#延用上代码块内容</span></span>
+<span class="line"><span>>z[1,2,3] #M3中第一行第二列</span></span>
+<span class="line"><span>[1] 22</span></span></code></pre></div>
+<p>2.通过切片截取向量</p>
+<div class="code-block" data-lang="plaintext" data-lines="15"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">15 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="15"><code><span class="line"><span>>z[1:2,1:2,2:3] #M2和M3的第一行至第二行，第一列至第二列</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>,, M2</span></span>
+<span class="line"><span>    c1 c2</span></span>
+<span class="line"><span>r1  10 13</span></span>
+<span class="line"><span>r2  11 14</span></span>
+<span class="line"><span>,, M3</span></span>
+<span class="line"><span>    c1 c2</span></span>
+<span class="line"><span>r1  19 22</span></span>
+<span class="line"><span>r2  20 23 </span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>>z[,,2] #M2全体元素</span></span>
+<span class="line"><span>#略</span></span>
+<span class="line"><span>>z[,2,2] #M2第二行全体元素</span></span>
+<span class="line"><span>#略</span></span></code></pre></div>
+<h3 id="数据框">数据框</h3>
+<h4 id="声明-3">声明</h4>
+<p>定义：数据框是R语言中<strong>最常处理的数据结构</strong>，它可以<strong>将不同的数据类型结构组合在一起</strong>。数据框的维数是二维</p>
+<p>创建方法：数据框可以使用函数data.frame()创建：</p>
+<p>data.frame(col1,col2,co13,…)</p>
+<blockquote>
+<p>列向量col1、col2、col3等可为任何类型（如数值型、字符型或逻辑型等）</p>
+</blockquote>
+<h4 id="创建数据框">创建数据框</h4>
+<div class="code-block" data-lang="plaintext" data-lines="13"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">13 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="13"><code><span class="line"><span>>patientID&#x3C;-c(1,2,3,4,5)</span></span>
+<span class="line"><span>>age&#x3C;-c(35,48,50,29,24)</span></span>
+<span class="line"><span>>diabetes&#x3C;-c("Type1", "Type2", "Type1", "Type1", "Type2")</span></span>
+<span class="line"><span>>status&#x3C;-c("Poor", "Improved", "Poor", "Excellent", "Poor")</span></span>
+<span class="line"><span>>patientdata&#x3C;-data.frame(patientID, age, diabetes, status)</span></span>
+<span class="line"><span>>patientdata</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>   patientID  age  diabetes  status </span></span>
+<span class="line"><span>1      1      35    Typel    Poor</span></span>
+<span class="line"><span>2      2      48    Type2    Improved</span></span>
+<span class="line"><span>3      3      50    Type1    Poor</span></span>
+<span class="line"><span>4      4      29    Type1    Excellent</span></span>
+<span class="line"><span>5      5      24    Type2    Poor</span></span></code></pre></div>
+<blockquote>
+<p>同一列的数据类型必须唯一，如 patientID和age是数值型向量，diabetes和status是字符型向量。首先给各个变量赋值，然后使用函数data.frame(）将多个类型不同的列放到一起组成数据框。</p>
+</blockquote>
+<h4 id="选取数据框元素">选取数据框元素</h4>
+<p>数据框元素的选取与矩阵类似，<strong>可以使用下标或下标向量，也可以直接使用列名或列名向量</strong></p>
+<div class="code-block" data-lang="plaintext" data-lines="12"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">12 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="12"><code><span class="line"><span>>patientdata[1:2,1:4]  #第一行至二行的第一至四列数据</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  patientID  age  diabetes  status</span></span>
+<span class="line"><span>1     1      35     Typel    Poor</span></span>
+<span class="line"><span>2     2      48     Type2    Improved</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>>patientdata[1:2,c(2:3)] #第一行至二行的第二至三列数据</span></span>
+<span class="line"><span>>patientdata[1:2,c("age","diabetes")] #第一行至二行的第二至三列数据</span></span>
+<span class="line"><span>#略</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>>patientdata$age #获取age全部内容</span></span>
+<span class="line"><span>[1] 35 48 50 29 24</span></span></code></pre></div>
+<blockquote>
+<p>第四个语句patientdata $ age 表示 patientdata 数据框中的变量age，记号＄是用来选取一个给定数据框中的某个特定变量</p>
+</blockquote>
+<h3 id="列表">列表</h3>
+<h4 id="声明-4">声明</h4>
+<p>定义：列表（list）是R语言的数据结构中最为复杂的一种。一般来说，列表是数据对象的有序集合，可以包含向量、矩阵、数组、数据框，甚至是另外一个列表</p>
+<p>创建列表：可以使用函数list()创建列表</p>
+<p>list (object1, object2, ……)</p>
+<blockquote>
+<p>对象（object）可以是目前为止讲到的任何结构。还可以为列表中的对象命名：<br>
+list (namel=object1, name2=object2,……)</p>
+</blockquote>
+<h4 id="创建列表">创建列表</h4>
+<div class="code-block" data-lang="plaintext" data-lines="39"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">39 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="39"><code><span class="line"><span>>a&#x3C;-"My List"                      ＃创建一个包含字符串、向量、矩阵、数组、数据框的列表</span></span>
+<span class="line"><span>>b&#x3C;-c("Simon", "Lucy", "Andy", "James")</span></span>
+<span class="line"><span>>c&#x3C;-c(185,168,160,180)</span></span>
+<span class="line"><span>>d&#x3C;-matrix(1:12,nrow=3)</span></span>
+<span class="line"><span>>z&#x3C;-array(1:12, dim=c(2,3,2))</span></span>
+<span class="line"><span>>mydata&#x3C;-data.frame(name=b,height=c)</span></span>
+<span class="line"><span>>mylist&#x3C;-list(title=a, name=b, height=c, d, z, mydata)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>>mylist</span></span>
+<span class="line"><span>$title</span></span>
+<span class="line"><span>[1] "My List"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>$name</span></span>
+<span class="line"><span>[1] "Simon" "Lucy" "Andy" "James"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>$height</span></span>
+<span class="line"><span>[1] 185 168 160 180</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>[[4]]</span></span>
+<span class="line"><span>      [,1] [,2] [,3] [,4]</span></span>
+<span class="line"><span>[1,]    1    4    7   10</span></span>
+<span class="line"><span>[2,]    2    5    8   11</span></span>
+<span class="line"><span>[3,]    3    6    9   12</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>[[5]]</span></span>
+<span class="line"><span>,, 1</span></span>
+<span class="line"><span>      [,1] [,2] [,3]</span></span>
+<span class="line"><span>[1,]    1    3   5 </span></span>
+<span class="line"><span>[2,]    2    4   6 </span></span>
+<span class="line"><span>,,2   [,1] [,2] [,3]</span></span>
+<span class="line"><span>[1,]    7    9   11</span></span>
+<span class="line"><span>[2,]    8    10  12</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>[[6]]</span></span>
+<span class="line"><span>   name  height</span></span>
+<span class="line"><span>1  Simon  185 </span></span>
+<span class="line"><span>2  Lucy   168 </span></span>
+<span class="line"><span>3  Andy   160</span></span>
+<span class="line"><span>4  James  180</span></span></code></pre></div>
+<blockquote>
+<p>本例创建了一个列表，包含6个成分：一个字符串、一个字符型向量、一个数值型向量、一个矩阵、一个数组以及一个由字符型向量和数值型向量组成的数据框。</p>
+</blockquote>
+<h4 id="访问列表">访问列表</h4>
+<p>访问列表的元素，可以使用方括号和双重方括号访问，两种方法所代表的含义不同，还<br>
+可以直接使用成分的名称访问</p>
+<div class="code-block" data-lang="plaintext" data-lines="9"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">9 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="9"><code><span class="line"><span>>mylist[2]</span></span>
+<span class="line"><span>$name</span></span>
+<span class="line"><span>[1] "Simon" "Lucy" "Andy" "James"</span></span>
+<span class="line"><span>>mylist["name"]</span></span>
+<span class="line"><span>$name</span></span>
+<span class="line"><span>[1] "Simon" "Lucy" "Andy" "James"</span></span>
+<span class="line"><span>>mylist[["name"]]</span></span>
+<span class="line"><span>>mylist[[2]]</span></span>
+<span class="line"><span>>mylist$name</span></span></code></pre></div>
+<h2 id="数据的输入">数据的输入</h2>
+<h3 id="键盘输入数据">键盘输入数据</h3>
+<p>最简单的输入数据的方式就是键盘输入，有两种常见的方式：用R语言内置的文本编辑器和直接在代码中嵌入数据（前面介绍数据结构的创建就是在代码中嵌入数据）。</p>
+<ul>
+<li>第1步：创建一个空数据框（或矩阵），其中变量名和变量的模式需与理想中的最终数据集一致。</li>
+<li>第2步：针对这个数据对象调用文本编辑器，输入数据，并将结果保存回此数据对象中。           </li>
+</ul>
+<p>                          mydata&#x3C;-data.frame(age=numeric(0),gender=character(0), weight=numeric(0))<br>
+                          mydata&#x3C;-edit(mydata)</p>
+<ul>
+<li>第3步：在如图2-1所示的编辑器上添加数据。单击列的标题，可以修改变量名和变量类型（数值型、字符型）。还可以通过单击未使用列的标题来添加新的变量。编辑器关闭后，结果会保存到之前赋值的对象中（mydata)</li>
+</ul>
+<p><img alt="" loading="lazy" decoding="async" width="1252" height="981" src="/_astro/Capture_20240810_171648.BBwcO8cd_ZtfvGw.webp"></p>
+<h3 id="带分隔符的文本文件数据">带分隔符的文本文件数据</h3>
+<p>从带分隔符的文本文件导入数据</p>
+<p>其语法如下：<br>
+mydataframe &#x3C;-read.table(file, options)<br>
+其中，file是一个带分隔符的ASCII文本文件，options是控制如何处理数据的选项。</p>
+<h3 id="excel数据">Excel数据</h3>
+<p>    读取一个Excel文件的最好方式，就是在Excel中将其导出为一个逗号分隔文件（csv),并使用232节描述的方式将其导入R软件中。<br>
+    用函数 read.xlsx(）导入一个工作表到一个数据框中。最简单的格式是read.xlsx(file,n),其中file是Excel工作簿的所在路径，n则为要导入的工作表序号。在Windows系统中导人一个工作表的代码如下。</p>
+<div class="code-block" data-lang="plaintext" data-lines="3"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">3 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="3"><code><span class="line"><span>library(x1sx)</span></span>
+<span class="line"><span>workbook&#x3C;-"c:/myworkbook.xlsx"</span></span>
+<span class="line"><span>mydataframe &#x3C;-read.xlsx(workbook, 1)</span></span></code></pre></div>
+<blockquote>
+<p>以上代码表示从位于C盘根目录的工作簿 myworkbook.xlsx中导入了第一个工作表，并将其保存为一个数据框 mydataframe。</p>
+</blockquote>
+<h3 id="其他方法">其他方法</h3>
+<p>SPSS数据、SAS数据、Stata数据</p>
+<blockquote>
+<p>R语言数据分析与可视化P18页</p>
+</blockquote>
+<h1 id="基本绘图">基本绘图</h1>
+<h2 id="图形简介">图形简介</h2>
+<h3 id="入门绘画">入门绘画</h3>
+<div class="code-block" data-lang="plaintext" data-lines="4"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">4 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="4"><code><span class="line"><span>attach(mtcars) #mtcars是R语言内置数据集 </span></span>
+<span class="line"><span>plot(wt,mpg,xlab="wt / t",ylab="mpg / Miles per gallon") </span></span>
+<span class="line"><span>abline(lm(mpg~wt)) #绘制最优拟合线</span></span>
+<span class="line"><span>detach(mtcars) # 解除捆绑</span></span></code></pre></div>
+<blockquote>
+<p>首句绑定数据框mtcars。第二句调用函数plot()绘制了一幅散点图，横轴表示车身重量，纵轴表示每加仑行驶的英里数。第三句向图形添加了一条最优拟合线。最后一句解除对数据框的绑定。</p>
+</blockquote>
+<p><img alt="" loading="lazy" decoding="async" width="551" height="524" src="/_astro/2024081101.Cv28ffjv_ZdPaLw.webp"></p>
+<h3 id="打开或关闭多个图形窗口">打开或关闭多个图形窗口</h3>
+<p>创建一幅新图形时，通常现有的图形窗口都会被新的图形覆盖</p>
+<div class="code-block" data-lang="plaintext" data-lines="2"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">2 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="2"><code><span class="line"><span>dev.new() #打开新窗口</span></span>
+<span class="line"><span>dev.off() #关闭窗口</span></span></code></pre></div>
+<h3 id="图形保存">图形保存</h3>
+<p>a.使用代码保存图形，将绘图语句夹在<strong>开启目标图形设备的语句和关闭目标设备的语句之间</strong>即可</p>
+<p>支持的格式有：pdf()、png()、bmp()、jpeg()、postscript()、tiff()和win.metafile()</p>
+<div class="code-block" data-lang="plaintext" data-lines="6"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">6 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="6"><code><span class="line"><span>pdf("graph1.pdf") #起始 </span></span>
+<span class="line"><span>attach(mtcars)</span></span>
+<span class="line"><span>plot(wt, mpg)</span></span>
+<span class="line"><span>abline(lm(mpg~wt))</span></span>
+<span class="line"><span>detach(mtcars)</span></span>
+<span class="line"><span>dev.off() #终止 </span></span></code></pre></div>
+<p>b.通过图形用户界面来保存图形，<strong>鼠标右击图片保存</strong>或在<strong>图形窗口上方导航栏中选择“文件”、“另存为”</strong></p>
+<h2 id="图形参数">图形参数</h2>
+<ul>
+<li>我们可以通过修改图形参数来自定义一幅图形的多个特征，如符号、颜色、字体、坐标轴以及图例等，使其达到我们想要的效果。</li>
+<li>常用的方式是使用**函数par()**来修改这些选项，其调用格式为par(optionname=value,optionname=name,…)。</li>
+<li>当par()不加参数时，将返回当前图形参数设置的列表；</li>
+<li>添加参数<strong>par(no.readonly=TRUE)<strong>将生成一个可以修改的当前图形参数列表。注意以这种方式设定的图形参数除非被再次修改，否则将会</strong>一直执行此参数设置，直到会话结束</strong>。</li>
+</ul>
+<h3 id="设置图形参数列表">设置图形参数列表</h3>
+<div class="code-block" data-lang="plaintext" data-lines="6"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">6 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="6"><code><span class="line"><span>attach(mtcars)</span></span>
+<span class="line"><span>opar&#x3C;-par(no.readonly=TRUE) #图形设置保存在opar中（此处为默认的图形设置）</span></span>
+<span class="line"><span>par(pch=15,lty=2) #符号换成实心的方块，实线换成虚线</span></span>
+<span class="line"><span>plot(wt,mpg,xlab="wt / t",ylab="mpg / Miles per gallon")</span></span>
+<span class="line"><span>abline(lm(mpg~wt))</span></span>
+<span class="line"><span>par(opar) #一直执行此参数设置，直到会话结束（单窗口）</span></span></code></pre></div>
+<h3 id="绘画函数内直接添加图形参数">绘画函数内直接添加图形参数</h3>
+<div class="code-block" data-lang="plaintext" data-lines="2"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">2 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="2"><code><span class="line"><span>plot(wt,mpg,pch=15) </span></span>
+<span class="line"><span>abline(lm(mpg~wt),lty=2) </span></span></code></pre></div>
+<h2 id="符号与线条">符号与线条</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>参数</th><th>描述</th></tr></thead><tbody><tr><td>pch</td><td>绘制点符号的样式</td></tr><tr><td>cex</td><td>符号的大小，默认大小为1，1.5表示放大为默认值的1.5倍，0.5表示缩小为默认值的50%</td></tr><tr><td>bg</td><td>符号的内部填充色，仅限符号21~25</td></tr><tr><td>lty</td><td>线条类型</td></tr><tr><td>lwd</td><td>线条宽度，默认宽度为1</td></tr><tr><td>col</td><td>指定符号边框和线条的颜色</td></tr></tbody></table>
+点符号和线条类型的参数
+<figure>
+<p><img alt="" loading="lazy" decoding="async" width="1206" height="500" src="/_astro/2024081102.-Qgn_tiz_2bB8o3.webp"></p>
+点与线条的样式
+<div class="code-block" data-lang="plaintext" data-lines="3"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">3 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="3"><code><span class="line"><span>dev.new() </span></span>
+<span class="line"><span>plot(wt,mpg,pch=22,col=2,bg=8,cex=0.8, xlab="wt/t",ylab="mpg/Miles per gallon")</span></span>
+<span class="line"><span>abline(lm(mpg~wt),lty=2,lwd=2,col=3) </span></span></code></pre></div>
+<p><img alt="" loading="lazy" decoding="async" width="551" height="524" src="/_astro/2024081103.Dd4UY0ZC_Z29R9EK.webp"></p>
+<h2 id="颜色">颜色</h2>
+<p>参数col除了上述的可以设置点、线的颜色，还可以设置图像、坐标轴、文字等的颜色</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>参数</th><th>描述</th></tr></thead><tbody><tr><td>col</td><td>默认的绘图颜色</td></tr><tr><td>col.axis</td><td>坐标轴刻度文字的颜色</td></tr><tr><td>col.lab</td><td>坐标轴标签的颜色</td></tr><tr><td>col.main</td><td>标题的颜色</td></tr><tr><td>col.sub</td><td>副标题的颜色</td></tr><tr><td>fg</td><td>图形的前景色</td></tr><tr><td>bg</td><td>图形的背景色</td></tr></tbody></table>
+用于指定颜色的参数
+<p>在R中，可以通过颜色下标、颜色名称、十六进制的颜色值、RGB值或HSV值来确定颜色。例如： col=1、col=“white”、col=“#FFFFFF”、col=rgb(1,1,1)、col=hsv(0,1,1)</p>
+<blockquote>
+<p>函数rgb()是基于红-绿-蓝生成的颜色，hsv() 是基于色相-饱和度-亮度值生成的颜色</p>
+<p>函数colors()可以生成657中颜色名称，然后可以通过这些名称，使用参数col=颜色名称，来设定我们想要的颜色。</p>
+</blockquote>
+<div class="code-block" data-lang="plaintext" data-lines="1"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">1 Line</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="1"><code><span class="line"><span>par(col="red",col.axis="blue",col.lab="black") </span></span></code></pre></div>
+<p><img alt="" loading="lazy" decoding="async" width="551" height="524" src="/_astro/2024081104.ChiyjqgZ_156LLm.webp"></p>
+<h2 id="文本属性">文本属性</h2>
+<p>文本属性包括指定字号、字体和字样</p>
+<h3 id="字体大小">字体大小</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th><strong>参数</strong></th><th><strong>描述</strong></th></tr></thead><tbody><tr><td>cex</td><td>字体大小，默认大小为1。1.5表示放大为默认值的1.5倍，0.5表示缩小为默认值的50%</td></tr><tr><td>cex.axis</td><td>坐标轴刻度文字的缩放倍数。类似于cex</td></tr><tr><td>cex.lab</td><td>坐标轴标签（名称）的缩放倍数。类似于cex</td></tr><tr><td>cex.main</td><td>标题的缩放倍数。类似于cex</td></tr><tr><td>cex.sub</td><td>副标题的缩放倍数。类似于cex</td></tr></tbody></table>
+指定字体大小的参数
+<h3 id="字体字样">字体字样</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th><strong>参数</strong></th><th><strong>描述</strong></th></tr></thead><tbody><tr><td>font</td><td>整数。用于指定绘图使用的字体样式。1=常规，2=粗体，3=斜体，4=粗斜体，5=符号字体（以Adobe符号编码表示）</td></tr><tr><td>font.axis</td><td>坐标轴刻度文字的字体样式</td></tr><tr><td>font.lab</td><td>坐标轴标签（名称）的字体样式</td></tr><tr><td>font.main</td><td>标题的字体样式</td></tr><tr><td>font.sub</td><td>副标题的字体样式</td></tr></tbody></table>
+指定字样的参数
+<div class="code-block" data-lang="plaintext" data-lines="1"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">1 Line</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="1"><code><span class="line"><span>par(font.lab=3,cex.lab=1.5,cex.axis=0.8,font.axis=2) </span></span></code></pre></div>
+<blockquote>
+<p>表示之后创建的所有图形的坐标轴标签（名称）字体样式为斜体、大小扩大为默认文本大小的1.5倍，坐标轴刻度文字字体样式为粗体、大小缩小为默认文本大小的80%</p>
+</blockquote>
+<p><img alt="" loading="lazy" decoding="async" width="551" height="524" src="/_astro/2024081105.BhfZ2a2a_1Tf5rJ.webp"></p>
+<h2 id="图形尺寸和边界尺寸">图形尺寸和边界尺寸</h2>
+<p>R语言中，还可以使用参数来控制图形尺寸和边界大小</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th><strong>参数</strong></th><th><strong>描述</strong></th></tr></thead><tbody><tr><td>pin</td><td>以英寸表示的图形尺寸（宽和高）</td></tr><tr><td>mai</td><td>以数值向量表示的边界大小，顺序为“下、左、上、右”(顺时针)，单位为英寸</td></tr><tr><td>mar</td><td>以数值向量表示的边界大小，顺序为“下、左、上、右”，单位为英分*。默认值为c(5, 4, 4, 2) + 0.1</td></tr></tbody></table>
+控制图形尺寸和边界大小的参数
+<div class="code-block" data-lang="plaintext" data-lines="1"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">1 Line</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="1"><code><span class="line"><span>par(pin=c(3,4),mai=c(1,1,1,.5)) </span></span></code></pre></div>
+<blockquote>
+<p>生成一幅3英寸宽、4英寸高、上下边界为为1英寸、左边界为1英寸、右边界为0.5英寸的图形</p>
+</blockquote>
+<div class="code-block" data-lang="plaintext" data-lines="8"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">8 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="8"><code><span class="line"><span>attach(mtcars)</span></span>
+<span class="line"><span>opar&#x3C;-par(no.readonly=TRUE)</span></span>
+<span class="line"><span>par(pin=c(2,3)) #设置宽高</span></span>
+<span class="line"><span>par(lwd=2,cex=0.8) #设置线条宽度和符号大小</span></span>
+<span class="line"><span>par(font.axis=3,cex.axis=0.8) #设置坐标刻度字体样式和字体大小</span></span>
+<span class="line"><span>par(font.lab=2,cex.lab=1.2)   #设置坐标轴标签的字体样式和大小</span></span>
+<span class="line"><span>plot(wt,mpg,pch=20,col="red",xlab="wt / t",ylab="mpg / Miles per gallon") #设置符号样式</span></span>
+<span class="line"><span>abline(lm(mpg~wt),lty=2)  #设置线条类型</span></span></code></pre></div>
+<p><img alt="" loading="lazy" decoding="async" width="333" height="382" src="/_astro/2024081106-e1723349648176.CcD3iWIy_1lS38A.webp"></p>
+<h2 id="添加文本自定义坐标轴和图例">添加文本、自定义坐标轴和图例</h2>
+<p>许多高级绘图函数（例如plot、hist、boxplot）还允可以自行设定坐标轴和文本标注选项。例如，添加标题（main）、副标题（sub）、坐标轴标签（xlab、ylab）并指定了坐标轴范围（xlim、ylim）等</p>
+<div class="code-block" data-lang="plaintext" data-lines="7"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">7 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="7"><code><span class="line"><span>plot(wt,mpg,pch=2,col="red", </span></span>
+<span class="line"><span>main="Scatterplot of wt vs. mpg", # 主标题</span></span>
+<span class="line"><span>sub="one",                        # 副标题</span></span>
+<span class="line"><span>xlab="车重 / t",                  # X标签</span></span>
+<span class="line"><span>ylab="每加仑行驶英里数 / Miles per gallon", # Y标签 </span></span>
+<span class="line"><span>xlim=c(0,10),                             # X刻度范围</span></span>
+<span class="line"><span>ylim=c(0,50))                             # Y刻度范围</span></span></code></pre></div>
+<p><img alt="" loading="lazy" decoding="async" width="790" height="683" src="/_astro/2024081201.kRqaroG6_l1gXv.webp"></p>
+<h3 id="标题">标题</h3>
+<p>**函数title()**可以为图形添加标题、副标题以及坐标轴标签</p>
+<div class="code-block" data-lang="plaintext" data-lines="1"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">1 Line</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="1"><code><span class="line"><span>title(main="main title", sub="subtitle", xlab="x-axis label", ylab="y-axis label") </span></span></code></pre></div>
+<p>函数title()还可以指定各选项的字体、大小和颜色</p>
+<blockquote>
+<p>font.main、cex.main、col.main、font.sub、cex.sub、col.sub、font.lab、cex.lab、col.lab</p>
+</blockquote>
+<div class="code-block" data-lang="plaintext" data-lines="4"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">4 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="4"><code><span class="line"><span>title(main="My Title",col.main="red",font.main=2, # 生成红色且字体为粗体的标题</span></span>
+<span class="line"><span>sub="My Subtitle", col.sub="black",               # 黑色的副标题</span></span>
+<span class="line"><span>xlab="x", ylab="y",                               </span></span>
+<span class="line"><span>col.lab="green", cex.lab=0.8)                     # 大小缩小为默认大小80%的绿色x轴、y轴标签</span></span></code></pre></div>
+<h3 id="坐标轴">坐标轴</h3>
+<p>axis()函数可以自定义坐标轴</p>
+<div class="code-block" data-lang="plaintext" data-lines="1"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">1 Line</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="1"><code><span class="line"><span>axis(side, at=, labels=, pos=, lty=, col=, las=, tck=, ...)</span></span></code></pre></div>
+<blockquote>
+<p>创建自定义坐标轴时，应当禁用高级绘图函数自动生成的坐标轴。使用参数axes=FALSE将禁用全部坐标轴（包括坐标轴框架线，除非你添加了参数frame.plot=TRUE）。参数xaxt=“n”和yaxt=“n”将分别禁用X轴或Y轴（会留下框架线，只是去除了刻度）</p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>选项</th><th>描述</th></tr></thead><tbody><tr><td>side</td><td>一个整数，表示在图形的哪一侧绘制坐标轴（1=下，2=左，3=上，4=右）</td></tr><tr><td>at</td><td>一个数值型向量，表示需要绘制刻度线的位置</td></tr><tr><td>labels</td><td>一个字符型向量，表示置于刻度线旁边的文字标签（如果为 NULL，则将直接使用 at 中的值）</td></tr><tr><td>pos</td><td>坐标轴线绘制位置的坐标（即与另一条坐标轴相交位置的值）</td></tr><tr><td>lty</td><td>线条类型</td></tr><tr><td>col</td><td>轴线和刻度线颜色</td></tr><tr><td>las</td><td>标签是否平行于（=0）或垂直于（=2）坐标轴</td></tr><tr><td>tck</td><td>刻度线的长度，以相对于绘图区域大小的分数表示（负值表示在图形外侧，正值表示在图形内侧，0表示禁用刻度，1 表示绘制网格线）；默认值为–0.01</td></tr><tr><td>…</td><td>其他图形参数</td></tr></tbody></table>
+<div class="code-block" data-lang="plaintext" data-lines="7"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">7 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="7"><code><span class="line"><span>height&#x3C;-c(155,157,160,163,166,169,172,175,179,182) </span></span>
+<span class="line"><span>weight&#x3C;-c(58,59,60,61,62,63,64,65,66,67) </span></span>
+<span class="line"><span>plot(height,weight,type="b",pch=16,col="red", lty=2, </span></span>
+<span class="line"><span>xaxt="n",yaxt="n",ann=FALSE) # 禁止自动生成的坐标轴</span></span>
+<span class="line"><span>axis(1,at=height,labels=height) #横坐标</span></span>
+<span class="line"><span>axis(2,at=weight,labels=weight,las=2) #纵坐标</span></span>
+<span class="line"><span>title(xlab="height / cm",ylab="weight / kg") </span></span></code></pre></div>
+<p><img alt="" loading="lazy" decoding="async" width="764" height="660" src="/_astro/2024081202.4TmWZOOd_1QdchF.webp"></p>
+<h3 id="参考线">参考线</h3>
+<p>**函数abline()**可以为图形添加参考线，也可以指定其他图形参数（如线条类型、颜色和宽度）</p>
+<p>abline(a = NULL, b = NULL, h = NULL, v = NULL, …)</p>
+<blockquote>
+<p>a：常数项，b：斜率，h：水平线，v：垂直线</p>
+</blockquote>
+<div class="code-block" data-lang="plaintext" data-lines="1"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">1 Line</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="1"><code><span class="line"><span>abline(h=c(1,3,5)，v=4，col="green") </span></span></code></pre></div>
+<p><img alt="" loading="lazy" decoding="async" width="586" height="546" src="/_astro/2024081203-e1723436490138.fQvv0WvT_Z1Kc1SY.webp"></p>
+<h3 id="图例">图例</h3>
+<p>**函数legend()**用来添加图例</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th><strong>选项</strong></th><th><strong>描述</strong></th></tr></thead><tbody><tr><td>x,y</td><td>指定图例的位置。也可以执行 locator(1)，然后通过鼠标单击给出图例的位置，还可以使用关键字 bottom、bottomleft、left、topleft、top、topright、right、bottomright 或 center 放置图例</td></tr><tr><td>inset</td><td>当图例用关键词设置位置后，使用参数 inset=指定图例向图形内侧移动的大小（以绘图区域大小的分数表示）</td></tr><tr><td>legend</td><td>图例标签组成的字符型向量</td></tr><tr><td>title</td><td>图例标题的字符串</td></tr><tr><td>title.adj</td><td>图例标题的相对位置，0.5为默认，在中间。0最左，1为最右。</td></tr><tr><td>col</td><td>图例中出现的点或线的颜色</td></tr><tr><td>lty,lwd</td><td>图例中线的类型与宽度</td></tr><tr><td>pch</td><td>图例中点的类型</td></tr><tr><td>cex</td><td>图例字符大小</td></tr><tr><td>bty</td><td>图例框是否画出，o为画出，默认为n不画出</td></tr><tr><td>bg</td><td>bty != “n”时，图例的背景色</td></tr><tr><td>text.col</td><td>图例字体的颜色</td></tr><tr><td>text.font</td><td>图例字体的样式</td></tr><tr><td>ncol</td><td>图例中分类的列数</td></tr><tr><td>horiz</td><td>逻辑值，默认(horiz=FALSE)为垂直放置图例，horiz=TRUE将会水平放置图例</td></tr><tr><td>…</td><td>其他选项。请参考help(legend)</td></tr></tbody></table>
+图例选项
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th><strong>选项</strong></th><th><strong>描述</strong></th></tr></thead><tbody><tr><td>location</td><td>文本的位置参数。可为一对 x、y 坐标，也可通过执行locator(1)，使用鼠标交互式地确定摆放位置</td></tr><tr><td>pos</td><td>文本相对于位置参数的方位。1=下，2=左，3=上，4=右。如果指定了pos，就可以同时指定参数offset=作为偏移量，以相对于单个字符宽度的比例表示</td></tr><tr><td>side</td><td>指定用来放置文本的边。1=下，2=左，3=上，4=右。你可以指定参数 line=来内移或外移文本，随着值的增加，文本将外移。也可使用 adj=0 将文本向左下对齐，或使用 adj=1 右上对齐</td></tr></tbody></table>
+<div class="code-block" data-lang="plaintext" data-lines="20"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">20 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="20"><code><span class="line"><span>age&#x3C;-c(118,484,664,1004,1231,1372,1582) </span></span>
+<span class="line"><span>circumference_tree1&#x3C;-c(30,58,87,115,120,142,145) </span></span>
+<span class="line"><span>circumference_tree2&#x3C;-c(33,69,111,156,172,203,203) </span></span>
+<span class="line"><span>circumference_tree3&#x3C;-c(30,51,75,108,115,139,140) </span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>opar &#x3C;- par(no.readonly=TRUE) </span></span>
+<span class="line"><span>par(font.lab=2,font.axis=3,cex.axis=0.8) </span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>plot(age,circumference_tree1,type="b",pch=15,lty=1,col="red", </span></span>
+<span class="line"><span> ylim=c(0,250),</span></span>
+<span class="line"><span> xlab="Tree age / year", ylab="circumference ",xaxt="n") </span></span>
+<span class="line"><span>axis(1,at=seq(0,1600,200)) #刻度</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>lines(age,circumference_tree2,type="b",pch=16,lty=2,col="blue") </span></span>
+<span class="line"><span>lines(age,circumference_tree3,type="b",pch=17,lty=3,col="green") </span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>legend("topleft",inset=.05,title="Tree Type",</span></span>
+<span class="line"><span> c("tree1","tree2","tree3"),</span></span>
+<span class="line"><span> lty=c(1, 2,3,4,5), pch=c(15,16,17),</span></span>
+<span class="line"><span> col=c("red","blue","green")) </span></span></code></pre></div>
+<p><img alt="" loading="lazy" decoding="async" width="627" height="626" src="/_astro/2024081204.Bh7WQTwL_Z2te9MS.webp"></p>
+<h3 id="文本注释">文本注释</h3>
+<p>使用函数text()和mtext()向图形中添加文本。</p>
+<p>text()可向绘图区域内部添加文本，而mtext()则向图形的四个边界之一添加文本。</p>
+<p>text(location,“text to place”, pos, …)</p>
+<p>mtext(“text to place”, side, line=n, …)</p>
+<h2 id="散点图">散点图</h2>
+<h3 id="基础函数plot">基础函数plot()</h3>
+<p>散点图通常用来描述两个连续型变量间的关系，绘制基本散点图使用<strong>plot()函数</strong></p>
+<div class="code-block" data-lang="plaintext" data-lines="3"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">3 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="3"><code><span class="line"><span>attach(mtcars) </span></span>
+<span class="line"><span>plot(wt,mpg,xlab="wt / t",ylab="mpg / Miles per gallon", pch=20,col="red") </span></span>
+<span class="line"><span>abline(lm(mpg~wt)) </span></span></code></pre></div>
+<h3 id="散点图矩阵">散点图矩阵</h3>
+<p>使用**函数pairs()**可以创建基础的散点图矩阵</p>
+<p>pairs(formula, data，…)</p>
+<blockquote>
+<p>formula：成对使用的一系列变量，data：表示将从中采集变量的数据集</p>
+</blockquote>
+<div class="code-block" data-lang="plaintext" data-lines="3"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">3 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="3"><code><span class="line"><span>pairs(~mpg+disp+wt, data=mtcars)  # ①</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>pairs(~mpg+disp+wt, data=mtcars, upper.panel = NULL) # ②</span></span></code></pre></div>
+<p>①所有指定变量间的二元相关关系</p>
+<p><img alt="" loading="lazy" decoding="async" width="790" height="683" src="/_astro/2024081501.DiY8umnA_Z10K9Bc.webp"></p>
+<p>②添加选项upper.panel = NULL将只生成下三角的图形</p>
+<p><img alt="" loading="lazy" decoding="async" width="790" height="683" src="/_astro/2024081502.Dv2Nzfbq_1SfxlK.webp"></p>
+<h3 id="三维散点图">三维散点图</h3>
+<p>用scatterplot3d包中的<strong>scatterplot3d()函数</strong>来绘制三维散点图</p>
+<p>scatterplot3d(x, y, z)</p>
+<div class="code-block" data-lang="plaintext" data-lines="6"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">6 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="6"><code><span class="line"><span>install.packages("scatterplot3d")</span></span>
+<span class="line"><span>library(scatterplot3d) </span></span>
+<span class="line"><span>attach(mtcars) </span></span>
+<span class="line"><span>scatterplot3d(wt, disp, mpg,xlab="wt / t",</span></span>
+<span class="line"><span> ylab="mpg / Miles per gallon",</span></span>
+<span class="line"><span> zlab="disp / Cubic inch") </span></span></code></pre></div>
+<p><img alt="" loading="lazy" decoding="async" width="647" height="537" src="/_astro/2024081503.D7GGRRcW_Z2dcyMY.webp"></p>
+<h3 id="旋转三维散点图">旋转三维散点图</h3>
+<p>使用rgl包中的<strong>plot3d()函数</strong>可创建旋转的三维散点图，通过鼠标对图形进行旋转</p>
+<div class="code-block" data-lang="plaintext" data-lines="5"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">5 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="5"><code><span class="line"><span>install.packages("rgl") </span></span>
+<span class="line"><span>library(rgl) </span></span>
+<span class="line"><span>attach(mtcars) </span></span>
+<span class="line"><span>plot3d(wt, disp, mpg,col="red", </span></span>
+<span class="line"><span> xlab="wt / t",ylab="mpg / Miles per gallon", zlab="disp / Cubic inch") </span></span></code></pre></div>
+<p><img alt="" loading="lazy" decoding="async" width="595" height="510" src="/_astro/2024081504.w4udsVDJ_QwQT5.webp"></p>
+<h3 id="气泡图">气泡图</h3>
+<p>展示三个变量间的关系，除了使用三维散点图，还可以使用气泡图来展示。气泡图是先创建一个二维散点图，然后第三个变量的值用点的大小来表示，值越大，气泡越大，反之，越小。</p>
+<p>气泡图可以使用使用**函数symbols()**来创建</p>
+<p>该函数可以在指定的(x, y)坐标上绘制圆圈图、方形图、星形图、温度计图和箱线图。</p>
+<blockquote>
+<p>symbols(x, y = NULL,</p>
+<p>circles, squares, rectangles, stars, thermometers, boxplots,  # 圆形，正方形，矩形，星形，温度计、箱形</p>
+<p>inches = TRUE, add = FALSE, fg = par(“col”), bg = NA, xlab = NULL, ylab = NULL, main = NULL, xlim = NULL, ylim = NULL, …)</p>
+</blockquote>
+<div class="code-block" data-lang="plaintext" data-lines="2"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">2 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="2"><code><span class="line"><span>attach(mtcars) </span></span>
+<span class="line"><span>symbols(wt,mpg,circles=disp,inches=0.25,bg="lightblue", xlab="wt / t",ylab="mpg / Miles per gallon") </span></span></code></pre></div>
+<p><img alt="" loading="lazy" decoding="async" width="790" height="683" src="/_astro/2024081505.B9XoAfaj_15LKBW.webp"></p>
+<h2 id="折线图">折线图</h2>
+<p>折线图就是将散点图上的点从左到右的连接起来。折线图一般可以<strong>用函数plot()和lines()来创建</strong></p>
+<p>plot(x, y, type=) lines(x, y, type=)</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th><strong>类型</strong></th><th><strong>描述</strong></th></tr></thead><tbody><tr><td>p</td><td>只有点</td></tr><tr><td>l</td><td>只有线</td></tr><tr><td>b</td><td>线连接点</td></tr><tr><td>c</td><td>线连接点，但不绘制点</td></tr><tr><td>o</td><td>实心点和线（即线覆盖在点上）</td></tr><tr><td>h</td><td>直方图式的垂直线</td></tr><tr><td>S、s</td><td>阶梯线</td></tr><tr><td>n</td><td>不生成任何点和线,通常用来为后面的命令创建坐标轴</td></tr></tbody></table>
+折线图type类型
+<p><img alt="" loading="lazy" decoding="async" width="787" height="692" src="/_astro/2024081506.D44i-JOz_ZWTTiE.webp"></p>
+函数plot()和lines()中的type参数值
+<h2 id="图形组合">图形组合</h2>
+<p>在R中，可以使用**函数par()或layout()**将多幅图形组合为一幅图形</p>
+<h3 id="par">par</h3>
+<blockquote>
+<p>在par()函数中使用图形参数mfrow=c(nrows, ncols)来创建按行填充的、行数为nrows、列数为ncols的图形矩阵。另外，可以使用mfcol=c(nrows, ncols)按列填充矩阵(几行几列)</p>
+</blockquote>
+<div class="code-block" data-lang="plaintext" data-lines="7"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">7 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="7"><code><span class="line"><span>attach(mtcars) </span></span>
+<span class="line"><span>opar&#x3C;-par(no.readonly=TRUE) </span></span>
+<span class="line"><span>par(mfrow=c(1,2)) </span></span>
+<span class="line"><span>plot(wt,mpg, xlab="wt / t",ylab="mpg / Miles per gallon") </span></span>
+<span class="line"><span>plot(wt,disp, xlab="wt / t",ylab="disp / Cubic inch") </span></span>
+<span class="line"><span>par(opar) </span></span>
+<span class="line"><span>detach(mtcars) </span></span></code></pre></div>
+<p><img alt="" loading="lazy" decoding="async" width="790" height="683" src="/_astro/2024081507.DCKZ8toU_Z8N025.webp"></p>
+一行两列
+<h3 id="layout">layout</h3>
+<p>layout(mat,widths=,heights=，byrow=)</p>
+<blockquote>
+<p>其中的mat是一个矩阵，它指定了所要组合的多个图形的所在位置, 非0数字代表绘制图形的顺序，相同数字代表占位符，0代表空缺，不绘制图形。widths = 各列宽度值组成的一个向量，heights = 各行高度值组成的一个向量。byrow=表示图形按行(TRUE)还是按列(FALSE)排列，默认按列排放。</p>
+</blockquote>
+<div class="code-block" data-lang="plaintext" data-lines="7"><div class="code-toolbar"><span class="code-lang"><span>plaintext</span></span><div class="code-meta"><span class="code-info">UTF-8</span><span class="code-separator">|</span><span class="code-info">7 Lines</span><span class="code-separator">|</span><button class="code-copy" type="button" disabled aria-label="复制代码" title="复制代码" data-state="idle"><svg class="icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button></div></div><pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-lang="plaintext" data-lines="7"><code><span class="line"><span>attach(mtcars)</span></span>
+<span class="line"><span>layout(matrix(c(1,1,1,1,0,2,0,0,0,0,3,0,0,0,0,4), 4, 4))</span></span>
+<span class="line"><span>hist(wt)</span></span>
+<span class="line"><span>hist(mpg)</span></span>
+<span class="line"><span>hist(carb)</span></span>
+<span class="line"><span>hist(disp)</span></span>
+<span class="line"><span>detach(mtcars)</span></span></code></pre></div>
+<p><img alt="" loading="lazy" decoding="async" width="613" height="612" src="/_astro/2024081508-1.B1ecycqR_ZXhBqw.webp"></p>
+<h3 id="curve">curve</h3>
+<p>绘制包括直线、幂函数、三角函数和余切函数在内的各种数学图像</p>
+<blockquote>
+<p>curve(expr,from=NULL,to=NULL,n=101,add=FALSE,type=“l”,xname=“x”,xlabe=xname,tlable=NULL,log=NULL,xlim=NULL…)</p>
+<p>expr:表达式     </p>
+<p>from,to:绘图起止范围  </p>
+<p>n:表示x取值的数量 </p>
+<p>add:T or F表示将绘图添加到已存在的绘图中</p>
+<p>type:样式类型</p>
+<p>xname:x轴变量名称；xlabe,ylabl:标签名称</p>
+</blockquote>
+<h3 id="rect">rect</h3>
+<p>绘制矩阵</p>
+<h3 id="polygon">polygon</h3>
+<p>绘制多边形</p></figure>  </div> </div> <div class="article-footer"> <div class="article-footer__tags"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-bookmark article-footer__tags-icon"> <path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"></path>  </svg> <div class="article-footer__tag-list"> <a class="article-footer__tag" href="/archive/tag/r语言/">#r语言</a><a class="article-footer__tag" href="/archive/tag/笔记/">#笔记</a> </div> </div> <div class="article-footer__share" role="group" aria-label="分享文章"> <a class="icon-button" href="https://x.com/intent/tweet?text=R%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96&amp;url=https%3A%2F%2Fblog.20220509.xyz%2Farchive%2Fr-yu-yan-shu-ju-fen-xi-yu-ke-shi-hua%2F" aria-label="分享到 X" title="分享到 X" target="_blank" rel="noopener noreferrer"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M14.234 10.162L22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299l-.929-1.329L3.076 1.56h3.182l5.965 8.532l.929 1.329l7.754 11.09h-3.182z"/> </svg> </a><a class="icon-button" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fblog.20220509.xyz%2Farchive%2Fr-yu-yan-shu-ju-fen-xi-yu-ke-shi-hua%2F" aria-label="分享到 Facebook" title="分享到 Facebook" target="_blank" rel="noopener noreferrer"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978c.401 0 .955.042 1.468.103a9 9 0 0 1 1.141.195v3.325a9 9 0 0 0-.653-.036a27 27 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.7 1.7 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.29h3.919l-.386 2.103l-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647"/> </svg> </a><a class="icon-button" href="mailto:?subject=R%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E5%8F%AF%E8%A7%86%E5%8C%96&amp;body=https%3A%2F%2Fblog.20220509.xyz%2Farchive%2Fr-yu-yan-shu-ju-fen-xi-yu-ke-shi-hua%2F" aria-label="通过邮件分享" title="通过邮件分享"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-mail icon"> <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path><rect x="2" y="4" width="20" height="16" rx="2"></rect>  </svg> </a> <button class="icon-button" type="button" aria-label="生成分享卡片" aria-haspopup="dialog" title="分享卡片" data-article-poster-open disabled> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-share-2 icon"> <circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line>  </svg> </button> <button class="icon-button article-footer__copy" type="button" aria-label="复制文章链接" title="复制文章链接" data-article-link-copy disabled> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-link icon article-footer__link-icon"> <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-check icon article-footer__check-icon"> <path d="M20 6 9 17l-5-5"></path>  </svg> </button> </div> </div><nav class="prev-next" aria-label="上一篇/下一篇"> <div class="prev-next__item"> <a class="prev-next__link prev-next__link--prev" href="/archive/ying-yu-ling-ji-chu-yu-fa-zhi-shi/" rel="prev"> <span class="prev-next__label"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-arrow-left prev-next__icon"> <path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path>  </svg>
+上一篇
+</span> <span class="prev-next__title">英语零基础语法知识</span> </a> </div> <div class="prev-next__item"> <a class="prev-next__link prev-next__link--next" href="/archive/harmonyos-arkui/" rel="next"> <span class="prev-next__label">
+下一篇
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-arrow-right prev-next__icon"> <path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path>  </svg> </span> <span class="prev-next__title">HarmonyOS-ArkUI</span> </a> </div> </nav><section class="article-comments" data-article-comments aria-labelledby="article-comments-title"> <h2 id="article-comments-title" class="article-comments__title">评论</h2> <div class="article-comments__mount" data-giscus-mount data-repo="MintHana/fuwari-comments" data-repo-id="R_kgDOQX3_pg" data-category="Announcements" data-category-id="DIC_kwDOQX3_ps4Cx6xk" data-mapping="pathname" data-input-position="bottom" data-lang="zh-CN" data-reactions-enabled="1"> <p class="article-comments__hint" data-giscus-hint>滚动到此处时加载评论…</p> </div> <noscript> <p class="article-comments__hint">评论由 giscus 提供，需要启用 JavaScript 才能查看。</p> </noscript> </section><script type="module">var e=()=>document.documentElement.dataset.theme===`dark`?`dark`:`light`;document.querySelectorAll(`[data-giscus-mount]`).forEach(t=>{let n=t.dataset,r=n.repo??``,i=n.repoId??``,a=n.categoryId??``;if(!r||!i||!a){t.querySelector(`[data-giscus-hint]`)?.remove();return}let o=null,s=!1,c=()=>{o&&o.setAttribute(`theme`,e())},l=()=>{let s=document.createElement(`giscus-widget`);s.setAttribute(`id`,`giscus-comments`),s.setAttribute(`repo`,r),s.setAttribute(`repoId`,i),s.setAttribute(`category`,n.category??``),s.setAttribute(`categoryId`,a),s.setAttribute(`mapping`,n.mapping??`pathname`),s.setAttribute(`strict`,`0`),s.setAttribute(`reactionsEnabled`,n.reactionsEnabled??`1`),s.setAttribute(`emitMetadata`,`0`),s.setAttribute(`inputPosition`,n.inputPosition??`bottom`),s.setAttribute(`theme`,e()),s.setAttribute(`lang`,n.lang??`zh-CN`),s.setAttribute(`loading`,`lazy`),t.querySelector(`[data-giscus-hint]`)?.remove(),t.append(s),o=s,new MutationObserver(c).observe(document.documentElement,{attributes:!0,attributeFilter:[`data-theme`]})},u=()=>{if(s)return;s=!0;let e=document.querySelector(`script[data-giscus-loader]`);if(e){e.dataset.giscusLoaded===`true`?l():e.addEventListener(`load`,l,{once:!0});return}let n=document.createElement(`script`);n.type=`module`,n.src=`https://esm.sh/giscus`,n.dataset.giscusLoader=`true`,n.addEventListener(`load`,()=>{n.dataset.giscusLoaded=`true`,l()},{once:!0}),n.addEventListener(`error`,()=>{t.querySelector(`[data-giscus-hint]`)?.replaceChildren(`评论加载失败，请稍后重试。`)}),document.head.append(n)};if(typeof IntersectionObserver>`u`){u();return}let d=new IntersectionObserver(e=>{e.some(e=>e.isIntersecting)&&(d.disconnect(),u())},{rootMargin:`600px 0px`});d.observe(t)});</script><button class="toc-fab" type="button" aria-label="打开文章目录" aria-haspopup="dialog" aria-expanded="false" title="文章目录" data-toc-fab> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-text-align-start icon"> <path d="M21 5H3"></path><path d="M15 12H3"></path><path d="M17 19H3"></path>  </svg> </button><dialog class="toc-drawer" aria-label="文章目录" data-toc-drawer> <div class="toc-drawer__head"> <p class="toc-drawer__title"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-text-align-start toc-drawer__icon"> <path d="M21 5H3"></path><path d="M15 12H3"></path><path d="M17 19H3"></path>  </svg>
+On this page
+</p> <button class="icon-button toc-drawer__close" type="button" aria-label="关闭目录" title="关闭" data-toc-drawer-close> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-x"> <path d="M18 6 6 18"></path><path d="m6 6 12 12"></path>  </svg> </button> </div> <ul class="article-toc__list"> <li> <a class="article-toc__link" href="#r语言概述" data-depth="1" data-level="1" title="R语言概述"> <span class="article-toc__num" aria-hidden="true">1.</span> <span class="article-toc__text">R语言概述</span> </a> </li><li> <a class="article-toc__link" href="#r的基本使用" data-depth="1" data-level="1" title="R的基本使用"> <span class="article-toc__num" aria-hidden="true">2.</span> <span class="article-toc__text">R的基本使用</span> </a> </li><li> <a class="article-toc__link" href="#赋值操作" data-depth="2" data-level="2" title="赋值操作"> <span class="article-toc__num" aria-hidden="true">2.1</span> <span class="article-toc__text">赋值操作</span> </a> </li><li> <a class="article-toc__link" href="#区分大小写" data-depth="3" data-level="3" title="区分大小写"> <span class="article-toc__num" aria-hidden="true">2.1.1</span> <span class="article-toc__text">区分大小写</span> </a> </li><li> <a class="article-toc__link" href="#提示符" data-depth="2" data-level="2" title="‘+’提示符"> <span class="article-toc__num" aria-hidden="true">2.2</span> <span class="article-toc__text">‘+’提示符</span> </a> </li><li> <a class="article-toc__link" href="#示例" data-depth="2" data-level="2" title="示例"> <span class="article-toc__num" aria-hidden="true">2.3</span> <span class="article-toc__text">示例</span> </a> </li><li> <a class="article-toc__link" href="#输入与输出" data-depth="2" data-level="2" title="输入与输出"> <span class="article-toc__num" aria-hidden="true">2.4</span> <span class="article-toc__text">输入与输出</span> </a> </li><li> <a class="article-toc__link" href="#分支语句" data-depth="1" data-level="1" title="分支语句"> <span class="article-toc__num" aria-hidden="true">3.</span> <span class="article-toc__text">分支语句</span> </a> </li><li> <a class="article-toc__link" href="#if语句" data-depth="2" data-level="2" title="if语句"> <span class="article-toc__num" aria-hidden="true">3.1</span> <span class="article-toc__text">if语句</span> </a> </li><li> <a class="article-toc__link" href="#switch语句" data-depth="2" data-level="2" title="switch语句"> <span class="article-toc__num" aria-hidden="true">3.2</span> <span class="article-toc__text">switch语句</span> </a> </li><li> <a class="article-toc__link" href="#循环语句" data-depth="2" data-level="2" title="循环语句"> <span class="article-toc__num" aria-hidden="true">3.3</span> <span class="article-toc__text">循环语句</span> </a> </li><li> <a class="article-toc__link" href="#while语句" data-depth="2" data-level="2" title="While语句"> <span class="article-toc__num" aria-hidden="true">3.4</span> <span class="article-toc__text">While语句</span> </a> </li><li> <a class="article-toc__link" href="#for循环" data-depth="2" data-level="2" title="for循环"> <span class="article-toc__num" aria-hidden="true">3.5</span> <span class="article-toc__text">for循环</span> </a> </li><li> <a class="article-toc__link" href="#自定义函数" data-depth="1" data-level="1" title="自定义函数"> <span class="article-toc__num" aria-hidden="true">4.</span> <span class="article-toc__text">自定义函数</span> </a> </li><li> <a class="article-toc__link" href="#数据集" data-depth="1" data-level="1" title="数据集"> <span class="article-toc__num" aria-hidden="true">5.</span> <span class="article-toc__text">数据集</span> </a> </li><li> <a class="article-toc__link" href="#数据类型" data-depth="2" data-level="2" title="数据类型"> <span class="article-toc__num" aria-hidden="true">5.1</span> <span class="article-toc__text">数据类型</span> </a> </li><li> <a class="article-toc__link" href="#数据结构" data-depth="2" data-level="2" title="数据结构"> <span class="article-toc__num" aria-hidden="true">5.2</span> <span class="article-toc__text">数据结构</span> </a> </li><li> <a class="article-toc__link" href="#向量" data-depth="3" data-level="3" title="向量"> <span class="article-toc__num" aria-hidden="true">5.2.1</span> <span class="article-toc__text">向量</span> </a> </li><li> <a class="article-toc__link" href="#矩阵" data-depth="3" data-level="3" title="矩阵"> <span class="article-toc__num" aria-hidden="true">5.2.2</span> <span class="article-toc__text">矩阵</span> </a> </li><li> <a class="article-toc__link" href="#数组" data-depth="3" data-level="3" title="数组"> <span class="article-toc__num" aria-hidden="true">5.2.3</span> <span class="article-toc__text">数组</span> </a> </li><li> <a class="article-toc__link" href="#数据框" data-depth="3" data-level="3" title="数据框"> <span class="article-toc__num" aria-hidden="true">5.2.4</span> <span class="article-toc__text">数据框</span> </a> </li><li> <a class="article-toc__link" href="#列表" data-depth="3" data-level="3" title="列表"> <span class="article-toc__num" aria-hidden="true">5.2.5</span> <span class="article-toc__text">列表</span> </a> </li><li> <a class="article-toc__link" href="#数据的输入" data-depth="2" data-level="2" title="数据的输入"> <span class="article-toc__num" aria-hidden="true">5.3</span> <span class="article-toc__text">数据的输入</span> </a> </li><li> <a class="article-toc__link" href="#键盘输入数据" data-depth="3" data-level="3" title="键盘输入数据"> <span class="article-toc__num" aria-hidden="true">5.3.1</span> <span class="article-toc__text">键盘输入数据</span> </a> </li><li> <a class="article-toc__link" href="#带分隔符的文本文件数据" data-depth="3" data-level="3" title="带分隔符的文本文件数据"> <span class="article-toc__num" aria-hidden="true">5.3.2</span> <span class="article-toc__text">带分隔符的文本文件数据</span> </a> </li><li> <a class="article-toc__link" href="#excel数据" data-depth="3" data-level="3" title="Excel数据"> <span class="article-toc__num" aria-hidden="true">5.3.3</span> <span class="article-toc__text">Excel数据</span> </a> </li><li> <a class="article-toc__link" href="#其他方法" data-depth="3" data-level="3" title="其他方法"> <span class="article-toc__num" aria-hidden="true">5.3.4</span> <span class="article-toc__text">其他方法</span> </a> </li><li> <a class="article-toc__link" href="#基本绘图" data-depth="1" data-level="1" title="基本绘图"> <span class="article-toc__num" aria-hidden="true">6.</span> <span class="article-toc__text">基本绘图</span> </a> </li><li> <a class="article-toc__link" href="#图形简介" data-depth="2" data-level="2" title="图形简介"> <span class="article-toc__num" aria-hidden="true">6.1</span> <span class="article-toc__text">图形简介</span> </a> </li><li> <a class="article-toc__link" href="#入门绘画" data-depth="3" data-level="3" title="入门绘画"> <span class="article-toc__num" aria-hidden="true">6.1.1</span> <span class="article-toc__text">入门绘画</span> </a> </li><li> <a class="article-toc__link" href="#打开或关闭多个图形窗口" data-depth="3" data-level="3" title="打开或关闭多个图形窗口"> <span class="article-toc__num" aria-hidden="true">6.1.2</span> <span class="article-toc__text">打开或关闭多个图形窗口</span> </a> </li><li> <a class="article-toc__link" href="#图形保存" data-depth="3" data-level="3" title="图形保存"> <span class="article-toc__num" aria-hidden="true">6.1.3</span> <span class="article-toc__text">图形保存</span> </a> </li><li> <a class="article-toc__link" href="#图形参数" data-depth="2" data-level="2" title="图形参数"> <span class="article-toc__num" aria-hidden="true">6.2</span> <span class="article-toc__text">图形参数</span> </a> </li><li> <a class="article-toc__link" href="#设置图形参数列表" data-depth="3" data-level="3" title="设置图形参数列表"> <span class="article-toc__num" aria-hidden="true">6.2.1</span> <span class="article-toc__text">设置图形参数列表</span> </a> </li><li> <a class="article-toc__link" href="#绘画函数内直接添加图形参数" data-depth="3" data-level="3" title="绘画函数内直接添加图形参数"> <span class="article-toc__num" aria-hidden="true">6.2.2</span> <span class="article-toc__text">绘画函数内直接添加图形参数</span> </a> </li><li> <a class="article-toc__link" href="#符号与线条" data-depth="2" data-level="2" title="符号与线条"> <span class="article-toc__num" aria-hidden="true">6.3</span> <span class="article-toc__text">符号与线条</span> </a> </li><li> <a class="article-toc__link" href="#颜色" data-depth="2" data-level="2" title="颜色"> <span class="article-toc__num" aria-hidden="true">6.4</span> <span class="article-toc__text">颜色</span> </a> </li><li> <a class="article-toc__link" href="#文本属性" data-depth="2" data-level="2" title="文本属性"> <span class="article-toc__num" aria-hidden="true">6.5</span> <span class="article-toc__text">文本属性</span> </a> </li><li> <a class="article-toc__link" href="#字体大小" data-depth="3" data-level="3" title="字体大小"> <span class="article-toc__num" aria-hidden="true">6.5.1</span> <span class="article-toc__text">字体大小</span> </a> </li><li> <a class="article-toc__link" href="#字体字样" data-depth="3" data-level="3" title="字体字样"> <span class="article-toc__num" aria-hidden="true">6.5.2</span> <span class="article-toc__text">字体字样</span> </a> </li><li> <a class="article-toc__link" href="#图形尺寸和边界尺寸" data-depth="2" data-level="2" title="图形尺寸和边界尺寸"> <span class="article-toc__num" aria-hidden="true">6.6</span> <span class="article-toc__text">图形尺寸和边界尺寸</span> </a> </li><li> <a class="article-toc__link" href="#添加文本自定义坐标轴和图例" data-depth="2" data-level="2" title="添加文本、自定义坐标轴和图例"> <span class="article-toc__num" aria-hidden="true">6.7</span> <span class="article-toc__text">添加文本、自定义坐标轴和图例</span> </a> </li><li> <a class="article-toc__link" href="#标题" data-depth="3" data-level="3" title="标题"> <span class="article-toc__num" aria-hidden="true">6.7.1</span> <span class="article-toc__text">标题</span> </a> </li><li> <a class="article-toc__link" href="#坐标轴" data-depth="3" data-level="3" title="坐标轴"> <span class="article-toc__num" aria-hidden="true">6.7.2</span> <span class="article-toc__text">坐标轴</span> </a> </li><li> <a class="article-toc__link" href="#参考线" data-depth="3" data-level="3" title="参考线"> <span class="article-toc__num" aria-hidden="true">6.7.3</span> <span class="article-toc__text">参考线</span> </a> </li><li> <a class="article-toc__link" href="#图例" data-depth="3" data-level="3" title="图例"> <span class="article-toc__num" aria-hidden="true">6.7.4</span> <span class="article-toc__text">图例</span> </a> </li><li> <a class="article-toc__link" href="#文本注释" data-depth="3" data-level="3" title="文本注释"> <span class="article-toc__num" aria-hidden="true">6.7.5</span> <span class="article-toc__text">文本注释</span> </a> </li><li> <a class="article-toc__link" href="#散点图" data-depth="2" data-level="2" title="散点图"> <span class="article-toc__num" aria-hidden="true">6.8</span> <span class="article-toc__text">散点图</span> </a> </li><li> <a class="article-toc__link" href="#基础函数plot" data-depth="3" data-level="3" title="基础函数plot()"> <span class="article-toc__num" aria-hidden="true">6.8.1</span> <span class="article-toc__text">基础函数plot()</span> </a> </li><li> <a class="article-toc__link" href="#散点图矩阵" data-depth="3" data-level="3" title="散点图矩阵"> <span class="article-toc__num" aria-hidden="true">6.8.2</span> <span class="article-toc__text">散点图矩阵</span> </a> </li><li> <a class="article-toc__link" href="#三维散点图" data-depth="3" data-level="3" title="三维散点图"> <span class="article-toc__num" aria-hidden="true">6.8.3</span> <span class="article-toc__text">三维散点图</span> </a> </li><li> <a class="article-toc__link" href="#旋转三维散点图" data-depth="3" data-level="3" title="旋转三维散点图"> <span class="article-toc__num" aria-hidden="true">6.8.4</span> <span class="article-toc__text">旋转三维散点图</span> </a> </li><li> <a class="article-toc__link" href="#气泡图" data-depth="3" data-level="3" title="气泡图"> <span class="article-toc__num" aria-hidden="true">6.8.5</span> <span class="article-toc__text">气泡图</span> </a> </li><li> <a class="article-toc__link" href="#折线图" data-depth="2" data-level="2" title="折线图"> <span class="article-toc__num" aria-hidden="true">6.9</span> <span class="article-toc__text">折线图</span> </a> </li><li> <a class="article-toc__link" href="#图形组合" data-depth="2" data-level="2" title="图形组合"> <span class="article-toc__num" aria-hidden="true">6.10</span> <span class="article-toc__text">图形组合</span> </a> </li><li> <a class="article-toc__link" href="#par" data-depth="3" data-level="3" title="par"> <span class="article-toc__num" aria-hidden="true">6.10.1</span> <span class="article-toc__text">par</span> </a> </li><li> <a class="article-toc__link" href="#layout" data-depth="3" data-level="3" title="layout"> <span class="article-toc__num" aria-hidden="true">6.10.2</span> <span class="article-toc__text">layout</span> </a> </li><li> <a class="article-toc__link" href="#curve" data-depth="3" data-level="3" title="curve"> <span class="article-toc__num" aria-hidden="true">6.10.3</span> <span class="article-toc__text">curve</span> </a> </li><li> <a class="article-toc__link" href="#rect" data-depth="3" data-level="3" title="rect"> <span class="article-toc__num" aria-hidden="true">6.10.4</span> <span class="article-toc__text">rect</span> </a> </li><li> <a class="article-toc__link" href="#polygon" data-depth="3" data-level="3" title="polygon"> <span class="article-toc__num" aria-hidden="true">6.10.5</span> <span class="article-toc__text">polygon</span> </a> </li> </ul> </dialog><dialog class="lightbox" id="lightbox" aria-label="图片预览" aria-hidden="true" data-lightbox data-enable-zoom="false" data-enable-pan="false" data-enable-swipe-down="false" data-mobile-nav="bottom" data-mobile-count="visible" tabindex="-1" hidden> <button class="lightbox-close" type="button" data-lightbox-close aria-label="关闭">×</button> <div class="lightbox-navs"> <button class="lightbox-nav lightbox-prev" type="button" data-lightbox-prev aria-label="上一张">‹</button> <button class="lightbox-nav lightbox-next" type="button" data-lightbox-next aria-label="下一张">›</button> </div> <figure class="lightbox-figure"> <img data-lightbox-image alt=""> <figcaption class="lightbox-meta"> <span class="lightbox-caption" data-lightbox-caption hidden></span> <span class="lightbox-meta-row"> <span class="lightbox-count" data-lightbox-count aria-live="polite"></span> <span class="lightbox-dots" data-lightbox-dots aria-hidden="true"></span> </span> </figcaption> </figure> </dialog> <dialog class="article-poster" aria-label="分享卡片" data-article-poster data-site-name="MintHana" data-title="R语言数据分析与可视化" data-date="2024-08-10" data-summary="R语言概述 R是属于GNU系统的一个自由、免费、源代码开放的软件，它是用于数据分析和可视化的软件功能的集成套件，是一个用于统计计算和统计制图的优秀工具。它可以在各种UNIX平台、W…" data-author-name="MintHana" data-author-avatar="/about/avatar.jpg" data-url="https://blog.20220509.xyz/archive/r-yu-yan-shu-ju-fen-xi-yu-ke-shi-hua/"> <div class="article-poster__panel" tabindex="-1" autofocus> <p class="article-poster__status" role="status" data-article-poster-status></p> <img class="article-poster__image" alt="R语言数据分析与可视化 的分享卡片" data-article-poster-image hidden> <a class="article-poster__save" download="r-yu-yan-shu-ju-fen-xi-yu-ke-shi-hua.png" data-article-poster-save hidden>保存图片</a> <p class="article-poster__hint">也可以长按图片保存。</p>  <button class="sr-only" type="button" tabindex="-1" data-article-poster-close>关闭</button> </div> </dialog><script type="module" src="/_astro/ArticleLayout.astro_astro_type_script_index_0_lang.DR-GBEKG.js"></script>  <footer class="site-footer"> <span>© 2024-2026 Mint by Astro&amp;Whono</span> <span class="site-footer__uptime" data-uptime-start="2024-01-05T00:00:00+08:00" hidden>
+本站已运行 <span class="site-footer__uptime-value">--</span> </span> </footer> </div> </main> </div> <template id="scroll-top-template"> <button type="button" class="icon-button float-action scroll-top" aria-label="回到顶部" title="回到顶部" aria-hidden="true" tabindex="-1"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-chevron-up icon"> <path d="m18 15-6-6-6 6"></path>  </svg> </button> </template> <script type="module" src="/_astro/BaseLayout.astro_astro_type_script_index_0_lang.CJRVNfu6.js"></script>   </body> </html>

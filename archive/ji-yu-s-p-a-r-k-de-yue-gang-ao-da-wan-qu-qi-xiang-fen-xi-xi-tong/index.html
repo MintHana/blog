@@ -1,0 +1,415 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><script>
+      (() => {
+        // 与 src/scripts/sidebar-theme.ts 保持同一主题偏好契约，避免首屏与运行时状态漂移。
+        const themeKey = 'theme';
+        const modeKey = 'theme-mode';
+        let storedMode = null;
+        let legacyTheme = null;
+        try {
+          storedMode = localStorage.getItem(modeKey);
+          legacyTheme = localStorage.getItem(themeKey);
+        } catch (_) {}
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const mode = storedMode === 'system' || storedMode === 'dark' || storedMode === 'light'
+          ? storedMode
+          : (legacyTheme === 'dark' || legacyTheme === 'light' ? legacyTheme : 'system');
+        const theme = mode === 'system' ? (prefersDark ? 'dark' : 'light') : mode;
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.dataset.themeMode = mode;
+      })();
+    </script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><title>基于Spark的粤港澳大湾区气象分析系统 | Mint Blog</title><meta name="description" content="前言 当前，全球气候变化加速演进，极端天气事件更加频繁和猛烈，不断放大的气象风险对人类生命、经济发展及地球生态构成直接而严峻的威胁。粤港澳大湾区作为中国开放程度最高、经济活力最强的…"><link rel="canonical" href="https://blog.20220509.xyz/archive/ji-yu-s-p-a-r-k-de-yue-gang-ao-da-wan-qu-qi-xiang-fen-xi-xi-tong/"><meta property="og:site_name" content="Mint Blog"><meta property="og:title" content="基于Spark的粤港澳大湾区气象分析系统 | Mint Blog"><meta property="og:description" content="前言 当前，全球气候变化加速演进，极端天气事件更加频繁和猛烈，不断放大的气象风险对人类生命、经济发展及地球生态构成直接而严峻的威胁。粤港澳大湾区作为中国开放程度最高、经济活力最强的…"><meta property="og:url" content="https://blog.20220509.xyz/archive/ji-yu-s-p-a-r-k-de-yue-gang-ao-da-wan-qu-qi-xiang-fen-xi-xi-tong/"><meta property="og:type" content="article"><meta property="og:image" content="https://blog.20220509.xyz/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="基于Spark的粤港澳大湾区气象分析系统 | Mint Blog"><meta name="twitter:description" content="前言 当前，全球气候变化加速演进，极端天气事件更加频繁和猛烈，不断放大的气象风险对人类生命、经济发展及地球生态构成直接而严峻的威胁。粤港澳大湾区作为中国开放程度最高、经济活力最强的…"><meta name="twitter:image" content="https://blog.20220509.xyz/og.png"><link rel="stylesheet" href="/_astro/global.Bhbh443I.css"> <meta property="article:published_time" content="2026-04-06T00:00:00.000Z"> <link rel="stylesheet" href="/_astro/article.CfotRyYM.css"></head> <body class="article-page immersive-page"> <a class="skip-link" href="#content">跳到内容</a> <div class="shell" data-sidebar-divider="default"> <aside id="site-sidebar" class="sidebar"> <a class="sidebar__title sidebar__title--site" href="/" aria-label="MintHana 首页"> <span class="sidebar__title-text">MintHana</span> </a>  <div class="sidebar__quote">  永遠に不滅なものはない<br>  Personal study notes. Please forgive any inappropriate content<br>  </div> <div class="sidebar__social" aria-label="社交链接"> <a class="sidebar__social-link" href="https://github.com/MintHana" aria-label="GitHub" title="GitHub"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/> </svg> </a><a class="sidebar__social-link" href="https://www.zhihu.com/people/70-28-52-15" aria-label="知乎" title="知乎"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M5.721 0C2.251 0 0 2.25 0 5.719V18.28C0 21.751 2.252 24 5.721 24h12.56C21.751 24 24 21.75 24 18.281V5.72C24 2.249 21.75 0 18.281 0zm1.964 4.078q-.408 1.096-.68 2.11h4.587c.545-.006.445 1.168.445 1.171H9.384a58 58 0 0 1-.112 3.797h2.712c.388.023.393 1.251.393 1.266H9.183a9.2 9.2 0 0 1-.408 2.102l.757-.604c.452.456 1.512 1.712 1.906 2.177c.473.681.063 2.081.063 2.081l-2.794-3.382c-.653 2.518-1.845 3.607-1.845 3.607c-.523.468-1.58.82-2.64.516c2.218-1.73 3.44-3.917 3.667-6.497H4.491c0-.015.197-1.243.806-1.266h2.71c.024-.32.086-3.254.086-3.797H6.598c-.136.406-.158.447-.268.753c-.594 1.095-1.603 1.122-1.907 1.155c.906-1.821 1.416-3.6 1.591-4.064c.425-1.124 1.671-1.125 1.671-1.125M13.078 6h6.377v11.33h-2.573l-2.184 1.373l-.401-1.373h-1.219zm1.313 1.219v8.86h.623l.263.937l1.455-.938h1.456v-8.86z"/> </svg> </a> </div> <ul class="nav sidebar-public-nav"> <li> <a href="/"> <span>HOME</span> <span class="dot" aria-hidden="true"></span> </a> </li><li> <a href="/archive/" aria-current="page"> <span>ARCHIVE</span> <span class="dot" aria-hidden="true"></span> </a> </li><li> <a href="/about/"> <span>ABOUT</span> <span class="dot" aria-hidden="true"></span> </a> </li> </ul>  <div class="sidebar-actions">   <button id="reader-toggle" class="icon-button reader-toggle sidebar-action--rail-hidden" type="button" aria-label="阅读模式" aria-pressed="false" data-tooltip="阅读模式"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-book-open icon icon-book-open"> <path d="M12 5v16"></path><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-book icon icon-book-closed"> <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"></path>  </svg> </button> <a class="icon-button rss-link sidebar-action--rail-hidden" href="/archive/rss.xml" aria-label="RSS 订阅" data-tooltip="RSS 订阅"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-rss icon"> <path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle>  </svg> </a> <button id="theme-toggle" class="icon-button theme-toggle" type="button" aria-label="夜间模式" aria-pressed="false" data-tooltip="夜间模式"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-sun-moon icon icon-system"> <path d="M12 2v2"></path><path d="M14.837 16.385a6 6 0 1 1-7.223-7.222c.624-.147.97.66.715 1.248a4 4 0 0 0 5.26 5.259c.589-.255 1.396.09 1.248.715"></path><path d="M16 12a4 4 0 0 0-4-4"></path><path d="m19 5-1.256 1.256"></path><path d="M20 12h2"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-moon icon icon-moon"> <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-sun icon icon-sun"> <circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path>  </svg> </button>   </div> </aside> <nav id="mobile-bar" class="mobile-bar" aria-label="快捷导航"> <a class="mobile-bar__title" href="/">MintHana</a> <ul class="mobile-bar__nav"> <li> <a href="/">HOME</a> </li><li> <a href="/archive/" aria-current="page">ARCHIVE</a> </li><li> <a href="/about/">ABOUT</a> </li> </ul> </nav> <div class="divider" aria-hidden="true"></div> <main id="content" class="content" tabindex="-1"> <div class="content__inner">   <div class="article-body article-body--toc"> <div class="article-header reader-exit-anchor"> <h1 class="page-title">基于Spark的粤港澳大湾区气象分析系统</h1> <button id="reader-exit" class="icon-button reader-exit" type="button" aria-label="退出阅读" title="退出阅读" aria-hidden="true" tabindex="-1"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-square-arrow-right-exit icon"> <path d="M10 12h11"></path><path d="m17 16 4-4-4-4"></path><path d="M21 6.344V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-1.344"></path>  </svg> </button> <div class="meta-line meta-line--items"> <span class="meta-line__item"> <time datetime="2026-04-06T00:00:00.000Z">发布于：2026-04-06</time> </span>  <span class="meta-line__item meta-line__item--desktop-meta">
+共 5,285 字
+</span> <span class="meta-line__item meta-line__item--desktop-meta">
+约 17 分钟
+</span> </div> </div> <nav class="article-toc" aria-label="文章目录"> <p class="article-toc__title"> <span class="article-toc__label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-text-align-start article-toc__icon"> <path d="M21 5H3"></path><path d="M15 12H3"></path><path d="M17 19H3"></path>  </svg>On this page</span> </p> <ul class="article-toc__list"> <li> <a class="article-toc__link" href="#前言" data-depth="1" data-level="1" title="前言"> <span class="article-toc__num" aria-hidden="true">1.</span> <span class="article-toc__text">前言</span> </a> </li><li> <a class="article-toc__link" href="#系统介绍" data-depth="1" data-level="1" title="系统介绍"> <span class="article-toc__num" aria-hidden="true">2.</span> <span class="article-toc__text">系统介绍</span> </a> </li><li> <a class="article-toc__link" href="#技术选型" data-depth="1" data-level="1" title="技术选型"> <span class="article-toc__num" aria-hidden="true">3.</span> <span class="article-toc__text">技术选型</span> </a> </li><li> <a class="article-toc__link" href="#数据来源" data-depth="1" data-level="1" title="数据来源"> <span class="article-toc__num" aria-hidden="true">4.</span> <span class="article-toc__text">数据来源</span> </a> </li><li> <a class="article-toc__link" href="#功能设计" data-depth="1" data-level="1" title="功能设计"> <span class="article-toc__num" aria-hidden="true">5.</span> <span class="article-toc__text">功能设计</span> </a> </li><li> <a class="article-toc__link" href="#系统总体架构" data-depth="2" data-level="2" title="系统总体架构"> <span class="article-toc__num" aria-hidden="true">5.1</span> <span class="article-toc__text">系统总体架构</span> </a> </li><li> <a class="article-toc__link" href="#数据流图" data-depth="2" data-level="2" title="数据流图"> <span class="article-toc__num" aria-hidden="true">5.2</span> <span class="article-toc__text">数据流图</span> </a> </li><li> <a class="article-toc__link" href="#功能模块" data-depth="2" data-level="2" title="功能模块"> <span class="article-toc__num" aria-hidden="true">5.3</span> <span class="article-toc__text">功能模块</span> </a> </li><li> <a class="article-toc__link" href="#离线多源数据采集功能设计" data-depth="3" data-level="3" title="离线多源数据采集功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.1</span> <span class="article-toc__text">离线多源数据采集功能设计</span> </a> </li><li> <a class="article-toc__link" href="#实时数据采集与清洗功能设计" data-depth="3" data-level="3" title="实时数据采集与清洗功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.2</span> <span class="article-toc__text">实时数据采集与清洗功能设计</span> </a> </li><li> <a class="article-toc__link" href="#离线数据仓库功能设计" data-depth="3" data-level="3" title="离线数据仓库功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.3</span> <span class="article-toc__text">离线数据仓库功能设计</span> </a> </li><li> <a class="article-toc__link" href="#数据建模与预测功能设计" data-depth="3" data-level="3" title="数据建模与预测功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.4</span> <span class="article-toc__text">数据建模与预测功能设计</span> </a> </li><li> <a class="article-toc__link" href="#数据图表可视化展示功能设计" data-depth="3" data-level="3" title="数据图表可视化展示功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.5</span> <span class="article-toc__text">数据图表可视化展示功能设计</span> </a> </li><li> <a class="article-toc__link" href="#气象论坛功能设计" data-depth="3" data-level="3" title="气象论坛功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.6</span> <span class="article-toc__text">气象论坛功能设计</span> </a> </li><li> <a class="article-toc__link" href="#智能问答交互功能设计" data-depth="3" data-level="3" title="智能问答交互功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.7</span> <span class="article-toc__text">智能问答交互功能设计</span> </a> </li><li> <a class="article-toc__link" href="#后台管理功能设计" data-depth="3" data-level="3" title="后台管理功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.8</span> <span class="article-toc__text">后台管理功能设计</span> </a> </li><li> <a class="article-toc__link" href="#部份成果展示图" data-depth="1" data-level="1" title="部份成果展示图"> <span class="article-toc__num" aria-hidden="true">6.</span> <span class="article-toc__text">部份成果展示图</span> </a> </li> </ul> </nav> <div class="prose">  <h1 id="前言">前言</h1>
+<blockquote>
+<p>当前，全球气候变化加速演进，极端天气事件更加频繁和猛烈，不断放大的气象风险对人类生命、经济发展及地球生态构成直接而严峻的威胁。粤港澳大湾区作为中国开放程度最高、经济活力最强的区域之一，各类产业聚集，人口高度密集、基础设施现代化程度高。这使大湾区对气象变化的响应更为敏感。与此同时，伴随大湾区社会发展与需求升级，公众对气象服务的精细化需求不断提升。因此，通过气象专题平台掌握历史与实时气象资讯，对可能发生的各类极端气象灾害提前采取措施，有助于降低灾害损失，保障区域社会经济稳定运行与民生福祉。</p>
+</blockquote>
+<h1 id="系统介绍">系统介绍</h1>
+<p>本项目是一个综合性的气象数据分析平台，实现完整的气象数据采集、存储、分析、预测和可视化流程：</p>
+<ul>
+<li><strong>离线数据采集</strong>：通过 Scrapy 爬虫和 API 接口获取多源气象数据（基础气象、气象预警、空气质量、台风、海洋数据）</li>
+<li><strong>实时数据采集</strong>：基于 Flink + Kafka 的实时 ETL 流程（实时天气、小时级预报、生活指数、潮汐数据、天气预警）</li>
+<li><strong>离线数据仓库</strong>：基于 Spark 构建分层数据仓库（ODS → DWD → DWS → ADS）</li>
+<li><strong>气象要素预测</strong>：LSTM 时序预测和传统机器学习模型（随机森林与决策树）</li>
+<li><strong>用户系统</strong>：注册、登录、个人资料管理</li>
+<li><strong>数据可视化</strong>：多维度气象数据图表展示</li>
+<li><strong>气象论坛</strong>：话题讨论、评论互动、TF-IDF 文本内容推荐</li>
+<li><strong>AI 智能问答</strong>：集成 MaxKB 实现气象知识问答</li>
+</ul>
+<h1 id="技术选型">技术选型</h1>
+<p>为了模拟分布式Hadoop集群平台框架，系统采用三台虚拟机构建大数据平台架构，并在此基础上搭建并兼容各个组件，实际生产过程中，可以此进行复刻或扩展。同时为避免各个组件版本冲突，存在兼容性问题，以便完成数据仓库搭建、数据分析等开发任务，所需的软件名称与版本如下。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>软件名称</th><th>软件版本</th></tr></thead><tbody><tr><td>VMware</td><td>VMware Workstation 16 Pro</td></tr><tr><td>CentOS</td><td>CentOS 7 64位</td></tr><tr><td>Hadoop</td><td>Hadoop-3.1.3</td></tr><tr><td>Spark</td><td>Spark-3.0.3</td></tr><tr><td>Hive</td><td>Hive-3.1.3</td></tr><tr><td>Mysql</td><td>Mysql 5.7.44</td></tr><tr><td>Flink</td><td>Flink-1.14.4</td></tr><tr><td>Kafka</td><td>Kafka-2.8.1</td></tr><tr><td>Zookeeper</td><td>Zookeeper-3.6.3</td></tr><tr><td>Sqoop</td><td>Sqoop-1.4.7</td></tr><tr><td>Java</td><td>JDK 1.8.0_212</td></tr><tr><td>Python</td><td>Python-3.8.18</td></tr><tr><td>MaxKB</td><td>v1.10.3-lts</td></tr><tr><td>Django</td><td>Django 3.2</td></tr><tr><td>PyMysql</td><td>PyMysql 0.10.1</td></tr></tbody></table>
+系统软件版本图
+<p>其中三台虚拟机各功能模块<code>单独运行</code>的<code>最低硬件</code>配置如下：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>虚拟机名称</th><th>内存大小</th><th>处理器内核数量</th><th>硬盘大小</th></tr></thead><tbody><tr><td>Hadoop100</td><td>4GB</td><td>4</td><td>30GB</td></tr><tr><td>Hadoop101</td><td>5GB</td><td>4</td><td>30GB</td></tr><tr><td>Hadoop102</td><td>5GB</td><td>4</td><td>30GB</td></tr></tbody></table>
+虚拟机硬件分配表
+<p>集群规划表如下所示：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th></th><th>Hadoop100</th><th>Hadoop101</th><th>Hadoop102</th></tr></thead><tbody><tr><td>HDFS</td><td>NameNode、DataNode</td><td>DataNode</td><td>SecondaryNameNode、DataNode</td></tr><tr><td>YARN</td><td>NodeManager</td><td>ResourceManager、NodeManager</td><td>NodeManager</td></tr><tr><td>MySQL</td><td>MySQL服务</td><td>—</td><td>—</td></tr><tr><td>Hive</td><td>Hive、Metastore</td><td>Hive客户端</td><td>Hive客户端</td></tr><tr><td>Sqoop</td><td>Sqoop</td><td>—</td><td>—</td></tr><tr><td>Zookeeper</td><td>QuorumPeerMain</td><td>QuorumPeerMain</td><td>QuorumPeerMain</td></tr><tr><td>Kafka</td><td>Kafka</td><td>Kafka</td><td>Kafka</td></tr><tr><td>Spark</td><td>Master、Worker</td><td>Worker</td><td>Worker</td></tr><tr><td>Flink</td><td>JobManager、TaskManager</td><td>TaskManager</td><td>TaskManager</td></tr></tbody></table>
+集群规划表
+<h1 id="数据来源">数据来源</h1>
+<p>实时数据来源如下表所示：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>数据类型</th><th>数据来源</th></tr></thead><tbody><tr><td>基础气象要素(逐日/小时)</td><td><a href="https://openweathermap.org/">OpenWeatherMap</a></td></tr><tr><td>空气数据</td><td><a href="https://aqicn.org/contact/cn/">世界空气质量指数项目</a></td></tr><tr><td>城市预警数据</td><td><a href="https://weather.cma.cn/api/map/alarm?adcode=44">中国气象局公共气象服务</a></td></tr><tr><td>潮汐数据</td><td><a href="https://www.foreocean.com/">预海天气</a></td></tr><tr><td>生活指数数据</td><td><a href="https://www.seniverse.com/">心知天气</a></td></tr></tbody></table>
+实时数据来源表
+<p>离线数据来源如下表所示：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>数据分类</th><th>数据来源</th><th>时间范围</th></tr></thead><tbody><tr><td>空气数据</td><td><a href="https://www.tianqihoubao.com/aqi/">天气后报</a>、<a href="https://aqicn.org/contact/cn/">世界空气质量指数项目</a>、<a href="https://cd.epic.epd.gov.hk/EPICDI/air/station/?lang=zh">环境保护署</a></td><td>2021/1/1～2025/9/29</td></tr><tr><td>城市预警数据</td><td><a href="https://www.natyphoon.top/">NaTyphoon</a>、<a href="https://data.gov.hk/sc-data/dataset/hk-hko-rss-weather-warning-summary">香港天文台</a>、<a href="https://std.puiching.edu.mo/~pcmsams/index.php/weatherdata/weatherwarning/">澳门天文气象追击站</a></td><td>2021～2025/9</td></tr><tr><td>基础气象&#x26;海洋数据</td><td><a href="https://data.tpdc.ac.cn/zh-hans/data/e60dfd96-5fd8-493f-beae-e8e5d24dece4">国家青藏高原科学数据中心</a>、<a href="https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=overview">欧洲中期天气预报中心</a></td><td>2000～2024</td></tr><tr><td>台风数据</td><td><a href="https://msdc.qdio.ac.cn/data/metadata-special-detail?id=1422759994058625025&#x26;otherId=1422760211214520321">中国科学院海洋科学数据中心</a></td><td>2000～2024</td></tr></tbody></table>
+离线数据来源表
+<h1 id="功能设计">功能设计</h1>
+<h2 id="系统总体架构">系统总体架构</h2>
+<p>本系统是一套集<code>数据采集</code>、<code>处理</code>、<code>分析</code>、<code>预测</code>、<code>推荐</code>及<code>可视化</code>于一体的综合性数据服务系统，整体功能简述如下：</p>
+<ol>
+<li>数据源与数据采集：支持多源数据接入，包括多源 API、FTP / 文件、网络爬虫，以及气象论坛数据。实现多维度数据的统一采集与初步存储（Kafka 实时存储、HDFS 离线存储、MySQL 专项存储）。</li>
+<li>数据处理与数仓构建：通过 Flink 实现实时计算，Spark 完成批处理挖掘，Hive 执行数仓 ETL 操作，构建 ODS/DWD/DWS/ADS/DIM 分层数仓，实现数据的清洗、转换、分层管理，最终将核心结果存入 MySQL。</li>
+<li>预测与推荐功能：基于 Spark 批处理模块，完成LSTM、随机森林、决策树三种算法的特征工程训练以及模型构建，并完成数据预测分析并同步至数仓；同时基于 MySQL 论坛数据表，通过 TF-IDF 算法实现论坛帖子的智能推荐，推荐结果同步至核心 MySQL。</li>
+<li>智能解读与可视化：后端通过 Django 提供服务，调用 Pyecharts 实现数据可视化，结合 DeepSeek API 完成核心数据的 AI 智能解读；论坛帖子推荐结果与预测、可视化、智能解读内容一同通过 Web 前端展示，支持用户页面交互操作。
+<img alt="系统总体架构图" loading="lazy" decoding="async" width="2193" height="720" src="/_astro/p1.B1kolr-h_1VqnXE.webp"></li>
+</ol>
+系统总体架构图
+<h2 id="数据流图">数据流图</h2>
+<ul>
+<li>系统的输入链路上细分为离线与实时通道
+<ul>
+<li>一是Web网站与协议接口分别输出网页离线气象数据与协议接口离线气象数据，经离线数据采集与接入模块整合为原始离线气象数据，存入离线数据仓库。该仓库将支撑数据仓库分层加工与数据建模，并将加工后的ADS层数据与模型结果同步至模块中；</li>
+<li>二是协议接口输出的协议接口实时气象数据，经实时数据采集与清洗模块处理为清洗后实时数据，与离线加工数据一同写入Mysql展示库。</li>
+</ul>
+</li>
+<li>在服务输出层面
+<ul>
+<li>用户的用户交互请求经用户交互统一处理模块分发，可通过MaxKB AI智能系统实现自然语言问答，或从Mysql展示库获取图表数据生成可视化结果；</li>
+<li>同时，模块还支持账户社交操作，可将账户社交数据写入账户/论坛数据库，实现用户间的论坛互动与数据存储，最终向用户反馈包含智能问答、图表与论坛互动的交互结果。</li>
+<li>系统管理员的维护请求经系统维护统一处理模块，可完成对Mysql展示库、账户/论坛数据库、MaxKB知识库的配置与维护，并接收维护结果反馈。
+<img alt="系统一层数据流图" loading="lazy" decoding="async" width="1232" height="1230" src="/_astro/p2.DE7pH4V5_y9Ok9.webp"></li>
+</ul>
+</li>
+</ul>
+系统一层数据流图
+<h2 id="功能模块">功能模块</h2>
+<p>系统在整体设计上主要包括数据采集与处理、数据分析和应用与服务模块。</p>
+<ol>
+<li>数据采集与处理主要实现多源气象数据的离线与实时获取、清洗与标准化；</li>
+<li>气象数据分析面向海量数据完成离线仓库构建和气象要素模型构建与预测；</li>
+<li>应用与服务面向用户提供数据图表可视化展示、气象论坛与推荐、智能问答交互及后台管理功能
+<img alt="系统功能模块设计" loading="lazy" decoding="async" width="1003" height="559" src="/_astro/p3.CFuCEVkB_19m96g.webp"></li>
+</ol>
+系统功能模块设计图
+<h3 id="离线多源数据采集功能设计">离线多源数据采集功能设计</h3>
+<p>本系统将通过Python完成粤港澳大湾区的多源数据的采集任务，其中包括<code>基础气象、空气质量、气象预警、海洋、台风主题</code>等历史数据内容。通过<code>网络爬虫</code>、<code>文件/RSS/FTP/API下载</code>等方式进行数据采集。针对数据采集方式多样化的问题，系统的采集模块将针对两种不同的采集方式进行设计。针对接口协议等下载方式，采用Python语言封装各类协议客户端，通过参数化配置建立可靠连接，实现批量下载的自动化采集流程。而针对Web网站，则通过Scrapy网络爬虫框架，实现URL队列遍历调度，结合CSS选择器与正则表达式对网页DOM结构进行解析操作，自动提取数据内容。</p>
+<p><img alt="离线多源数据采集架构功能流程图" loading="lazy" decoding="async" width="1498" height="678" src="/_astro/p4.z1CRUh2Q_Z1CivUz.webp"></p>
+离线多源数据采集架构功能流程图
+<h3 id="实时数据采集与清洗功能设计">实时数据采集与清洗功能设计</h3>
+<p>在实时数据采集与处理模块上使用Java进行分层架构设计与代码编写，通过定时调度机制实现API接口数据抓取，同时设置请求间隔避免触发API频率限制；利用Kafka消息中间键作为数据传输的载体，实现采集与处理模块的解耦；最后利用Flink流处理框架，通过Flink SQL完成数据的转化与ETL操作，实现实时数据的处理并存储在Mysql数据库中。</p>
+<p><img alt="实时数据采集架构功能流程图" loading="lazy" decoding="async" width="1295" height="83" src="/_astro/p5.DV4nY3_U_14vKYk.webp"></p>
+实时数据采集架构功能流程图
+<h3 id="离线数据仓库功能设计">离线数据仓库功能设计</h3>
+<p>离线数据采集模块获取基础气象、空气质量、气象预警、海洋及台风等多主题数据后，采用分层式离线数据仓库架构进行处理。该架构以各主题气象数据为数据源，经加载流程同步至数据仓库，依次通过ODS/DIM层完成原始数据存储与维度建模、DWD/DWS层实现数据清洗聚合与主题宽表构建、ADS层输出面向业务场景的应用数据，并由元数据管理模块贯穿全流程，实现数据血缘追踪与表结构管控。</p>
+<p><img alt="离线数据仓库架构图" loading="lazy" decoding="async" width="1586" height="576" src="/_astro/p6.CEYSq8Wk_ZaQpQf.webp"></p>
+离线数据仓库架构图
+<p>系统采用Spark+HDFS构建分层式气象数据仓库，实现海量气象数据的标准化加工、结构化存储与高效管理。离线数据仓库模块将遵循数据仓库分层设计思想，采用星型模型作为主要的数仓建模方式，并面向系统的业务主题拆分为事实表与维度表，以减少数据仓库的冗余存储，提高查询性能和计算效率。</p>
+<p><img alt="星型模型图" loading="lazy" decoding="async" width="1340" height="646" src="/_astro/p7.Ca-SW1Jk_2pHGTM.webp"></p>
+星型模型图
+<h3 id="数据建模与预测功能设计">数据建模与预测功能设计</h3>
+<p>以历史气象要素主题的数据为基础，完成从数据处理到预测的端到端功能设计。核心由四部分组成：</p>
+<ul>
+<li>利用Spark从Hive数据仓库中提取历史气象数据，构建包含时间基础特征、周期性特征、滞后特征、统计特征及变化率的时间序列特征体系；</li>
+<li>其次，基于上述特征体系通过Pipeline统一完成特征向量化与标准化处理，为模型训练提供规范输入；</li>
+</ul>
+<ul>
+<li>随后分别构建传统机器学习模型与深度学习模型
+<ul>
+<li>针对决策树、随机森林配置最大深度、树数量等超参数</li>
+<li>同时构建双层LSTM网络并采用Dropout正则化策略提升泛化能力，最终保存完整的预处理管道与各类模型文件；</li>
+</ul>
+</li>
+<li>接着通过MAE、RMSE等指标评估各模型性能并生成可视化图表，验证模型有效性；</li>
+<li>最后采用递归预测机制，读取最新气象数据作为输入，实现未来七天的滚动预测，并将预测结果持久化至对应数据仓库表中。</li>
+</ul>
+<p><img alt="数据建模与预测功能流程图" loading="lazy" decoding="async" width="1342" height="79" src="/_astro/p8.czfavEsI_1rJy6p.webp"></p>
+数据建模与预测功能流程图
+<h3 id="数据图表可视化展示功能设计">数据图表可视化展示功能设计</h3>
+<p>使用异步请求机制从Django后端接口获取原始数据，并基于ECharts可视化库将获取到的数据初始化并渲染至指定的前端图表容器中以完成图表的首次呈现；同时为筛选交互控件绑定值变化监听事件，当筛选条件发生改变时，系统会依据新的筛选规则对原始数据进行过滤处理，并调用图表渲染逻辑重新生成并展示符合筛选条件的可视化图表，最终输出支持动态筛选交互的可视化图表实例。</p>
+<p><img alt="数据图表可视化展示功能流程图" loading="lazy" decoding="async" width="1574" height="842" src="/_astro/p9.C4YwcpuD_Z1zUdG0.webp"></p>
+数据图表可视化展示功能流程图
+<h3 id="气象论坛功能设计">气象论坛功能设计</h3>
+<ul>
+<li>气象论坛功能模块涵盖帖子管理、回复管理、互动功能、内容组织、智能推荐及权限管理六大核心组件：
+<ul>
+<li>帖子管理实现发布、编辑、软删除与自动浏览计数；</li>
+<li>回复管理实现发布、编辑、软删除；</li>
+<li>互动功能实现点赞、收藏的异步实时反馈；</li>
+<li>内容组织实现分类筛选与多维排序；</li>
+<li>智能推荐基于内容相似度匹配；</li>
+<li>权限管理实现内容与互动记录的访问控制。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>其中，基于内容相似度的智能推荐采用<code>TF-IDF</code>算法，在用户访问帖子详情页时触发，核心流程包括数据预处理、特征计算、相似度匹配与推荐生成，技术实现采用稀疏矩阵存储与缓存优化，后端基于Jieba分词与Scikit-learn计算，前端Ajax异步获取，预期减少用户搜索成本并提升气象领域内容利用率。</li>
+</ul>
+<p><img alt="TF-IDF推荐流程图" loading="lazy" decoding="async" width="1402" height="78" src="/_astro/p10.vu3T_ojR_g2bKl.webp"></p>
+TF-IDF推荐流程图
+<h3 id="智能问答交互功能设计">智能问答交互功能设计</h3>
+<p>基于开源组件<code>MaxKB</code>搭建数据库调取业务流程并集成<code>DeepSeek API</code>服务，实现从自然语言到数据库查询再到精炼回答的全链路处理。</p>
+<ul>
+<li>通过MaxKB页面输入自然语言问题后，业务流程模块将接收请求并转发至DeepSeek API</li>
+<li>利用其大语言模型能力将自然语言转换为结构化SQL查询语句</li>
+<li>随后执行该SQL语句与Mysql进行交互，获取原始查询结果</li>
+<li>再将结果与用户问题一并发送至DeepSeek API，生成符合用户需求的简要精炼回答</li>
+<li>最终通过MaxKB将回答返回给用户。</li>
+</ul>
+<p><img alt="智能问答交互流程图" loading="lazy" decoding="async" width="1402" height="722" src="/_astro/p11.wm90HlBQ_Z2kLmJX.webp"></p>
+智能问答交互流程图
+<h3 id="后台管理功能设计">后台管理功能设计</h3>
+<p>基于Django框架自带的Django Admin进行数据管理，并在各Django APP的<code>models.py</code>与<code>admin.py</code>文件中进行模型注册。</p>
+<h1 id="部份成果展示图">部份成果展示图</h1>
+ 
+<p><img alt="Scrapy空气质量数据爬虫" loading="lazy" decoding="async" width="1160" height="592" src="/_astro/p12.CHEm-WR5_ZEE52z.webp"></p>
+Scrapy空气质量数据爬虫
+<p><img alt="FTP协议接口气象栅格类数据" loading="lazy" decoding="async" width="1265" height="575" src="/_astro/p13.BMzQjPCn_2amiKq.webp"></p>
+FTP协议接口气象栅格类数据（Pannoly工具展示）
+<p><img alt="实时气象预警数据消费" loading="lazy" decoding="async" width="2156" height="1130" src="/_astro/p14.RS6FZNqj_CPS5G.webp"></p>
+实时气象预警数据消费
+<p><img alt="实时数据图表看板界面图" loading="lazy" decoding="async" width="1197" height="627" src="/_astro/p15.Cc4Uw7iN_Z288wi9.webp"></p>
+实时数据图表看板界面图
+<p><img alt="离线数据图表界面图" loading="lazy" decoding="async" width="1075" height="672" src="/_astro/p16.kmDSF6VC_ZrMJNj.webp"></p>
+离线数据图表界面图
+<p><img alt="气象预测数据图表展示页面" loading="lazy" decoding="async" width="1079" height="610" src="/_astro/p17.BkT932TA_1j4umJ.webp"></p>
+气象预测数据图表展示页面
+<p><img alt="登录界面图" loading="lazy" decoding="async" width="1984" height="1032" src="/_astro/p18.BVkimbay_ePdQz.webp"></p>
+登录界面图
+<p><img alt="气象论坛界面图" loading="lazy" decoding="async" width="1090" height="590" src="/_astro/p19.B10Ge4UQ_jeQfa.webp"></p>
+气象论坛界面图
+<p><img alt="帖子详细与TF-IDF推荐界面图" loading="lazy" decoding="async" width="1108" height="507" src="/_astro/p20.BHtuKmvK_Zuuz73.webp"></p>
+帖子详细与TF-IDF推荐界面图
+<p><img alt="智能问答交互功能界面图" loading="lazy" decoding="async" width="1254" height="659" src="/_astro/p21.CAQaJdRq_Zmb1P.webp"></p>
+智能问答交互功能界面图
+<p><img alt="智能问答交互功能流程界面图" loading="lazy" decoding="async" width="2438" height="1312" src="/_astro/p22.Bt8uZD5a_ZXnww6.webp"></p>
+智能问答交互功能流程界面图  </div> </div> <div class="article-footer">  <div class="article-footer__share" role="group" aria-label="分享文章"> <a class="icon-button" href="https://x.com/intent/tweet?text=%E5%9F%BA%E4%BA%8ESpark%E7%9A%84%E7%B2%A4%E6%B8%AF%E6%BE%B3%E5%A4%A7%E6%B9%BE%E5%8C%BA%E6%B0%94%E8%B1%A1%E5%88%86%E6%9E%90%E7%B3%BB%E7%BB%9F&amp;url=https%3A%2F%2Fblog.20220509.xyz%2Farchive%2Fji-yu-s-p-a-r-k-de-yue-gang-ao-da-wan-qu-qi-xiang-fen-xi-xi-tong%2F" aria-label="分享到 X" title="分享到 X" target="_blank" rel="noopener noreferrer"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M14.234 10.162L22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299l-.929-1.329L3.076 1.56h3.182l5.965 8.532l.929 1.329l7.754 11.09h-3.182z"/> </svg> </a><a class="icon-button" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fblog.20220509.xyz%2Farchive%2Fji-yu-s-p-a-r-k-de-yue-gang-ao-da-wan-qu-qi-xiang-fen-xi-xi-tong%2F" aria-label="分享到 Facebook" title="分享到 Facebook" target="_blank" rel="noopener noreferrer"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978c.401 0 .955.042 1.468.103a9 9 0 0 1 1.141.195v3.325a9 9 0 0 0-.653-.036a27 27 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.7 1.7 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.29h3.919l-.386 2.103l-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647"/> </svg> </a><a class="icon-button" href="mailto:?subject=%E5%9F%BA%E4%BA%8ESpark%E7%9A%84%E7%B2%A4%E6%B8%AF%E6%BE%B3%E5%A4%A7%E6%B9%BE%E5%8C%BA%E6%B0%94%E8%B1%A1%E5%88%86%E6%9E%90%E7%B3%BB%E7%BB%9F&amp;body=https%3A%2F%2Fblog.20220509.xyz%2Farchive%2Fji-yu-s-p-a-r-k-de-yue-gang-ao-da-wan-qu-qi-xiang-fen-xi-xi-tong%2F" aria-label="通过邮件分享" title="通过邮件分享"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-mail icon"> <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path><rect x="2" y="4" width="20" height="16" rx="2"></rect>  </svg> </a> <button class="icon-button" type="button" aria-label="生成分享卡片" aria-haspopup="dialog" title="分享卡片" data-article-poster-open disabled> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-share-2 icon"> <circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line>  </svg> </button> <button class="icon-button article-footer__copy" type="button" aria-label="复制文章链接" title="复制文章链接" data-article-link-copy disabled> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-link icon article-footer__link-icon"> <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-check icon article-footer__check-icon"> <path d="M20 6 9 17l-5-5"></path>  </svg> </button> </div> </div><nav class="prev-next" aria-label="上一篇/下一篇"> <div class="prev-next__item"> <a class="prev-next__link prev-next__link--prev" href="/archive/langchain/" rel="prev"> <span class="prev-next__label"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-arrow-left prev-next__icon"> <path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path>  </svg>
+上一篇
+</span> <span class="prev-next__title">LangChain</span> </a> </div> <div class="prev-next__item"> <a class="prev-next__link prev-next__link--next" href="/archive/scrapy/" rel="next"> <span class="prev-next__label">
+下一篇
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-arrow-right prev-next__icon"> <path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path>  </svg> </span> <span class="prev-next__title">scrapy入门指南</span> </a> </div> </nav><section class="article-comments" data-article-comments aria-labelledby="article-comments-title"> <h2 id="article-comments-title" class="article-comments__title">评论</h2> <div class="article-comments__mount" data-giscus-mount data-repo="MintHana/fuwari-comments" data-repo-id="R_kgDOQX3_pg" data-category="Announcements" data-category-id="DIC_kwDOQX3_ps4Cx6xk" data-mapping="pathname" data-input-position="bottom" data-lang="zh-CN" data-reactions-enabled="1"> <p class="article-comments__hint" data-giscus-hint>滚动到此处时加载评论…</p> </div> <noscript> <p class="article-comments__hint">评论由 giscus 提供，需要启用 JavaScript 才能查看。</p> </noscript> </section><script type="module">var e=()=>document.documentElement.dataset.theme===`dark`?`dark`:`light`;document.querySelectorAll(`[data-giscus-mount]`).forEach(t=>{let n=t.dataset,r=n.repo??``,i=n.repoId??``,a=n.categoryId??``;if(!r||!i||!a){t.querySelector(`[data-giscus-hint]`)?.remove();return}let o=null,s=!1,c=()=>{o&&o.setAttribute(`theme`,e())},l=()=>{let s=document.createElement(`giscus-widget`);s.setAttribute(`id`,`giscus-comments`),s.setAttribute(`repo`,r),s.setAttribute(`repoId`,i),s.setAttribute(`category`,n.category??``),s.setAttribute(`categoryId`,a),s.setAttribute(`mapping`,n.mapping??`pathname`),s.setAttribute(`strict`,`0`),s.setAttribute(`reactionsEnabled`,n.reactionsEnabled??`1`),s.setAttribute(`emitMetadata`,`0`),s.setAttribute(`inputPosition`,n.inputPosition??`bottom`),s.setAttribute(`theme`,e()),s.setAttribute(`lang`,n.lang??`zh-CN`),s.setAttribute(`loading`,`lazy`),t.querySelector(`[data-giscus-hint]`)?.remove(),t.append(s),o=s,new MutationObserver(c).observe(document.documentElement,{attributes:!0,attributeFilter:[`data-theme`]})},u=()=>{if(s)return;s=!0;let e=document.querySelector(`script[data-giscus-loader]`);if(e){e.dataset.giscusLoaded===`true`?l():e.addEventListener(`load`,l,{once:!0});return}let n=document.createElement(`script`);n.type=`module`,n.src=`https://esm.sh/giscus`,n.dataset.giscusLoader=`true`,n.addEventListener(`load`,()=>{n.dataset.giscusLoaded=`true`,l()},{once:!0}),n.addEventListener(`error`,()=>{t.querySelector(`[data-giscus-hint]`)?.replaceChildren(`评论加载失败，请稍后重试。`)}),document.head.append(n)};if(typeof IntersectionObserver>`u`){u();return}let d=new IntersectionObserver(e=>{e.some(e=>e.isIntersecting)&&(d.disconnect(),u())},{rootMargin:`600px 0px`});d.observe(t)});</script><button class="toc-fab" type="button" aria-label="打开文章目录" aria-haspopup="dialog" aria-expanded="false" title="文章目录" data-toc-fab> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-text-align-start icon"> <path d="M21 5H3"></path><path d="M15 12H3"></path><path d="M17 19H3"></path>  </svg> </button><dialog class="toc-drawer" aria-label="文章目录" data-toc-drawer> <div class="toc-drawer__head"> <p class="toc-drawer__title"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-text-align-start toc-drawer__icon"> <path d="M21 5H3"></path><path d="M15 12H3"></path><path d="M17 19H3"></path>  </svg>
+On this page
+</p> <button class="icon-button toc-drawer__close" type="button" aria-label="关闭目录" title="关闭" data-toc-drawer-close> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-x"> <path d="M18 6 6 18"></path><path d="m6 6 12 12"></path>  </svg> </button> </div> <ul class="article-toc__list"> <li> <a class="article-toc__link" href="#前言" data-depth="1" data-level="1" title="前言"> <span class="article-toc__num" aria-hidden="true">1.</span> <span class="article-toc__text">前言</span> </a> </li><li> <a class="article-toc__link" href="#系统介绍" data-depth="1" data-level="1" title="系统介绍"> <span class="article-toc__num" aria-hidden="true">2.</span> <span class="article-toc__text">系统介绍</span> </a> </li><li> <a class="article-toc__link" href="#技术选型" data-depth="1" data-level="1" title="技术选型"> <span class="article-toc__num" aria-hidden="true">3.</span> <span class="article-toc__text">技术选型</span> </a> </li><li> <a class="article-toc__link" href="#数据来源" data-depth="1" data-level="1" title="数据来源"> <span class="article-toc__num" aria-hidden="true">4.</span> <span class="article-toc__text">数据来源</span> </a> </li><li> <a class="article-toc__link" href="#功能设计" data-depth="1" data-level="1" title="功能设计"> <span class="article-toc__num" aria-hidden="true">5.</span> <span class="article-toc__text">功能设计</span> </a> </li><li> <a class="article-toc__link" href="#系统总体架构" data-depth="2" data-level="2" title="系统总体架构"> <span class="article-toc__num" aria-hidden="true">5.1</span> <span class="article-toc__text">系统总体架构</span> </a> </li><li> <a class="article-toc__link" href="#数据流图" data-depth="2" data-level="2" title="数据流图"> <span class="article-toc__num" aria-hidden="true">5.2</span> <span class="article-toc__text">数据流图</span> </a> </li><li> <a class="article-toc__link" href="#功能模块" data-depth="2" data-level="2" title="功能模块"> <span class="article-toc__num" aria-hidden="true">5.3</span> <span class="article-toc__text">功能模块</span> </a> </li><li> <a class="article-toc__link" href="#离线多源数据采集功能设计" data-depth="3" data-level="3" title="离线多源数据采集功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.1</span> <span class="article-toc__text">离线多源数据采集功能设计</span> </a> </li><li> <a class="article-toc__link" href="#实时数据采集与清洗功能设计" data-depth="3" data-level="3" title="实时数据采集与清洗功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.2</span> <span class="article-toc__text">实时数据采集与清洗功能设计</span> </a> </li><li> <a class="article-toc__link" href="#离线数据仓库功能设计" data-depth="3" data-level="3" title="离线数据仓库功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.3</span> <span class="article-toc__text">离线数据仓库功能设计</span> </a> </li><li> <a class="article-toc__link" href="#数据建模与预测功能设计" data-depth="3" data-level="3" title="数据建模与预测功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.4</span> <span class="article-toc__text">数据建模与预测功能设计</span> </a> </li><li> <a class="article-toc__link" href="#数据图表可视化展示功能设计" data-depth="3" data-level="3" title="数据图表可视化展示功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.5</span> <span class="article-toc__text">数据图表可视化展示功能设计</span> </a> </li><li> <a class="article-toc__link" href="#气象论坛功能设计" data-depth="3" data-level="3" title="气象论坛功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.6</span> <span class="article-toc__text">气象论坛功能设计</span> </a> </li><li> <a class="article-toc__link" href="#智能问答交互功能设计" data-depth="3" data-level="3" title="智能问答交互功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.7</span> <span class="article-toc__text">智能问答交互功能设计</span> </a> </li><li> <a class="article-toc__link" href="#后台管理功能设计" data-depth="3" data-level="3" title="后台管理功能设计"> <span class="article-toc__num" aria-hidden="true">5.3.8</span> <span class="article-toc__text">后台管理功能设计</span> </a> </li><li> <a class="article-toc__link" href="#部份成果展示图" data-depth="1" data-level="1" title="部份成果展示图"> <span class="article-toc__num" aria-hidden="true">6.</span> <span class="article-toc__text">部份成果展示图</span> </a> </li> </ul> </dialog><dialog class="lightbox" id="lightbox" aria-label="图片预览" aria-hidden="true" data-lightbox data-enable-zoom="false" data-enable-pan="false" data-enable-swipe-down="false" data-mobile-nav="bottom" data-mobile-count="visible" tabindex="-1" hidden> <button class="lightbox-close" type="button" data-lightbox-close aria-label="关闭">×</button> <div class="lightbox-navs"> <button class="lightbox-nav lightbox-prev" type="button" data-lightbox-prev aria-label="上一张">‹</button> <button class="lightbox-nav lightbox-next" type="button" data-lightbox-next aria-label="下一张">›</button> </div> <figure class="lightbox-figure"> <img data-lightbox-image alt=""> <figcaption class="lightbox-meta"> <span class="lightbox-caption" data-lightbox-caption hidden></span> <span class="lightbox-meta-row"> <span class="lightbox-count" data-lightbox-count aria-live="polite"></span> <span class="lightbox-dots" data-lightbox-dots aria-hidden="true"></span> </span> </figcaption> </figure> </dialog> <dialog class="article-poster" aria-label="分享卡片" data-article-poster data-site-name="MintHana" data-title="基于Spark的粤港澳大湾区气象分析系统" data-date="2026-04-06" data-summary="前言 当前，全球气候变化加速演进，极端天气事件更加频繁和猛烈，不断放大的气象风险对人类生命、经济发展及地球生态构成直接而严峻的威胁。粤港澳大湾区作为中国开放程度最高、经济活力最强的…" data-author-name="MintHana" data-author-avatar="/about/avatar.jpg" data-url="https://blog.20220509.xyz/archive/ji-yu-s-p-a-r-k-de-yue-gang-ao-da-wan-qu-qi-xiang-fen-xi-xi-tong/"> <div class="article-poster__panel" tabindex="-1" autofocus> <p class="article-poster__status" role="status" data-article-poster-status></p> <img class="article-poster__image" alt="基于Spark的粤港澳大湾区气象分析系统 的分享卡片" data-article-poster-image hidden> <a class="article-poster__save" download="ji-yu-s-p-a-r-k-de-yue-gang-ao-da-wan-qu-qi-xiang-fen-xi-xi-tong.png" data-article-poster-save hidden>保存图片</a> <p class="article-poster__hint">也可以长按图片保存。</p>  <button class="sr-only" type="button" tabindex="-1" data-article-poster-close>关闭</button> </div> </dialog><script type="module" src="/_astro/ArticleLayout.astro_astro_type_script_index_0_lang.DR-GBEKG.js"></script>  <footer class="site-footer"> <span>© 2024-2026 Mint by Astro&amp;Whono</span> <span class="site-footer__uptime" data-uptime-start="2024-01-05T00:00:00+08:00" hidden>
+本站已运行 <span class="site-footer__uptime-value">--</span> </span> </footer> </div> </main> </div> <template id="scroll-top-template"> <button type="button" class="icon-button float-action scroll-top" aria-label="回到顶部" title="回到顶部" aria-hidden="true" tabindex="-1"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-chevron-up icon"> <path d="m18 15-6-6-6 6"></path>  </svg> </button> </template> <script type="module" src="/_astro/BaseLayout.astro_astro_type_script_index_0_lang.CJRVNfu6.js"></script>   </body> </html>

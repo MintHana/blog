@@ -1,0 +1,435 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><script>
+      (() => {
+        // 与 src/scripts/sidebar-theme.ts 保持同一主题偏好契约，避免首屏与运行时状态漂移。
+        const themeKey = 'theme';
+        const modeKey = 'theme-mode';
+        let storedMode = null;
+        let legacyTheme = null;
+        try {
+          storedMode = localStorage.getItem(modeKey);
+          legacyTheme = localStorage.getItem(themeKey);
+        } catch (_) {}
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const mode = storedMode === 'system' || storedMode === 'dark' || storedMode === 'light'
+          ? storedMode
+          : (legacyTheme === 'dark' || legacyTheme === 'light' ? legacyTheme : 'system');
+        const theme = mode === 'system' ? (prefersDark ? 'dark' : 'light') : mode;
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.dataset.themeMode = mode;
+      })();
+    </script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><title>英语零基础语法知识 | Mint Blog</title><meta name="description" content="语序和五种基本句式 基本概念 主语Subject：主体 谓语Verb：主体执行的动作 表语：描述主语的性质特点、位置的词 系动词：联系作用的动词，连接前面的主语和后面的表语 宾语O…"><link rel="canonical" href="https://blog.20220509.xyz/archive/ying-yu-ling-ji-chu-yu-fa-zhi-shi/"><meta property="og:site_name" content="Mint Blog"><meta property="og:title" content="英语零基础语法知识 | Mint Blog"><meta property="og:description" content="语序和五种基本句式 基本概念 主语Subject：主体 谓语Verb：主体执行的动作 表语：描述主语的性质特点、位置的词 系动词：联系作用的动词，连接前面的主语和后面的表语 宾语O…"><meta property="og:url" content="https://blog.20220509.xyz/archive/ying-yu-ling-ji-chu-yu-fa-zhi-shi/"><meta property="og:type" content="article"><meta property="og:image" content="https://blog.20220509.xyz/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="英语零基础语法知识 | Mint Blog"><meta name="twitter:description" content="语序和五种基本句式 基本概念 主语Subject：主体 谓语Verb：主体执行的动作 表语：描述主语的性质特点、位置的词 系动词：联系作用的动词，连接前面的主语和后面的表语 宾语O…"><meta name="twitter:image" content="https://blog.20220509.xyz/og.png"><link rel="stylesheet" href="/_astro/global.Bhbh443I.css"> <meta property="article:published_time" content="2024-08-27T00:00:00.000Z"> <meta property="article:tag" content="英语"><link rel="stylesheet" href="/_astro/article.CfotRyYM.css"></head> <body class="article-page immersive-page"> <a class="skip-link" href="#content">跳到内容</a> <div class="shell" data-sidebar-divider="default"> <aside id="site-sidebar" class="sidebar"> <a class="sidebar__title sidebar__title--site" href="/" aria-label="MintHana 首页"> <span class="sidebar__title-text">MintHana</span> </a>  <div class="sidebar__quote">  永遠に不滅なものはない<br>  Personal study notes. Please forgive any inappropriate content<br>  </div> <div class="sidebar__social" aria-label="社交链接"> <a class="sidebar__social-link" href="https://github.com/MintHana" aria-label="GitHub" title="GitHub"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/> </svg> </a><a class="sidebar__social-link" href="https://www.zhihu.com/people/70-28-52-15" aria-label="知乎" title="知乎"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M5.721 0C2.251 0 0 2.25 0 5.719V18.28C0 21.751 2.252 24 5.721 24h12.56C21.751 24 24 21.75 24 18.281V5.72C24 2.249 21.75 0 18.281 0zm1.964 4.078q-.408 1.096-.68 2.11h4.587c.545-.006.445 1.168.445 1.171H9.384a58 58 0 0 1-.112 3.797h2.712c.388.023.393 1.251.393 1.266H9.183a9.2 9.2 0 0 1-.408 2.102l.757-.604c.452.456 1.512 1.712 1.906 2.177c.473.681.063 2.081.063 2.081l-2.794-3.382c-.653 2.518-1.845 3.607-1.845 3.607c-.523.468-1.58.82-2.64.516c2.218-1.73 3.44-3.917 3.667-6.497H4.491c0-.015.197-1.243.806-1.266h2.71c.024-.32.086-3.254.086-3.797H6.598c-.136.406-.158.447-.268.753c-.594 1.095-1.603 1.122-1.907 1.155c.906-1.821 1.416-3.6 1.591-4.064c.425-1.124 1.671-1.125 1.671-1.125M13.078 6h6.377v11.33h-2.573l-2.184 1.373l-.401-1.373h-1.219zm1.313 1.219v8.86h.623l.263.937l1.455-.938h1.456v-8.86z"/> </svg> </a> </div> <ul class="nav sidebar-public-nav"> <li> <a href="/"> <span>HOME</span> <span class="dot" aria-hidden="true"></span> </a> </li><li> <a href="/archive/" aria-current="page"> <span>ARCHIVE</span> <span class="dot" aria-hidden="true"></span> </a> </li><li> <a href="/about/"> <span>ABOUT</span> <span class="dot" aria-hidden="true"></span> </a> </li> </ul>  <div class="sidebar-actions">   <button id="reader-toggle" class="icon-button reader-toggle sidebar-action--rail-hidden" type="button" aria-label="阅读模式" aria-pressed="false" data-tooltip="阅读模式"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-book-open icon icon-book-open"> <path d="M12 5v16"></path><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-book icon icon-book-closed"> <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"></path>  </svg> </button> <a class="icon-button rss-link sidebar-action--rail-hidden" href="/archive/rss.xml" aria-label="RSS 订阅" data-tooltip="RSS 订阅"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-rss icon"> <path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle>  </svg> </a> <button id="theme-toggle" class="icon-button theme-toggle" type="button" aria-label="夜间模式" aria-pressed="false" data-tooltip="夜间模式"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-sun-moon icon icon-system"> <path d="M12 2v2"></path><path d="M14.837 16.385a6 6 0 1 1-7.223-7.222c.624-.147.97.66.715 1.248a4 4 0 0 0 5.26 5.259c.589-.255 1.396.09 1.248.715"></path><path d="M16 12a4 4 0 0 0-4-4"></path><path d="m19 5-1.256 1.256"></path><path d="M20 12h2"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-moon icon icon-moon"> <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-sun icon icon-sun"> <circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path>  </svg> </button>   </div> </aside> <nav id="mobile-bar" class="mobile-bar" aria-label="快捷导航"> <a class="mobile-bar__title" href="/">MintHana</a> <ul class="mobile-bar__nav"> <li> <a href="/">HOME</a> </li><li> <a href="/archive/" aria-current="page">ARCHIVE</a> </li><li> <a href="/about/">ABOUT</a> </li> </ul> </nav> <div class="divider" aria-hidden="true"></div> <main id="content" class="content" tabindex="-1"> <div class="content__inner">   <div class="article-body article-body--toc"> <div class="article-header reader-exit-anchor"> <h1 class="page-title">英语零基础语法知识</h1> <button id="reader-exit" class="icon-button reader-exit" type="button" aria-label="退出阅读" title="退出阅读" aria-hidden="true" tabindex="-1"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-square-arrow-right-exit icon"> <path d="M10 12h11"></path><path d="m17 16 4-4-4-4"></path><path d="M21 6.344V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-1.344"></path>  </svg> </button> <div class="meta-line meta-line--items"> <span class="meta-line__item"> <time datetime="2024-08-27T00:00:00.000Z">发布于：2024-08-27</time> </span> <span class="meta-line__item meta-line__item--tags"> <a class="tag tag--link" href="/archive/tag/英语/">#英语</a> </span> <span class="meta-line__item meta-line__item--desktop-meta">
+共 4,273 字
+</span> <span class="meta-line__item meta-line__item--desktop-meta">
+约 14 分钟
+</span> </div> </div> <nav class="article-toc" aria-label="文章目录"> <p class="article-toc__title"> <span class="article-toc__label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-text-align-start article-toc__icon"> <path d="M21 5H3"></path><path d="M15 12H3"></path><path d="M17 19H3"></path>  </svg>On this page</span> </p> <ul class="article-toc__list"> <li> <a class="article-toc__link" href="#语序和五种基本句式" data-depth="1" data-level="1" title="语序和五种基本句式"> <span class="article-toc__num" aria-hidden="true">1.</span> <span class="article-toc__text">语序和五种基本句式</span> </a> </li><li> <a class="article-toc__link" href="#基本概念" data-depth="2" data-level="2" title="基本概念"> <span class="article-toc__num" aria-hidden="true">1.1</span> <span class="article-toc__text">基本概念</span> </a> </li><li> <a class="article-toc__link" href="#基本句式" data-depth="2" data-level="2" title="基本句式"> <span class="article-toc__num" aria-hidden="true">1.2</span> <span class="article-toc__text">基本句式</span> </a> </li><li> <a class="article-toc__link" href="#be动词形式用法" data-depth="1" data-level="1" title="be动词形式用法"> <span class="article-toc__num" aria-hidden="true">2.</span> <span class="article-toc__text">be动词形式用法</span> </a> </li><li> <a class="article-toc__link" href="#八种be动词" data-depth="2" data-level="2" title="八种be动词"> <span class="article-toc__num" aria-hidden="true">2.1</span> <span class="article-toc__text">八种be动词</span> </a> </li><li> <a class="article-toc__link" href="#用法" data-depth="2" data-level="2" title="用法"> <span class="article-toc__num" aria-hidden="true">2.2</span> <span class="article-toc__text">用法</span> </a> </li><li> <a class="article-toc__link" href="#be动词的否定提问回答" data-depth="2" data-level="2" title="be动词的否定/提问/回答"> <span class="article-toc__num" aria-hidden="true">2.3</span> <span class="article-toc__text">be动词的否定/提问/回答</span> </a> </li><li> <a class="article-toc__link" href="#代词" data-depth="1" data-level="1" title="代词"> <span class="article-toc__num" aria-hidden="true">3.</span> <span class="article-toc__text">代词</span> </a> </li><li> <a class="article-toc__link" href="#主格代词" data-depth="2" data-level="2" title="主格代词"> <span class="article-toc__num" aria-hidden="true">3.1</span> <span class="article-toc__text">主格代词</span> </a> </li><li> <a class="article-toc__link" href="#宾格代词" data-depth="2" data-level="2" title="宾格代词"> <span class="article-toc__num" aria-hidden="true">3.2</span> <span class="article-toc__text">宾格代词</span> </a> </li><li> <a class="article-toc__link" href="#物主代词" data-depth="2" data-level="2" title="物主代词"> <span class="article-toc__num" aria-hidden="true">3.3</span> <span class="article-toc__text">物主代词</span> </a> </li><li> <a class="article-toc__link" href="#形容性" data-depth="3" data-level="3" title="形容性"> <span class="article-toc__num" aria-hidden="true">3.3.1</span> <span class="article-toc__text">形容性</span> </a> </li><li> <a class="article-toc__link" href="#名词性" data-depth="3" data-level="3" title="名词性"> <span class="article-toc__num" aria-hidden="true">3.3.2</span> <span class="article-toc__text">名词性</span> </a> </li><li> <a class="article-toc__link" href="#反身代词" data-depth="2" data-level="2" title="反身代词"> <span class="article-toc__num" aria-hidden="true">3.4</span> <span class="article-toc__text">反身代词</span> </a> </li><li> <a class="article-toc__link" href="#指示代词" data-depth="2" data-level="2" title="指示代词"> <span class="article-toc__num" aria-hidden="true">3.5</span> <span class="article-toc__text">指示代词</span> </a> </li><li> <a class="article-toc__link" href="#不定代词" data-depth="2" data-level="2" title="不定代词"> <span class="article-toc__num" aria-hidden="true">3.6</span> <span class="article-toc__text">不定代词</span> </a> </li><li> <a class="article-toc__link" href="#实意动词" data-depth="1" data-level="1" title="实意动词"> <span class="article-toc__num" aria-hidden="true">4.</span> <span class="article-toc__text">实意动词</span> </a> </li><li> <a class="article-toc__link" href="#特征" data-depth="2" data-level="2" title="特征"> <span class="article-toc__num" aria-hidden="true">4.1</span> <span class="article-toc__text">特征</span> </a> </li><li> <a class="article-toc__link" href="#实意动词的否定提问回答" data-depth="2" data-level="2" title="实意动词的否定/提问/回答"> <span class="article-toc__num" aria-hidden="true">4.2</span> <span class="article-toc__text">实意动词的否定/提问/回答</span> </a> </li><li> <a class="article-toc__link" href="#使用疑问词进行提问回答" data-depth="1" data-level="1" title="使用疑问词进行提问回答"> <span class="article-toc__num" aria-hidden="true">5.</span> <span class="article-toc__text">使用疑问词进行提问回答</span> </a> </li><li> <a class="article-toc__link" href="#名词" data-depth="1" data-level="1" title="名词"> <span class="article-toc__num" aria-hidden="true">6.</span> <span class="article-toc__text">名词</span> </a> </li><li> <a class="article-toc__link" href="#名词变复数规则" data-depth="2" data-level="2" title="名词变复数规则"> <span class="article-toc__num" aria-hidden="true">6.1</span> <span class="article-toc__text">名词变复数规则</span> </a> </li><li> <a class="article-toc__link" href="#量词" data-depth="2" data-level="2" title="量词"> <span class="article-toc__num" aria-hidden="true">6.2</span> <span class="article-toc__text">量词</span> </a> </li><li> <a class="article-toc__link" href="#形容词" data-depth="1" data-level="1" title="形容词"> <span class="article-toc__num" aria-hidden="true">7.</span> <span class="article-toc__text">形容词</span> </a> </li><li> <a class="article-toc__link" href="#副词" data-depth="1" data-level="1" title="副词"> <span class="article-toc__num" aria-hidden="true">8.</span> <span class="article-toc__text">副词</span> </a> </li><li> <a class="article-toc__link" href="#不定量表达法" data-depth="1" data-level="1" title="不定量表达法"> <span class="article-toc__num" aria-hidden="true">9.</span> <span class="article-toc__text">不定量表达法</span> </a> </li><li> <a class="article-toc__link" href="#someanymosteveryall" data-depth="2" data-level="2" title="some、any、most、every、all"> <span class="article-toc__num" aria-hidden="true">9.1</span> <span class="article-toc__text">some、any、most、every、all</span> </a> </li><li> <a class="article-toc__link" href="#botheitherneither" data-depth="2" data-level="2" title="both、either、neither"> <span class="article-toc__num" aria-hidden="true">9.2</span> <span class="article-toc__text">both、either、neither</span> </a> </li><li> <a class="article-toc__link" href="#manymacha-lot-ofplenty-of" data-depth="2" data-level="2" title="many、mach、a lot of、plenty of"> <span class="article-toc__num" aria-hidden="true">9.3</span> <span class="article-toc__text">many、mach、a lot of、plenty of</span> </a> </li><li> <a class="article-toc__link" href="#a-fewfew" data-depth="2" data-level="2" title="a few、few"> <span class="article-toc__num" aria-hidden="true">9.4</span> <span class="article-toc__text">a few、few</span> </a> </li> </ul> </nav> <div class="prose">  <h1 id="语序和五种基本句式">语序和五种基本句式</h1>
+<h2 id="基本概念">基本概念</h2>
+<p>主语Subject：主体</p>
+<p>谓语Verb：主体执行的动作</p>
+<p>表语：描述主语的性质特点、位置的词</p>
+<p>系动词：联系作用的动词，连接前面的主语和后面的表语</p>
+<p>宾语Object：动作支配的对象</p>
+<ul>
+<li><strong>直接宾语</strong>紧跟在及物动词后面，表示动作的直接承受者或者结果。通常指物</li>
+<li><strong>间接宾语</strong>用来表示动作的接收者或受益者，通常出现在直接宾语之前。通常指人</li>
+</ul>
+<p>宾语补足语：补充说明；当宾语不能完全说明谓语执行对象</p>
+<h2 id="基本句式">基本句式</h2>
+<p>1.  主语S + 谓语V</p>
+<p>The universe remains  宇宙长存</p>
+<p>2. 主语 + 系动词L.V + 表语P </p>
+<p>The food is delicious  这个食物很好吃</p>
+<p>3. 主语 + 谓语 + 宾语</p>
+<p>He took his bag and left  他拿着书包离开了</p>
+<p>4. 主语 + 谓语 + I.O间接宾语 + D.O</p>
+<p>Her father bought her a dictionary  他爸爸给她买了一本词典</p>
+<p>5. 主语 + 谓语 + 宾语 + 宾补</p>
+<p>We made him our monitor  我们选他当班长</p>
+<blockquote>
+<p>除此之外还有：倒装句、副词、提前句、复杂长句等学习</p>
+</blockquote>
+<h1 id="be动词形式用法">be动词形式用法</h1>
+<h2 id="八种be动词">八种be动词</h2>
+<p>be、being、been、is、am、are、was、were</p>
+<ul>
+<li>一般现在时时态：is、am、are</li>
+<li>过去时时态：was、were</li>
+<li>be的现在与过去分词：being、been</li>
+</ul>
+<p>eg. </p>
+<ul>
+<li>The man is back</li>
+<li>The are back</li>
+<li>He was back</li>
+<li>They were back</li>
+<li>THey have been back  他们已经回来了（现在完成时时态）</li>
+</ul>
+<h2 id="用法">用法</h2>
+<p>后面接名词、形容词、地点副词或短语作为补足词</p>
+<p>eg.</p>
+<ul>
+<li>The man is a teacher</li>
+<li>Mary’s new dresses are colorful</li>
+<li>My mother was in the kitchen</li>
+</ul>
+<h2 id="be动词的否定提问回答">be动词的否定/提问/回答</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>一般形式</th><th>缩略形</th></tr></thead><tbody><tr><td>am not</td><td>am not</td></tr><tr><td>is not</td><td>isn’t</td></tr><tr><td>are not</td><td>aren’t</td></tr><tr><td>was not</td><td>wasn’t</td></tr><tr><td>were not</td><td>weren’t</td></tr></tbody></table>
+<p>①eg.</p>
+<ul>
+<li>The man isn’t back</li>
+<li>I am not back</li>
+<li>They aren’t back</li>
+<li>He wasn’t back</li>
+<li>They weren’t back</li>
+</ul>
+<p>②eg.</p>
+<ul>
+<li>Is he a teacher? - Yes,he is / No,he isn’t</li>
+<li>Are you a teacher? - Yes,I am / No,I am not</li>
+<li>Were they tachers? - Yes,they were / No,they weren’t</li>
+</ul>
+<h1 id="代词">代词</h1>
+<p>代词就是代替人或事物的名词，通常有主格、宾格区分</p>
+<p>主格：人称代词，在句子中充当主语的成分，放在动词前；</p>
+<p>宾格：人称代词，在句子中充当宾语的成分，放在动词后。</p>
+<h2 id="主格代词">主格代词</h2>
+<p>I、he、she、it、you、we、they</p>
+<p>eg.</p>
+<ul>
+<li>I am a teacher</li>
+<li>He is a teacher</li>
+<li>You are teachers</li>
+</ul>
+<h2 id="宾格代词">宾格代词</h2>
+<p>me、him、her、it、you、us、them</p>
+<p>eg.</p>
+<ul>
+<li>He likes me</li>
+<li>We like her</li>
+<li>I like them</li>
+</ul>
+<h2 id="物主代词">物主代词</h2>
+<p>物主代词：物的主人所用的代替名词</p>
+<h3 id="形容性">形容性</h3>
+<p>形容性物主代词：修饰名词成分</p>
+<ul>
+<li>单数形式：my、your、his/her/its、one’s</li>
+<li>复数形式：our、your、their</li>
+</ul>
+<p>eg.</p>
+<ul>
+<li>This is my book</li>
+<li>We love our motherland</li>
+<li>Those are your socks</li>
+</ul>
+<h3 id="名词性">名词性</h3>
+<p>名词性物主代词：独立作为名词成分</p>
+<ul>
+<li>单数形式：mine、yours、his/hers/its、one’s</li>
+<li>复数形式：ours、yours、theirs</li>
+</ul>
+<p>eg.</p>
+<ul>
+<li>The book is ours</li>
+<li>The apple is hers</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>主格</th><th>宾格</th><th>形容词性物主代词</th><th>名词性物主代词</th></tr></thead><tbody><tr><td>I</td><td>me</td><td>my</td><td>mine</td></tr><tr><td>He</td><td>him</td><td>his</td><td>his</td></tr><tr><td>She</td><td>her</td><td>her</td><td>hers</td></tr><tr><td>It</td><td>it</td><td>its</td><td>its</td></tr><tr><td>You</td><td>you</td><td>your</td><td>yours</td></tr><tr><td>We</td><td>us</td><td>our</td><td>ours</td></tr><tr><td>They</td><td>them</td><td>their</td><td>theirs</td></tr></tbody></table>
+<h2 id="反身代词">反身代词</h2>
+<ul>
+<li>myself、yourself、herself、himself、itself</li>
+<li>yourselves、ourselves、themselves</li>
+</ul>
+<p>eg.</p>
+<ul>
+<li>Please help yourself to some fish</li>
+<li>We enjoyed ourselves last night</li>
+<li>They thing inself is not important</li>
+</ul>
+<h2 id="指示代词">指示代词</h2>
+<p>指示代词：标识人或事物的代词，用来代替前面已经提到过的名词</p>
+<p>this(these)这个/这些、that(those) 那个/那些</p>
+<p>eg.</p>
+<ul>
+<li>This is his book</li>
+</ul>
+<h2 id="不定代词">不定代词</h2>
+<p>不定代词：指代不确定的人或事物</p>
+<p>one、the other、some、any、something、nothing</p>
+<p>eg.</p>
+<ul>
+<li>No one knows where he is.</li>
+</ul>
+<h1 id="实意动词">实意动词</h1>
+<h2 id="特征">特征</h2>
+<p>come、read、go、watch、play、fly</p>
+<p>eg.</p>
+<ul>
+<li>He comes from Shenyang</li>
+<li>She is reading story books</li>
+<li>They went to America yesterday</li>
+<li>We have watched the game for three times</li>
+</ul>
+<h2 id="实意动词的否定提问回答">实意动词的否定/提问/回答</h2>
+<figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>一般形式</th><th>缩略形式</th></tr></thead><tbody><tr><td>do not</td><td>don’t</td></tr><tr><td>does not</td><td>doesn’t</td></tr><tr><td>did not</td><td>didn’t</td></tr></tbody></table>
+<figcaption>
+<p>使用助动词进行否定</p>
+</figcaption>
+</figure>
+<p>①eg.</p>
+<ul>
+<li>I don’t go to school by bus</li>
+<li>She doesn’t watch TV everyday</li>
+<li>They didn’t swim last night</li>
+</ul>
+<p>②eg.</p>
+<ul>
+<li>Does he often play golf? - Yes,he does / NO,he doesn’t</li>
+<li>Do they go to school by bus? - Yes,they do / No,they don’t</li>
+<li>Did Sam have breakfast yesterday? - Yes,he did / No,he didn’t</li>
+</ul>
+<h1 id="使用疑问词进行提问回答">使用疑问词进行提问回答</h1>
+<p>1.  When、Where、Who、What、How</p>
+<p>eg. He bought three books yesterday.</p>
+<ul>
+<li>Who bought three books yesterday?</li>
+<li>What did he buy yesterday?</li>
+<li>When did he buy three books?</li>
+</ul>
+<p>2. How long、How far、How often、Why</p>
+<p>eg. They have been in China for three years.</p>
+<ul>
+<li>How long have they been in China?</li>
+</ul>
+<p>eg. It is about 4 kilometers from Beijing to Xi’an</p>
+<ul>
+<li>How far it is from Beijing to XI’an?</li>
+</ul>
+<p>eg. They come to visit me once a week.</p>
+<ul>
+<li>How often do they come to visit you?</li>
+</ul>
+<p>eg. She came late, because she missed the bus.</p>
+<ul>
+<li>Why did she come late?</li>
+</ul>
+<h1 id="名词">名词</h1>
+<p>可数名词countable noun：数的过来的概念；有单复数之分</p>
+<p>不可数名词uncountable noun：无法计数的抽象概念；无复数形式</p>
+<h2 id="名词变复数规则">名词变复数规则</h2>
+<figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>一般末尾加上s</th><th>friend ->friends</th></tr></thead><tbody><tr><td>s、z、x、ch、sh结尾，末尾加es</td><td>bus -> buses</td></tr><tr><td>辅音字母+y结尾，y变i+es</td><td>candy -> candies</td></tr><tr><td>o结尾，如果不是外来词或缩写就加es</td><td>tomato -> tomatoes</td></tr></tbody></table>
+<figcaption>
+<p>名词变复数规则</p>
+</figcaption>
+</figure>
+<h2 id="量词">量词</h2>
+<p>①可数名词前</p>
+<ul>
+<li>元音（a、i、u、e、o）开头 + an   <em>[an apple]</em></li>
+<li>辅音（除去元音的其他字母）开头 + a</li>
+<li>加其他量词  _[_<em>a box of apples]</em></li>
+</ul>
+<p>②不可数名词不加 a/an，可加量词  <em>[a cap of coffee]</em></p>
+<h1 id="形容词">形容词</h1>
+<p>1. 形容词通常形容人或事物的状态、性质、大小等</p>
+<p>通常用在名词前，be动词之后</p>
+<p>eg.</p>
+<ul>
+<li>The beautiful girl.</li>
+<li>The girl is beautiful.</li>
+</ul>
+<p>2. The + 形容词 = 复数名词，表示一类，后面的动词使用复数</p>
+<p>eg.</p>
+<ul>
+<li>The old need more care than The young.</li>
+</ul>
+<h1 id="副词">副词</h1>
+<p>副词可以修饰动词、形容词、其他副词以及其他结构</p>
+<p>eg.</p>
+<ul>
+<li>He runs fast.</li>
+<li>She is very beautiful.</li>
+</ul>
+<p>副词位置</p>
+<p>1. 助动词之后，实意动词之前或之后</p>
+<p>2.形容词之前，其他副词之前或之后</p>
+<p>3.多个助动词时，副词一般放在第一个助动词之后</p>
+<p>eg.</p>
+<ul>
+<li>He speaks very fast.</li>
+<li>They have already left.</li>
+<li>They have already been repaired.</li>
+</ul>
+<h1 id="不定量表达法">不定量表达法</h1>
+<p>不定量表达法就是不确定数量的表达法</p>
+<h2 id="someanymosteveryall">some、any、most、every、all</h2>
+<p>1. some、any都表示“一些”，<strong>some主要用于肯定句</strong>，希望得到肯定回答，也可以用在疑问句中，<strong>any主要用于否定和疑问句中</strong></p>
+<ul>
+<li>I’d been expecting <strong>some</strong> letters the whole moring,but there weren’t <strong>any</strong> for me.</li>
+<li>我整个上午都在等一些信，但没有任何给我的</li>
+</ul>
+<p>2. most作形容词时表示大部分的，后面接复数名词</p>
+<ul>
+<li><strong>Most</strong> people here are from China.</li>
+</ul>
+<p>3. every表示“每一个，所有”后面接单数名词</p>
+<ul>
+<li>Every one likes the film.</li>
+</ul>
+<p>4.  all表示”所有”，后面接可数名词复数，不可数名词单数。</p>
+<ul>
+<li>All the cars are parked in the parking lot.</li>
+<li>All the coffee is served on time.</li>
+</ul>
+<h2 id="botheitherneither">both、either、neither</h2>
+<p>both表示两者都，可作形容词，代词和副词， either是两者之一， neither是两者都不。</p>
+<ul>
+<li><strong>Both</strong> his eyes were severely burned</li>
+<li>There are trees on <strong>either</strong> side of the street.</li>
+<li><strong>Neither</strong> answer is correct</li>
+</ul>
+<h2 id="manymacha-lot-ofplenty-of">many、mach、a lot of、plenty of</h2>
+<p>many 修饰可数名词，表示”许多”,much修饰不可数名词，表示”许多”。</p>
+<p>a lot of[lots of], plenty of均可修饰可数和不可数名词</p>
+<ul>
+<li>many books、much water</li>
+<li>a lot of/lots of books/water</li>
+</ul>
+<h2 id="a-fewfew">a few、few</h2>
+<p>a few：为肯定含义”几个”</p>
+<p>few：为否定含义”没几个”，以上两个词均和可数名词连用。</p>
+<ul>
+<li><strong>A few</strong> books are put into the box</li>
+<li><strong>Few</strong> books are put into the box</li>
+</ul>  </div> </div> <div class="article-footer"> <div class="article-footer__tags"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-bookmark article-footer__tags-icon"> <path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"></path>  </svg> <div class="article-footer__tag-list"> <a class="article-footer__tag" href="/archive/tag/英语/">#英语</a> </div> </div> <div class="article-footer__share" role="group" aria-label="分享文章"> <a class="icon-button" href="https://x.com/intent/tweet?text=%E8%8B%B1%E8%AF%AD%E9%9B%B6%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E7%9F%A5%E8%AF%86&amp;url=https%3A%2F%2Fblog.20220509.xyz%2Farchive%2Fying-yu-ling-ji-chu-yu-fa-zhi-shi%2F" aria-label="分享到 X" title="分享到 X" target="_blank" rel="noopener noreferrer"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M14.234 10.162L22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299l-.929-1.329L3.076 1.56h3.182l5.965 8.532l.929 1.329l7.754 11.09h-3.182z"/> </svg> </a><a class="icon-button" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fblog.20220509.xyz%2Farchive%2Fying-yu-ling-ji-chu-yu-fa-zhi-shi%2F" aria-label="分享到 Facebook" title="分享到 Facebook" target="_blank" rel="noopener noreferrer"> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"> <path fill="currentColor" d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978c.401 0 .955.042 1.468.103a9 9 0 0 1 1.141.195v3.325a9 9 0 0 0-.653-.036a27 27 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.7 1.7 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.29h3.919l-.386 2.103l-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647"/> </svg> </a><a class="icon-button" href="mailto:?subject=%E8%8B%B1%E8%AF%AD%E9%9B%B6%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E7%9F%A5%E8%AF%86&amp;body=https%3A%2F%2Fblog.20220509.xyz%2Farchive%2Fying-yu-ling-ji-chu-yu-fa-zhi-shi%2F" aria-label="通过邮件分享" title="通过邮件分享"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-mail icon"> <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path><rect x="2" y="4" width="20" height="16" rx="2"></rect>  </svg> </a> <button class="icon-button" type="button" aria-label="生成分享卡片" aria-haspopup="dialog" title="分享卡片" data-article-poster-open disabled> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-share-2 icon"> <circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line>  </svg> </button> <button class="icon-button article-footer__copy" type="button" aria-label="复制文章链接" title="复制文章链接" data-article-link-copy disabled> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-link icon article-footer__link-icon"> <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>  </svg> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-check icon article-footer__check-icon"> <path d="M20 6 9 17l-5-5"></path>  </svg> </button> </div> </div><nav class="prev-next" aria-label="上一篇/下一篇"> <div class="prev-next__item"> <a class="prev-next__link prev-next__link--prev" href="/archive/w-i-n-1-1-c-p-u-pao-y-o-l-o-v-7-d-e-m-o/" rel="prev"> <span class="prev-next__label"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-arrow-left prev-next__icon"> <path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path>  </svg>
+上一篇
+</span> <span class="prev-next__title">Win11+CPU跑Yolov7Demo</span> </a> </div> <div class="prev-next__item"> <a class="prev-next__link prev-next__link--next" href="/archive/r-yu-yan-shu-ju-fen-xi-yu-ke-shi-hua/" rel="next"> <span class="prev-next__label">
+下一篇
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-arrow-right prev-next__icon"> <path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path>  </svg> </span> <span class="prev-next__title">R语言数据分析与可视化</span> </a> </div> </nav><section class="article-comments" data-article-comments aria-labelledby="article-comments-title"> <h2 id="article-comments-title" class="article-comments__title">评论</h2> <div class="article-comments__mount" data-giscus-mount data-repo="MintHana/fuwari-comments" data-repo-id="R_kgDOQX3_pg" data-category="Announcements" data-category-id="DIC_kwDOQX3_ps4Cx6xk" data-mapping="pathname" data-input-position="bottom" data-lang="zh-CN" data-reactions-enabled="1"> <p class="article-comments__hint" data-giscus-hint>滚动到此处时加载评论…</p> </div> <noscript> <p class="article-comments__hint">评论由 giscus 提供，需要启用 JavaScript 才能查看。</p> </noscript> </section><script type="module">var e=()=>document.documentElement.dataset.theme===`dark`?`dark`:`light`;document.querySelectorAll(`[data-giscus-mount]`).forEach(t=>{let n=t.dataset,r=n.repo??``,i=n.repoId??``,a=n.categoryId??``;if(!r||!i||!a){t.querySelector(`[data-giscus-hint]`)?.remove();return}let o=null,s=!1,c=()=>{o&&o.setAttribute(`theme`,e())},l=()=>{let s=document.createElement(`giscus-widget`);s.setAttribute(`id`,`giscus-comments`),s.setAttribute(`repo`,r),s.setAttribute(`repoId`,i),s.setAttribute(`category`,n.category??``),s.setAttribute(`categoryId`,a),s.setAttribute(`mapping`,n.mapping??`pathname`),s.setAttribute(`strict`,`0`),s.setAttribute(`reactionsEnabled`,n.reactionsEnabled??`1`),s.setAttribute(`emitMetadata`,`0`),s.setAttribute(`inputPosition`,n.inputPosition??`bottom`),s.setAttribute(`theme`,e()),s.setAttribute(`lang`,n.lang??`zh-CN`),s.setAttribute(`loading`,`lazy`),t.querySelector(`[data-giscus-hint]`)?.remove(),t.append(s),o=s,new MutationObserver(c).observe(document.documentElement,{attributes:!0,attributeFilter:[`data-theme`]})},u=()=>{if(s)return;s=!0;let e=document.querySelector(`script[data-giscus-loader]`);if(e){e.dataset.giscusLoaded===`true`?l():e.addEventListener(`load`,l,{once:!0});return}let n=document.createElement(`script`);n.type=`module`,n.src=`https://esm.sh/giscus`,n.dataset.giscusLoader=`true`,n.addEventListener(`load`,()=>{n.dataset.giscusLoaded=`true`,l()},{once:!0}),n.addEventListener(`error`,()=>{t.querySelector(`[data-giscus-hint]`)?.replaceChildren(`评论加载失败，请稍后重试。`)}),document.head.append(n)};if(typeof IntersectionObserver>`u`){u();return}let d=new IntersectionObserver(e=>{e.some(e=>e.isIntersecting)&&(d.disconnect(),u())},{rootMargin:`600px 0px`});d.observe(t)});</script><button class="toc-fab" type="button" aria-label="打开文章目录" aria-haspopup="dialog" aria-expanded="false" title="文章目录" data-toc-fab> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-text-align-start icon"> <path d="M21 5H3"></path><path d="M15 12H3"></path><path d="M17 19H3"></path>  </svg> </button><dialog class="toc-drawer" aria-label="文章目录" data-toc-drawer> <div class="toc-drawer__head"> <p class="toc-drawer__title"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-text-align-start toc-drawer__icon"> <path d="M21 5H3"></path><path d="M15 12H3"></path><path d="M17 19H3"></path>  </svg>
+On this page
+</p> <button class="icon-button toc-drawer__close" type="button" aria-label="关闭目录" title="关闭" data-toc-drawer-close> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-x"> <path d="M18 6 6 18"></path><path d="m6 6 12 12"></path>  </svg> </button> </div> <ul class="article-toc__list"> <li> <a class="article-toc__link" href="#语序和五种基本句式" data-depth="1" data-level="1" title="语序和五种基本句式"> <span class="article-toc__num" aria-hidden="true">1.</span> <span class="article-toc__text">语序和五种基本句式</span> </a> </li><li> <a class="article-toc__link" href="#基本概念" data-depth="2" data-level="2" title="基本概念"> <span class="article-toc__num" aria-hidden="true">1.1</span> <span class="article-toc__text">基本概念</span> </a> </li><li> <a class="article-toc__link" href="#基本句式" data-depth="2" data-level="2" title="基本句式"> <span class="article-toc__num" aria-hidden="true">1.2</span> <span class="article-toc__text">基本句式</span> </a> </li><li> <a class="article-toc__link" href="#be动词形式用法" data-depth="1" data-level="1" title="be动词形式用法"> <span class="article-toc__num" aria-hidden="true">2.</span> <span class="article-toc__text">be动词形式用法</span> </a> </li><li> <a class="article-toc__link" href="#八种be动词" data-depth="2" data-level="2" title="八种be动词"> <span class="article-toc__num" aria-hidden="true">2.1</span> <span class="article-toc__text">八种be动词</span> </a> </li><li> <a class="article-toc__link" href="#用法" data-depth="2" data-level="2" title="用法"> <span class="article-toc__num" aria-hidden="true">2.2</span> <span class="article-toc__text">用法</span> </a> </li><li> <a class="article-toc__link" href="#be动词的否定提问回答" data-depth="2" data-level="2" title="be动词的否定/提问/回答"> <span class="article-toc__num" aria-hidden="true">2.3</span> <span class="article-toc__text">be动词的否定/提问/回答</span> </a> </li><li> <a class="article-toc__link" href="#代词" data-depth="1" data-level="1" title="代词"> <span class="article-toc__num" aria-hidden="true">3.</span> <span class="article-toc__text">代词</span> </a> </li><li> <a class="article-toc__link" href="#主格代词" data-depth="2" data-level="2" title="主格代词"> <span class="article-toc__num" aria-hidden="true">3.1</span> <span class="article-toc__text">主格代词</span> </a> </li><li> <a class="article-toc__link" href="#宾格代词" data-depth="2" data-level="2" title="宾格代词"> <span class="article-toc__num" aria-hidden="true">3.2</span> <span class="article-toc__text">宾格代词</span> </a> </li><li> <a class="article-toc__link" href="#物主代词" data-depth="2" data-level="2" title="物主代词"> <span class="article-toc__num" aria-hidden="true">3.3</span> <span class="article-toc__text">物主代词</span> </a> </li><li> <a class="article-toc__link" href="#形容性" data-depth="3" data-level="3" title="形容性"> <span class="article-toc__num" aria-hidden="true">3.3.1</span> <span class="article-toc__text">形容性</span> </a> </li><li> <a class="article-toc__link" href="#名词性" data-depth="3" data-level="3" title="名词性"> <span class="article-toc__num" aria-hidden="true">3.3.2</span> <span class="article-toc__text">名词性</span> </a> </li><li> <a class="article-toc__link" href="#反身代词" data-depth="2" data-level="2" title="反身代词"> <span class="article-toc__num" aria-hidden="true">3.4</span> <span class="article-toc__text">反身代词</span> </a> </li><li> <a class="article-toc__link" href="#指示代词" data-depth="2" data-level="2" title="指示代词"> <span class="article-toc__num" aria-hidden="true">3.5</span> <span class="article-toc__text">指示代词</span> </a> </li><li> <a class="article-toc__link" href="#不定代词" data-depth="2" data-level="2" title="不定代词"> <span class="article-toc__num" aria-hidden="true">3.6</span> <span class="article-toc__text">不定代词</span> </a> </li><li> <a class="article-toc__link" href="#实意动词" data-depth="1" data-level="1" title="实意动词"> <span class="article-toc__num" aria-hidden="true">4.</span> <span class="article-toc__text">实意动词</span> </a> </li><li> <a class="article-toc__link" href="#特征" data-depth="2" data-level="2" title="特征"> <span class="article-toc__num" aria-hidden="true">4.1</span> <span class="article-toc__text">特征</span> </a> </li><li> <a class="article-toc__link" href="#实意动词的否定提问回答" data-depth="2" data-level="2" title="实意动词的否定/提问/回答"> <span class="article-toc__num" aria-hidden="true">4.2</span> <span class="article-toc__text">实意动词的否定/提问/回答</span> </a> </li><li> <a class="article-toc__link" href="#使用疑问词进行提问回答" data-depth="1" data-level="1" title="使用疑问词进行提问回答"> <span class="article-toc__num" aria-hidden="true">5.</span> <span class="article-toc__text">使用疑问词进行提问回答</span> </a> </li><li> <a class="article-toc__link" href="#名词" data-depth="1" data-level="1" title="名词"> <span class="article-toc__num" aria-hidden="true">6.</span> <span class="article-toc__text">名词</span> </a> </li><li> <a class="article-toc__link" href="#名词变复数规则" data-depth="2" data-level="2" title="名词变复数规则"> <span class="article-toc__num" aria-hidden="true">6.1</span> <span class="article-toc__text">名词变复数规则</span> </a> </li><li> <a class="article-toc__link" href="#量词" data-depth="2" data-level="2" title="量词"> <span class="article-toc__num" aria-hidden="true">6.2</span> <span class="article-toc__text">量词</span> </a> </li><li> <a class="article-toc__link" href="#形容词" data-depth="1" data-level="1" title="形容词"> <span class="article-toc__num" aria-hidden="true">7.</span> <span class="article-toc__text">形容词</span> </a> </li><li> <a class="article-toc__link" href="#副词" data-depth="1" data-level="1" title="副词"> <span class="article-toc__num" aria-hidden="true">8.</span> <span class="article-toc__text">副词</span> </a> </li><li> <a class="article-toc__link" href="#不定量表达法" data-depth="1" data-level="1" title="不定量表达法"> <span class="article-toc__num" aria-hidden="true">9.</span> <span class="article-toc__text">不定量表达法</span> </a> </li><li> <a class="article-toc__link" href="#someanymosteveryall" data-depth="2" data-level="2" title="some、any、most、every、all"> <span class="article-toc__num" aria-hidden="true">9.1</span> <span class="article-toc__text">some、any、most、every、all</span> </a> </li><li> <a class="article-toc__link" href="#botheitherneither" data-depth="2" data-level="2" title="both、either、neither"> <span class="article-toc__num" aria-hidden="true">9.2</span> <span class="article-toc__text">both、either、neither</span> </a> </li><li> <a class="article-toc__link" href="#manymacha-lot-ofplenty-of" data-depth="2" data-level="2" title="many、mach、a lot of、plenty of"> <span class="article-toc__num" aria-hidden="true">9.3</span> <span class="article-toc__text">many、mach、a lot of、plenty of</span> </a> </li><li> <a class="article-toc__link" href="#a-fewfew" data-depth="2" data-level="2" title="a few、few"> <span class="article-toc__num" aria-hidden="true">9.4</span> <span class="article-toc__text">a few、few</span> </a> </li> </ul> </dialog><dialog class="lightbox" id="lightbox" aria-label="图片预览" aria-hidden="true" data-lightbox data-enable-zoom="false" data-enable-pan="false" data-enable-swipe-down="false" data-mobile-nav="bottom" data-mobile-count="visible" tabindex="-1" hidden> <button class="lightbox-close" type="button" data-lightbox-close aria-label="关闭">×</button> <div class="lightbox-navs"> <button class="lightbox-nav lightbox-prev" type="button" data-lightbox-prev aria-label="上一张">‹</button> <button class="lightbox-nav lightbox-next" type="button" data-lightbox-next aria-label="下一张">›</button> </div> <figure class="lightbox-figure"> <img data-lightbox-image alt=""> <figcaption class="lightbox-meta"> <span class="lightbox-caption" data-lightbox-caption hidden></span> <span class="lightbox-meta-row"> <span class="lightbox-count" data-lightbox-count aria-live="polite"></span> <span class="lightbox-dots" data-lightbox-dots aria-hidden="true"></span> </span> </figcaption> </figure> </dialog> <dialog class="article-poster" aria-label="分享卡片" data-article-poster data-site-name="MintHana" data-title="英语零基础语法知识" data-date="2024-08-27" data-summary="语序和五种基本句式 基本概念 主语Subject：主体 谓语Verb：主体执行的动作 表语：描述主语的性质特点、位置的词 系动词：联系作用的动词，连接前面的主语和后面的表语 宾语O…" data-author-name="MintHana" data-author-avatar="/about/avatar.jpg" data-url="https://blog.20220509.xyz/archive/ying-yu-ling-ji-chu-yu-fa-zhi-shi/"> <div class="article-poster__panel" tabindex="-1" autofocus> <p class="article-poster__status" role="status" data-article-poster-status></p> <img class="article-poster__image" alt="英语零基础语法知识 的分享卡片" data-article-poster-image hidden> <a class="article-poster__save" download="ying-yu-ling-ji-chu-yu-fa-zhi-shi.png" data-article-poster-save hidden>保存图片</a> <p class="article-poster__hint">也可以长按图片保存。</p>  <button class="sr-only" type="button" tabindex="-1" data-article-poster-close>关闭</button> </div> </dialog><script type="module" src="/_astro/ArticleLayout.astro_astro_type_script_index_0_lang.DR-GBEKG.js"></script>  <footer class="site-footer"> <span>© 2024-2026 Mint by Astro&amp;Whono</span> <span class="site-footer__uptime" data-uptime-start="2024-01-05T00:00:00+08:00" hidden>
+本站已运行 <span class="site-footer__uptime-value">--</span> </span> </footer> </div> </main> </div> <template id="scroll-top-template"> <button type="button" class="icon-button float-action scroll-top" aria-label="回到顶部" title="回到顶部" aria-hidden="true" tabindex="-1"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="lucide lucide-chevron-up icon"> <path d="m18 15-6-6-6 6"></path>  </svg> </button> </template> <script type="module" src="/_astro/BaseLayout.astro_astro_type_script_index_0_lang.CJRVNfu6.js"></script>   </body> </html>
